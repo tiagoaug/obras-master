@@ -9,7 +9,11 @@ import br.com.tiago.obramaster.ui.features.configuracoes.ConfiguracoesViewModel
 import br.com.tiago.obramaster.ui.features.home.HomeViewModel
 import br.com.tiago.obramaster.ui.features.login.LoginViewModel
 import br.com.tiago.obramaster.ui.AppRootViewModel
+import br.com.tiago.obramaster.ui.features.cadastros.CoresViewModel
+import br.com.tiago.obramaster.ui.features.cadastros.MateriaisViewModel
+import br.com.tiago.obramaster.ui.features.cadastros.UnidadesMedidaViewModel
 import br.com.tiago.obramaster.ui.features.onboarding.OnboardingViewModel
+import br.com.tiago.obramaster.ui.features.pessoas.PessoasViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -33,4 +37,8 @@ val appModule = module {
     factory { (colaborador: Colaborador) -> HomeViewModel(colaborador, get(), get(), get()) }
     factory { ConfiguracoesViewModel(get(), get(), get()) }
     factory { OnboardingViewModel(get(), get(), get(), get(), get(), get(), get()) }
+    factory { PessoasViewModel(get(), get()) }
+    factory { CoresViewModel(get()) }
+    factory { MateriaisViewModel(get(), get()) }
+    factory { UnidadesMedidaViewModel(get()) }
 }

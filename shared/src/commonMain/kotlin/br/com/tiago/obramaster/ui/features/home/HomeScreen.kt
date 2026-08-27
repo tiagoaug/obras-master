@@ -45,6 +45,8 @@ fun HomeScreen(
     colaborador: Colaborador,
     onAbrirConfiguracoes: () -> Unit,
     onLogout: () -> Unit,
+    modulosImplementados: Set<AppModule> = emptySet(),
+    onAbrirModulo: (AppModule) -> Unit = {},
 ) {
     val viewModel: HomeViewModel = koinInject { parametersOf(colaborador) }
     val uiState by viewModel.uiState.collectAsState()
@@ -52,7 +54,11 @@ fun HomeScreen(
     val scope = rememberCoroutineScope()
 
     val onModuloClicado: (AppModule) -> Unit = { modulo ->
-        scope.launch { snackbarHostState.showSnackbar("${modulo.labelPtBr}: chega numa próxima fase") }
+        if (modulo in modulosImplementados) {
+            onAbrirModulo(modulo)
+        } else {
+            scope.launch { snackbarHostState.showSnackbar("${modulo.labelPtBr}: chega numa próxima fase") }
+        }
     }
     val onLogoutClicado: () -> Unit = {
         viewModel.logout()

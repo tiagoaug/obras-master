@@ -1,0 +1,19 @@
+CREATE TABLE Cor (
+    id TEXT NOT NULL PRIMARY KEY,
+    nome TEXT NOT NULL,
+    hex TEXT NOT NULL,
+    codigoFabricante TEXT,
+    ativo INTEGER AS kotlin.Boolean NOT NULL DEFAULT 1
+);
+
+selectAtivas:
+SELECT * FROM Cor WHERE ativo = 1 ORDER BY nome;
+
+insert:
+INSERT INTO Cor(id, nome, hex, codigoFabricante, ativo) VALUES (?, ?, ?, ?, ?);
+
+update:
+UPDATE Cor SET nome = ?, hex = ?, codigoFabricante = ? WHERE id = ?;
+
+softDelete:
+UPDATE Cor SET ativo = 0 WHERE id = ?;

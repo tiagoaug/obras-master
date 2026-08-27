@@ -3,8 +3,12 @@ package br.com.tiago.obramaster.data.repository
 import br.com.tiago.obramaster.core.auth.NivelPermissao
 import br.com.tiago.obramaster.domain.Colaborador
 import br.com.tiago.obramaster.domain.Conta
+import br.com.tiago.obramaster.domain.Cor
 import br.com.tiago.obramaster.domain.DadosEmpresa
+import br.com.tiago.obramaster.domain.Material
 import br.com.tiago.obramaster.domain.Permissao
+import br.com.tiago.obramaster.domain.Pessoa
+import br.com.tiago.obramaster.domain.UnidadeMedida
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -91,4 +95,68 @@ class InMemoryContaRepository : ContaRepository {
     override suspend fun salvar(conta: Conta) {
         state.value = state.value + conta
     }
+}
+
+class InMemoryPessoaRepository : PessoaRepository {
+    private val state = MutableStateFlow<List<Pessoa>>(emptyList())
+
+    override suspend fun listarAtivas(): List<Pessoa> = state.value.filter { it.ativo }
+    override suspend fun salvar(pessoa: Pessoa) {
+        state.value = state.value + pessoa
+    }
+    override suspend fun atualizar(pessoa: Pessoa) {
+        state.value = state.value.map { if (it.id == pessoa.id) pessoa else it }
+    }
+    override suspend fun desativar(id: String) {
+        state.value = state.value.map { if (it.id == id) it.copy(ativo = false) else it }
+    }
+    override fun observarAtivas(): Flow<List<Pessoa>> = state.map { lista -> lista.filter { it.ativo } }
+}
+
+class InMemoryCorRepository : CorRepository {
+    private val state = MutableStateFlow<List<Cor>>(emptyList())
+
+    override suspend fun listarAtivas(): List<Cor> = state.value.filter { it.ativo }
+    override suspend fun salvar(cor: Cor) {
+        state.value = state.value + cor
+    }
+    override suspend fun atualizar(cor: Cor) {
+        state.value = state.value.map { if (it.id == cor.id) cor else it }
+    }
+    override suspend fun desativar(id: String) {
+        state.value = state.value.map { if (it.id == id) it.copy(ativo = false) else it }
+    }
+    override fun observarAtivas(): Flow<List<Cor>> = state.map { lista -> lista.filter { it.ativo } }
+}
+
+class InMemoryMaterialRepository : MaterialRepository {
+    private val state = MutableStateFlow<List<Material>>(emptyList())
+
+    override suspend fun listarAtivos(): List<Material> = state.value.filter { it.ativo }
+    override suspend fun salvar(material: Material) {
+        state.value = state.value + material
+    }
+    override suspend fun atualizar(material: Material) {
+        state.value = state.value.map { if (it.id == material.id) material else it }
+    }
+    override suspend fun desativar(id: String) {
+        state.value = state.value.map { if (it.id == id) it.copy(ativo = false) else it }
+    }
+    override fun observarAtivos(): Flow<List<Material>> = state.map { lista -> lista.filter { it.ativo } }
+}
+
+class InMemoryUnidadeMedidaRepository : UnidadeMedidaRepository {
+    private val state = MutableStateFlow<List<UnidadeMedida>>(emptyList())
+
+    override suspend fun listarAtivas(): List<UnidadeMedida> = state.value.filter { it.ativo }
+    override suspend fun salvar(unidade: UnidadeMedida) {
+        state.value = state.value + unidade
+    }
+    override suspend fun atualizar(unidade: UnidadeMedida) {
+        state.value = state.value.map { if (it.id == unidade.id) unidade else it }
+    }
+    override suspend fun desativar(id: String) {
+        state.value = state.value.map { if (it.id == id) it.copy(ativo = false) else it }
+    }
+    override fun observarAtivas(): Flow<List<UnidadeMedida>> = state.map { lista -> lista.filter { it.ativo } }
 }

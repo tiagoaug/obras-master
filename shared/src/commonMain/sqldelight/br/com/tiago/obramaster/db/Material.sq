@@ -1,0 +1,24 @@
+CREATE TABLE Material (
+    id TEXT NOT NULL PRIMARY KEY,
+    nome TEXT NOT NULL,
+    unidadePadrao TEXT NOT NULL,
+    precoReferencia INTEGER,
+    categoria TEXT,
+    corId TEXT,
+    ativo INTEGER AS kotlin.Boolean NOT NULL DEFAULT 1,
+    FOREIGN KEY (corId) REFERENCES Cor(id)
+);
+
+selectAtivos:
+SELECT * FROM Material WHERE ativo = 1 ORDER BY nome;
+
+insert:
+INSERT INTO Material(id, nome, unidadePadrao, precoReferencia, categoria, corId, ativo)
+VALUES (?, ?, ?, ?, ?, ?, ?);
+
+update:
+UPDATE Material SET nome = ?, unidadePadrao = ?, precoReferencia = ?, categoria = ?, corId = ?
+WHERE id = ?;
+
+softDelete:
+UPDATE Material SET ativo = 0 WHERE id = ?;

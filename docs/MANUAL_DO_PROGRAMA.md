@@ -154,13 +154,25 @@ Cadastre metas financeiras (lucro do mês), de prazo (terminar etapa até uma da
 
 ## 12. Pessoas `#pessoas`
 
-Cadastro único de clientes, fornecedores e funcionários — uma pessoa pode ter mais de uma dessas etiquetas. Você pode **importar direto da agenda do celular**, escolhendo os contatos que quer trazer para o sistema.
+Cadastro único de clientes, fornecedores e funcionários — uma pessoa pode ter mais de uma dessas etiquetas (marque quantas quiser: nome, telefone, e-mail, endereço, documento e observações são todos opcionais, menos o nome e pelo menos uma etiqueta).
+
+**Importar contatos** (ícone de "+pessoa" no topo da lista): em Android e Web já funciona — Android busca direto da agenda do celular (pede permissão na primeira vez); Web não tem acesso à agenda do navegador, então aceita colar um arquivo **CSV** (colunas `nome,telefone,email`) ou **vCard** (`.vcf`) exportado de outro app. Depois de buscar ou colar, você escolhe quais contatos importar e com qual etiqueta (cliente/funcionário/fornecedor) eles entram. *(No iOS a importação direta da agenda ainda não está pronta — pendente de desenvolvimento num Mac; por enquanto o cadastro manual funciona normalmente lá.)*
+
+**Exemplo prático:** você tem 40 contatos de fornecedores salvos no celular. Em vez de digitar um por um, toca em importar, seleciona os 40, marca a etiqueta "Fornecedor" e confirma — todos entram de uma vez, prontos para vincular em Compras.
 
 ---
 
 ## 13. Cadastros Básicos `#cadastros-basicos`
 
-Cores, materiais, unidades de medida, categorias e templates de etapas — tudo o que os outros módulos usam como listas de apoio. Fica em Configurações, com CRUD completo (criar, ver, editar, excluir).
+Acessível pela Home (módulo "Cadastros Básicos"). Hoje reúne os cadastros que não dependem de nenhum outro módulo:
+
+- **Cores**: nome, código hexadecimal (com preview visual) e código do fabricante (opcional).
+- **Materiais**: nome, unidade padrão (ex.: m², kg, sc), preço de referência (opcional, com a calculadora embutida) e cor (opcional, escolhida entre as já cadastradas).
+- **Unidades de Medida**: sigla e nome (ex.: "m²" / "Metro quadrado").
+
+Todos com busca, criar/editar/excluir (exclusão sempre pede confirmação e não apaga de verdade — só marca como inativo, então nada que já foi usado em outro lugar quebra).
+
+*Categorias financeiras, formas de pagamento, funções de mão de obra e templates de etapas também são "cadastros básicos" na visão geral do sistema, mas cada um entra junto do módulo que efetivamente usa ele (Financeiro, Equipes, Projetos) — não faria sentido cadastrá-los soltos antes de existir onde aplicar.*
 
 ---
 
