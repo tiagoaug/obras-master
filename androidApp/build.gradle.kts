@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace = "br.com.tiago.obramaster.android"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "br.com.tiago.obramaster.android"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "0.1.0"
     }

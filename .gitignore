@@ -27,6 +27,9 @@ iosApp/**/*.moved-aside
 webApp/dist/
 node_modules/
 
+# Claude Code
+.claude/
+
 # OS
 .DS_Store
 Thumbs.db
