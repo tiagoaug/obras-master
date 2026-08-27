@@ -23,10 +23,12 @@ import br.com.tiago.obramaster.ui.features.home.HomeScreen
 import br.com.tiago.obramaster.ui.features.login.LoginScreen
 import br.com.tiago.obramaster.ui.features.onboarding.OnboardingScreen
 import br.com.tiago.obramaster.ui.features.pessoas.PessoasScreen
+import br.com.tiago.obramaster.ui.features.projetos.ProjetoDetalheScreen
+import br.com.tiago.obramaster.ui.features.projetos.ProjetosScreen
 import br.com.tiago.obramaster.ui.theme.ObraMasterTheme
 import org.koin.compose.koinInject
 
-private val MODULOS_IMPLEMENTADOS = setOf(AppModule.PESSOAS, AppModule.CADASTROS_BASE)
+private val MODULOS_IMPLEMENTADOS = setOf(AppModule.PESSOAS, AppModule.CADASTROS_BASE, AppModule.PROJETOS)
 
 private sealed interface TelaRaiz {
     data object Onboarding : TelaRaiz
@@ -35,6 +37,8 @@ private sealed interface TelaRaiz {
     data class Configuracoes(val colaborador: Colaborador) : TelaRaiz
     data class Pessoas(val colaborador: Colaborador) : TelaRaiz
     data class CadastrosBasicos(val colaborador: Colaborador) : TelaRaiz
+    data class Projetos(val colaborador: Colaborador) : TelaRaiz
+    data class ProjetoDetalhe(val colaborador: Colaborador, val projetoId: String) : TelaRaiz
 }
 
 @Composable
@@ -73,6 +77,7 @@ fun App() {
                         tela = when (modulo) {
                             AppModule.PESSOAS -> TelaRaiz.Pessoas(telaAtual.colaborador)
                             AppModule.CADASTROS_BASE -> TelaRaiz.CadastrosBasicos(telaAtual.colaborador)
+                            AppModule.PROJETOS -> TelaRaiz.Projetos(telaAtual.colaborador)
                             else -> telaAtual
                         }
                     },
@@ -86,6 +91,16 @@ fun App() {
                 is TelaRaiz.Pessoas -> PessoasScreen(onVoltar = { tela = TelaRaiz.Home(telaAtual.colaborador) })
 
                 is TelaRaiz.CadastrosBasicos -> CadastrosBasicosScreen(onVoltar = { tela = TelaRaiz.Home(telaAtual.colaborador) })
+
+                is TelaRaiz.Projetos -> ProjetosScreen(
+                    onVoltar = { tela = TelaRaiz.Home(telaAtual.colaborador) },
+                    onAbrirProjeto = { projetoId -> tela = TelaRaiz.ProjetoDetalhe(telaAtual.colaborador, projetoId) },
+                )
+
+                is TelaRaiz.ProjetoDetalhe -> ProjetoDetalheScreen(
+                    projetoId = telaAtual.projetoId,
+                    onVoltar = { tela = TelaRaiz.Projetos(telaAtual.colaborador) },
+                )
             }
         }
     }

@@ -73,14 +73,15 @@ O sistema é modular: cada setor (Compras, Vendas, Planejamento, etc.) pode ser 
 
 ![Projeto Detalhe](mockups/02_projeto_detalhe.svg)
 
-Cada obra é cadastrada como um **Projeto**, com endereço, área construída, área do terreno e um **orçamento total**. Dentro do projeto, você cadastra as **etapas** (Fundação, Estrutura, Alvenaria, Acabamento, etc.), cada uma com seu próprio orçamento.
+Cada obra é cadastrada como um **Projeto**, com endereço, área construída, área do terreno e um **orçamento total**. Dentro do projeto, você cadastra as **etapas**, cada uma com seu próprio orçamento, progresso (%) e status — ou toca em "Aplicar template padrão" pra já criar Fundação → Estrutura → Alvenaria → Instalações → Acabamento → Entrega de uma vez (o mesmo template que você já pode ter escolhido no onboarding). Reordenar etapa é pelas setinhas ↑↓ no card dela.
 
-- Todo gasto lançado abate automaticamente o saldo do **projeto** e da **etapa** escolhida
-- A barra de progresso de cada etapa muda de cor: verde (tranquilo), amarelo (acima de 80%), vermelho (estourou)
-- O sistema calcula sozinho o **custo por m²**, tanto pela área construída quanto pela área do terreno
-- Botão "Diário de Obra" registra fotos e observações datadas por etapa
+- A tela do projeto mostra orçamento, gasto até agora, saldo e uma barra que muda de cor: verde (tranquilo), amarelo (acima de 80% do orçamento), vermelho (estourou)
+- O sistema calcula sozinho o **custo por m²**, tanto pela área construída quanto pela área do terreno (aparece quando a área correspondente foi preenchida)
+- Se você tinha começado a cadastrar um projeto no onboarding e pulou aquela etapa, um aviso aparece no topo da lista de Projetos oferecendo concluir o cadastro ou descartar
 
-**Exemplo prático (o mesmo da tela acima):** a etapa Acabamento está orçada em R$ 110.000, já gastou R$ 67.600 — o app mostra o saldo de R$ 42.400 automaticamente, sem você precisar somar nada na mão.
+*(O "gasto até agora" ainda aparece zerado — ele é alimentado automaticamente por Compras, Equipes/Pagamentos e Financeiro, que chegam nas próximas fases. O cálculo já funciona de verdade; falta só a origem dos lançamentos. O botão "Diário de Obra" com fotos chega junto do módulo Execução.)*
+
+**Exemplo prático (visão final, quando os módulos de gasto existirem):** a etapa Acabamento está orçada em R$ 110.000, já gastou R$ 67.600 — o app mostra o saldo de R$ 42.400 automaticamente, sem você precisar somar nada na mão.
 
 ---
 

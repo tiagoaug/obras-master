@@ -1,0 +1,30 @@
+CREATE TABLE Etapa (
+    id TEXT NOT NULL PRIMARY KEY,
+    projetoId TEXT NOT NULL,
+    nome TEXT NOT NULL,
+    ordem INTEGER NOT NULL,
+    orcamentoEtapa INTEGER NOT NULL,
+    dataInicio INTEGER,
+    dataFim INTEGER,
+    progressoPercent INTEGER NOT NULL DEFAULT 0,
+    status TEXT NOT NULL,
+    ativo INTEGER AS kotlin.Boolean NOT NULL DEFAULT 1,
+    FOREIGN KEY (projetoId) REFERENCES Projeto(id)
+);
+
+selectAtivasDoProjeto:
+SELECT * FROM Etapa WHERE projetoId = ? AND ativo = 1 ORDER BY ordem;
+
+insert:
+INSERT INTO Etapa(id, projetoId, nome, ordem, orcamentoEtapa, dataInicio, dataFim, progressoPercent, status, ativo)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+update:
+UPDATE Etapa SET nome = ?, orcamentoEtapa = ?, dataInicio = ?, dataFim = ?, progressoPercent = ?, status = ?
+WHERE id = ?;
+
+updateOrdem:
+UPDATE Etapa SET ordem = ? WHERE id = ?;
+
+softDelete:
+UPDATE Etapa SET ativo = 0 WHERE id = ?;

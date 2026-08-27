@@ -1,0 +1,31 @@
+CREATE TABLE Projeto (
+    id TEXT NOT NULL PRIMARY KEY,
+    nome TEXT NOT NULL,
+    clienteId TEXT,
+    endereco TEXT,
+    areaConstruidaM2 REAL,
+    areaTerrenoM2 REAL,
+    orcamentoTotal INTEGER NOT NULL,
+    dataInicio INTEGER,
+    dataPrevisaoFim INTEGER,
+    status TEXT NOT NULL,
+    fotoCapaUri TEXT,
+    ativo INTEGER AS kotlin.Boolean NOT NULL DEFAULT 1
+);
+
+selectAtivos:
+SELECT * FROM Projeto WHERE ativo = 1 ORDER BY nome;
+
+selectPorId:
+SELECT * FROM Projeto WHERE id = ?;
+
+insert:
+INSERT INTO Projeto(id, nome, clienteId, endereco, areaConstruidaM2, areaTerrenoM2, orcamentoTotal, dataInicio, dataPrevisaoFim, status, fotoCapaUri, ativo)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+update:
+UPDATE Projeto SET nome = ?, clienteId = ?, endereco = ?, areaConstruidaM2 = ?, areaTerrenoM2 = ?, orcamentoTotal = ?, dataInicio = ?, dataPrevisaoFim = ?, status = ?, fotoCapaUri = ?
+WHERE id = ?;
+
+softDelete:
+UPDATE Projeto SET ativo = 0 WHERE id = ?;

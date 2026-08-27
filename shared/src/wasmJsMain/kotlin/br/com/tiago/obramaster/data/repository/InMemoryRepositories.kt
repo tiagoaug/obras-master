@@ -5,9 +5,11 @@ import br.com.tiago.obramaster.domain.Colaborador
 import br.com.tiago.obramaster.domain.Conta
 import br.com.tiago.obramaster.domain.Cor
 import br.com.tiago.obramaster.domain.DadosEmpresa
+import br.com.tiago.obramaster.domain.Etapa
 import br.com.tiago.obramaster.domain.Material
 import br.com.tiago.obramaster.domain.Permissao
 import br.com.tiago.obramaster.domain.Pessoa
+import br.com.tiago.obramaster.domain.Projeto
 import br.com.tiago.obramaster.domain.UnidadeMedida
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -159,4 +161,43 @@ class InMemoryUnidadeMedidaRepository : UnidadeMedidaRepository {
         state.value = state.value.map { if (it.id == id) it.copy(ativo = false) else it }
     }
     override fun observarAtivas(): Flow<List<UnidadeMedida>> = state.map { lista -> lista.filter { it.ativo } }
+}
+
+class InMemoryProjetoRepository : ProjetoRepository {
+    private val state = MutableStateFlow<List<Projeto>>(emptyList())
+
+    override suspend fun listarAtivos(): List<Projeto> = state.value.filter { it.ativo }
+    override suspend fun buscarPorId(id: String): Projeto? = state.value.firstOrNull { it.id == id }
+    override suspend fun salvar(projeto: Projeto) {
+        state.value = state.value + projeto
+    }
+    override suspend fun atualizar(projeto: Projeto) {
+        state.value = state.value.map { if (it.id == projeto.id) projeto else it }
+    }
+    override suspend fun desativar(id: String) {
+        state.value = state.value.map { if (it.id == id) it.copy(ativo = false) else it }
+    }
+    override fun observarAtivos(): Flow<List<Projeto>> = state.map { lista -> lista.filter { it.ativo } }
+}
+
+class InMemoryEtapaRepository : EtapaRepository {
+    private val state = MutableStateFlow<List<Etapa>>(emptyList())
+
+    override suspend fun listarDoProjeto(projetoId: String): List<Etapa> =
+        state.value.filter { it.projetoId == projetoId && it.ativo }.sortedBy { it.ordem }
+
+    override suspend fun salvar(etapa: Etapa) {
+        state.value = state.value + etapa
+    }
+    override suspend fun atualizar(etapa: Etapa) {
+        state.value = state.value.map { if (it.id == etapa.id) etapa else it }
+    }
+    override suspend fun reordenar(etapaId: String, novaOrdem: Int) {
+        state.value = state.value.map { if (it.id == etapaId) it.copy(ordem = novaOrdem) else it }
+    }
+    override suspend fun desativar(id: String) {
+        state.value = state.value.map { if (it.id == id) it.copy(ativo = false) else it }
+    }
+    override fun observarDoProjeto(projetoId: String): Flow<List<Etapa>> =
+        state.map { lista -> lista.filter { it.projetoId == projetoId && it.ativo }.sortedBy { it.ordem } }
 }
