@@ -1,0 +1,22 @@
+CREATE TABLE Conta (
+    id TEXT NOT NULL PRIMARY KEY,
+    nome TEXT NOT NULL,
+    tipo TEXT NOT NULL,
+    banco TEXT,
+    agencia TEXT,
+    numeroConta TEXT,
+    saldoInicial INTEGER NOT NULL,
+    dataSaldoInicial INTEGER NOT NULL,
+    ativo INTEGER AS kotlin.Boolean NOT NULL DEFAULT 1,
+    cor TEXT
+);
+
+selectAtivas:
+SELECT * FROM Conta WHERE ativo = 1;
+
+insert:
+INSERT INTO Conta(id, nome, tipo, banco, agencia, numeroConta, saldoInicial, dataSaldoInicial, ativo, cor)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+softDelete:
+UPDATE Conta SET ativo = 0 WHERE id = ?;

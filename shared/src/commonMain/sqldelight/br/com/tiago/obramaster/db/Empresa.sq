@@ -1,0 +1,16 @@
+CREATE TABLE Empresa (
+    id TEXT NOT NULL PRIMARY KEY,
+    nome TEXT NOT NULL,
+    logoUri TEXT,
+    cnpj TEXT,
+    telefone TEXT,
+    endereco TEXT,
+    cidade TEXT
+);
+
+selectUnica:
+SELECT * FROM Empresa LIMIT 1;
+
+upsert:
+INSERT OR REPLACE INTO Empresa(id, nome, logoUri, cnpj, telefone, endereco, cidade)
+VALUES (?, ?, ?, ?, ?, ?, ?);

@@ -32,9 +32,15 @@
 
 ## 1. Primeiro Acesso e Login `#login`
 
-Ao instalar o app pela primeira vez, um assistente cria o **Gestor** — o usuário com acesso total ao sistema. Esse cadastro pede nome, login e senha, e não pode ser excluído depois.
+![Onboarding wizard](mockups/07_onboarding_wizard.svg)
 
-Nos acessos seguintes, a tela de login pede usuário e senha. Se o Gestor cadastrar outros colaboradores (seção 16), cada um entra com seu próprio login e só vê os módulos que tiver permissão.
+No primeiro uso, um assistente de configuração inicial (onboarding) pede os dados da sua empresa, cria seu acesso de Gestor e já deixa módulos e ao menos uma conta financeira prontos para uso — em 12 etapas curtas, só quatro delas obrigatórias (Empresa, Gestor, Módulos, Contas Financeiras). Tudo o mais (categorias, perfil de BDI, template de etapas, colaboradores extras, primeiro projeto, acessibilidade) pode ser pulado e preenchido depois em Configurações — o app nunca trava por falta de um dado secundário.
+
+Fechar o app no meio do onboarding e reabrir retoma exatamente na etapa em que parou (a senha digitada é a única coisa que precisa ser redigitada, por segurança — ela não fica salva em rascunho). **Nada é gravado no banco até você confirmar na tela final de Resumo.**
+
+*(O modo "Configurar com ajuda da IA" aparece na tela de boas-vindas, mas ainda mostra aviso de indisponível — depende do backend, que chega na Fase 10. Por enquanto, o formulário tradicional é o único caminho.)*
+
+Nos acessos seguintes (depois que já existe um Gestor), a tela de login pede usuário e senha. Se o Gestor cadastrar outros colaboradores (seção 16), cada um entra com seu próprio login e só vê os módulos que tiver permissão.
 
 **Exemplo prático:** você contrata um administrativo para lançar notas de compra. O Gestor cadastra esse colaborador com acesso de **escrita** só no módulo Compras e **leitura** no Financeiro — ele lança as notas, mas não vê o lucro da empresa.
 

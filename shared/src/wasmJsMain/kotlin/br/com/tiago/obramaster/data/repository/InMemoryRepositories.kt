@@ -2,6 +2,8 @@ package br.com.tiago.obramaster.data.repository
 
 import br.com.tiago.obramaster.core.auth.NivelPermissao
 import br.com.tiago.obramaster.domain.Colaborador
+import br.com.tiago.obramaster.domain.Conta
+import br.com.tiago.obramaster.domain.DadosEmpresa
 import br.com.tiago.obramaster.domain.Permissao
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -71,4 +73,22 @@ class InMemoryModuleConfigRepository : ModuleConfigRepository {
     }
 
     override fun observarTodos(): Flow<Map<String, Boolean>> = state
+}
+
+class InMemoryEmpresaRepository : EmpresaRepository {
+    private var empresa: DadosEmpresa? = null
+
+    override suspend fun buscar(): DadosEmpresa? = empresa
+    override suspend fun salvar(empresa: DadosEmpresa) {
+        this.empresa = empresa
+    }
+}
+
+class InMemoryContaRepository : ContaRepository {
+    private val state = MutableStateFlow<List<Conta>>(emptyList())
+
+    override suspend fun listarAtivas(): List<Conta> = state.value.filter { it.ativo }
+    override suspend fun salvar(conta: Conta) {
+        state.value = state.value + conta
+    }
 }

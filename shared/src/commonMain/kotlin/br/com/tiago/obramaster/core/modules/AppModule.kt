@@ -1,5 +1,8 @@
 package br.com.tiago.obramaster.core.modules
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 enum class AppModule(val id: String, val labelPtBr: String) {
     PLANEJAMENTO("planejamento", "Planejamento"),
     EXECUCAO("execucao", "Execução"),
