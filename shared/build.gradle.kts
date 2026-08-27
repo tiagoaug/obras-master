@@ -47,6 +47,7 @@ kotlin {
             implementation(compose.material3)
             implementation(compose.ui)
             implementation(compose.components.resources)
+            implementation(compose.materialIconsExtended)
 
             implementation(libs.kotlinx.datetime)
             implementation(libs.kotlinx.serialization.json)
@@ -60,6 +61,10 @@ kotlin {
             implementation(libs.multiplatform.settings)
             implementation(libs.multiplatform.settings.coroutines)
 
+            implementation(libs.kotlincrypto.hash.sha2)
+            implementation(libs.kotlincrypto.macs.hmac.sha2)
+            implementation(libs.kotlincrypto.secure.random)
+
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
         }
@@ -72,6 +77,7 @@ kotlin {
             implementation(libs.sqldelight.android.driver)
             implementation(libs.koin.android)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.androidx.security.crypto)
         }
 
         iosMain.dependencies {

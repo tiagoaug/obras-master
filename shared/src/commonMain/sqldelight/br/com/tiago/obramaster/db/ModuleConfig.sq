@@ -1,0 +1,11 @@
+CREATE TABLE ModuleConfig (
+    moduleId TEXT NOT NULL PRIMARY KEY,
+    enabled INTEGER AS kotlin.Boolean NOT NULL DEFAULT 1
+);
+
+selectAll:
+SELECT * FROM ModuleConfig;
+
+upsert:
+INSERT OR REPLACE INTO ModuleConfig(moduleId, enabled)
+VALUES (?, ?);

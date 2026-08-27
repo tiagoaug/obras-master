@@ -44,16 +44,14 @@ Nos acessos seguintes, a tela de login pede usuário e senha. Se o Gestor cadast
 
 ![Home](mockups/01_home.svg)
 
-Assim que você loga, a Home mostra:
+Assim que você loga, a Home mostra a **grade de módulos** ativos e permitidos para o seu usuário, adaptada ao tamanho da tela (barra inferior no celular, menu lateral recolhido em tablet, menu lateral fixo em desktop/web) — e um atalho para Configurações e para sair.
 
-- **Saldo consolidado** de todas as contas ativas
-- **Lucro do mês** (receitas menos despesas)
-- **Alertas de orçamento** — projetos que já passaram de 80% do valor orçado aparecem em destaque amarelo
-- **Projetos em execução**, com barra de progresso do orçamento de cada um
-- **Grade de módulos** ativos, para acesso rápido
-- O botão azul flutuante (canto inferior direito) abre o **Assistente de IA** de qualquer tela do app
+As peças abaixo chegam nas próximas fases, quando os módulos que elas dependem existirem:
+- **Saldo consolidado** e **lucro do mês** — dependem do módulo Financeiro (seção 5)
+- **Alertas de orçamento** e **projetos em execução** — dependem do módulo Projetos (seção 4)
+- O botão do **Assistente de IA** — chega na Fase 11 (seção 18)
 
-**Exemplo prático:** ao abrir o app de manhã, você vê de cara que a obra "Residencial Silva" está em 82% do orçamento na etapa de Acabamento — isso já avisa que é hora de revisar os próximos gastos dessa etapa antes de continuar comprando.
+**Exemplo prático (visão final, quando os módulos acima existirem):** ao abrir o app de manhã, você vai ver de cara que a obra "Residencial Silva" está em 82% do orçamento na etapa de Acabamento — isso já avisa que é hora de revisar os próximos gastos dessa etapa antes de continuar comprando.
 
 ---
 
@@ -189,7 +187,7 @@ O Gestor cadastra cada colaborador e define, módulo por módulo, se ele pode: n
 Liga/desliga cada setor do sistema (ver seção 3).
 
 ### 16.3 Categorias e BDI `#configuracoes-categorias-bdi`
-Cadastro de categorias financeiras (com hierarquia) e perfis de BDI.
+Cadastro de categorias financeiras (com hierarquia) e perfis de BDI. *(Chega nas Fases 2 e 6, junto dos módulos Cadastros Básicos e Orçamentos — ainda não disponível.)*
 
 **Exemplo prático (mostrado na imagem acima):** o módulo "Vendas" está desligado nesta empresa porque ela só executa obra para terceiros — o Gestor desativou e ele some do menu de todo mundo.
 
@@ -197,7 +195,7 @@ Cadastro de categorias financeiras (com hierarquia) e perfis de BDI.
 
 ## 17. Acessibilidade `#acessibilidade`
 
-Qualquer usuário pode ajustar, no seu próprio perfil: tema (claro, escuro, alto contraste), tipo de fonte e tamanho da letra. A mudança se aplica no app inteiro na hora.
+Qualquer usuário pode ajustar, em Configurações → Acessibilidade: tema (claro, escuro, conforme o sistema, ou alto contraste), tipo de fonte (padrão, serifada ou legível), tamanho da letra (85% a 140%) e espaçamento aumentado entre linhas/letras. A mudança se aplica no app inteiro na hora, e fica salva no aparelho.
 
 ---
 
