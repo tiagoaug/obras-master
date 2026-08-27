@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="380" height="760" viewBox="0 0 380 760">
+<rect width="380" height="760" fill="#F4F5F7"/>
+<rect width="380" height="60" fill="#1E3A5F"/>
+<text x="20" y="36" fill="#FFFFFF" font-family="Arial" font-size="15">←  NBR 6118</text>
+
+<rect x="16" y="76" width="348" height="130" rx="10" fill="#FFFFFF"/>
+<text x="30" y="100" fill="#111827" font-family="Arial" font-size="14" font-weight="bold">Projeto de Estruturas de Concreto</text>
+<text x="30" y="118" fill="#6B7280" font-family="Arial" font-size="11">Categoria: Estrutura</text>
+<text x="30" y="142" fill="#374151" font-family="Arial" font-size="11">Define os requisitos para projeto de</text>
+<text x="30" y="158" fill="#374151" font-family="Arial" font-size="11">estruturas de concreto simples, armado</text>
+<text x="30" y="174" fill="#374151" font-family="Arial" font-size="11">e protendido — cobre durabilidade,</text>
+<text x="30" y="190" fill="#374151" font-family="Arial" font-size="11">segurança e desempenho estrutural.</text>
+
+<rect x="16" y="216" width="348" height="50" rx="10" fill="#FEF3C7"/>
+<text x="30" y="238" fill="#92400E" font-family="Arial" font-size="10">⚠ O app não distribui o texto integral —</text>
+<text x="30" y="254" fill="#92400E" font-family="Arial" font-size="10">norma protegida por direitos autorais da ABNT.</text>
+
+<rect x="16" y="280" width="348" height="46" rx="10" fill="#3B82F6"/>
+<text x="90" y="308" fill="#FFFFFF" font-family="Arial" font-size="12">🔗 Adquirir no Catálogo Oficial ABNT</text>
+
+<rect x="16" y="336" width="348" height="46" rx="10" fill="#FFFFFF" stroke="#3B82F6"/>
+<text x="90" y="364" fill="#3B82F6" font-family="Arial" font-size="12">📎 Anexar meu PDF desta norma</text>
+
+<text x="20" y="410" fill="#111827" font-family="Arial" font-size="12" font-weight="bold">Usada em</text>
+<g font-family="Arial" font-size="11" fill="#374151">
+<rect x="16" y="420" width="348" height="40" rx="8" fill="#FFFFFF"/><text x="30" y="444">🧮 Calculadora de Ferragem (kg/m³)</text>
+<rect x="16" y="466" width="348" height="40" rx="8" fill="#FFFFFF"/><text x="30" y="490">🏗 Etapa: Estrutura</text>
+</g>
+
+<text x="20" y="530" fill="#111827" font-family="Arial" font-size="12" font-weight="bold">Normas relacionadas</text>
+<g font-family="Arial" font-size="11" fill="#374151">
+<rect x="16" y="540" width="348" height="40" rx="8" fill="#FFFFFF"/><text x="30" y="564">NBR 6120 — Cargas para cálculo estrutural</text>
+<rect x="16" y="586" width="348" height="40" rx="8" fill="#FFFFFF"/><text x="30" y="610">NBR 6122 — Projeto e execução de fundações</text>
+</g>
+
+<rect x="0" y="700" width="380" height="60" fill="#FFFFFF"/>
+<line x1="0" y1="700" x2="380" y2="700" stroke="#E5E7EB"/>
+</svg>

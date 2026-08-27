@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="380" height="760" viewBox="0 0 380 760">
+<rect width="380" height="760" fill="#F4F5F7"/>
+<rect width="380" height="60" fill="#1E3A5F"/>
+<text x="20" y="30" fill="#FFFFFF" font-family="Arial" font-size="14">←  Planta — Residencial Silva</text>
+<text x="20" y="48" fill="#CBD5E1" font-family="Arial" font-size="10">Escala 1:50 • Área total: 87,4 m²</text>
+
+<!-- toolbar -->
+<rect x="0" y="60" width="380" height="48" fill="#FFFFFF"/>
+<line x1="0" y1="108" x2="380" y2="108" stroke="#E5E7EB"/>
+<g font-family="Arial" font-size="18" text-anchor="middle">
+<circle cx="35" cy="84" r="20" fill="#EFF6FF"/><text x="35" y="91">▭</text>
+<circle cx="90" cy="84" r="20" fill="#F4F5F7"/><text x="90" y="91">📐</text>
+<circle cx="145" cy="84" r="20" fill="#F4F5F7"/><text x="145" y="91">🚪</text>
+<circle cx="200" cy="84" r="20" fill="#F4F5F7"/><text x="200" y="91">🪟</text>
+<circle cx="255" cy="84" r="20" fill="#F4F5F7"/><text x="255" y="91">📏</text>
+<circle cx="310" cy="84" r="20" fill="#F4F5F7"/><text x="310" y="91">🖼</text>
+<circle cx="355" cy="84" r="20" fill="#F4F5F7"/><text x="355" y="91">↩</text>
+</g>
+<text x="20" y="102" fill="#9CA3AF" font-family="Arial" font-size="8">Cômodo</text>
+
+<!-- canvas com grade -->
+<rect x="0" y="108" width="380" height="500" fill="#FBFBFC"/>
+<g stroke="#EAECEF" stroke-width="1">
+<line x1="20" y1="108" x2="20" y2="608"/><line x1="60" y1="108" x2="60" y2="608"/>
+<line x1="100" y1="108" x2="100" y2="608"/><line x1="140" y1="108" x2="140" y2="608"/>
+<line x1="180" y1="108" x2="180" y2="608"/><line x1="220" y1="108" x2="220" y2="608"/>
+<line x1="260" y1="108" x2="260" y2="608"/><line x1="300" y1="108" x2="300" y2="608"/>
+<line x1="340" y1="108" x2="340" y2="608"/>
+<line x1="0" y1="140" x2="380" y2="140"/><line x1="0" y1="180" x2="380" y2="180"/>
+<line x1="0" y1="220" x2="380" y2="220"/><line x1="0" y1="260" x2="380" y2="260"/>
+<line x1="0" y1="300" x2="380" y2="300"/><line x1="0" y1="340" x2="380" y2="340"/>
+<line x1="0" y1="380" x2="380" y2="380"/><line x1="0" y1="420" x2="380" y2="420"/>
+<line x1="0" y1="460" x2="380" y2="460"/><line x1="0" y1="500" x2="380" y2="500"/>
+<line x1="0" y1="540" x2="380" y2="540"/><line x1="0" y1="580" x2="380" y2="580"/>
+</g>
+
+<!-- paredes / comodos -->
+<rect x="40" y="140" width="140" height="120" fill="#DBEAFE" stroke="#1E3A5F" stroke-width="4"/>
+<text x="75" y="195" fill="#1E3A5F" font-family="Arial" font-size="12" font-weight="bold">Sala</text>
+<text x="70" y="212" fill="#1E3A5F" font-family="Arial" font-size="10">21,6 m²</text>
+
+<rect x="180" y="140" width="100" height="120" fill="#FEF3C7" stroke="#1E3A5F" stroke-width="4"/>
+<text x="200" y="195" fill="#92400E" font-family="Arial" font-size="12" font-weight="bold">Cozinha</text>
+<text x="205" y="212" fill="#92400E" font-family="Arial" font-size="10">12 m²</text>
+
+<rect x="40" y="260" width="120" height="100" fill="#D1FAE5" stroke="#1E3A5F" stroke-width="4"/>
+<text x="65" y="308" fill="#166534" font-family="Arial" font-size="12" font-weight="bold">Quarto 1</text>
+<text x="75" y="325" fill="#166534" font-family="Arial" font-size="10">12 m²</text>
+
+<!-- porta -->
+<rect x="150" y="255" width="20" height="6" fill="#FFFFFF" stroke="#1E3A5F"/>
+<path d="M 150 255 A 20 20 0 0 1 170 235" fill="none" stroke="#9CA3AF" stroke-dasharray="2 2"/>
+
+<!-- cota de medida -->
+<line x1="40" y1="270" x2="40" y2="360" stroke="#3B82F6" stroke-width="1"/>
+<line x1="36" y1="270" x2="44" y2="270" stroke="#3B82F6"/>
+<line x1="36" y1="360" x2="44" y2="360" stroke="#3B82F6"/>
+<text x="6" y="318" fill="#3B82F6" font-family="Arial" font-size="9">5,0m</text>
+
+<!-- painel lateral do comodo selecionado -->
+<rect x="16" y="616" width="348" height="76" rx="10" fill="#FFFFFF"/>
+<text x="30" y="638" fill="#111827" font-family="Arial" font-size="12" font-weight="bold">Sala — selecionado</text>
+<text x="30" y="656" fill="#6B7280" font-family="Arial" font-size="11">Área: 21,6 m²  •  Perímetro: 18,8 m</text>
+<text x="30" y="674" fill="#3B82F6" font-family="Arial" font-size="11">✓ Somado à área construída do projeto</text>
+
+<rect x="0" y="700" width="380" height="60" fill="#FFFFFF"/>
+<line x1="0" y1="700" x2="380" y2="700" stroke="#E5E7EB"/>
+</svg>

@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="380" height="760" viewBox="0 0 380 760">
+<rect width="380" height="760" fill="#F4F5F7"/>
+<rect width="380" height="60" fill="#1E3A5F"/>
+<text x="20" y="36" fill="#FFFFFF" font-family="Arial" font-size="17" font-weight="bold">Área do Executor</text>
+
+<!-- busca -->
+<rect x="16" y="76" width="348" height="42" rx="21" fill="#FFFFFF"/>
+<text x="34" y="103" fill="#9CA3AF" font-family="Arial" font-size="12">🔍  Buscar norma, manual ou assunto...</text>
+
+<!-- atalhos -->
+<g font-family="Arial" font-size="11" fill="#374151">
+<rect x="16" y="132" width="112" height="86" rx="10" fill="#FFFFFF"/>
+<text x="46" y="168" font-size="26">📘</text><text x="26" y="200">Normas ABNT</text>
+
+<rect x="134" y="132" width="112" height="86" rx="10" fill="#FFFFFF"/>
+<text x="164" y="168" font-size="26">📄</text><text x="150" y="200">Meus Manuais</text>
+
+<rect x="252" y="132" width="112" height="86" rx="10" fill="#FFFFFF"/>
+<text x="282" y="168" font-size="26">➕</text><text x="266" y="200">Adicionar PDF</text>
+</g>
+
+<!-- categorias -->
+<text x="20" y="244" fill="#111827" font-family="Arial" font-size="13" font-weight="bold">Categorias</text>
+<g font-family="Arial" font-size="11" fill="#1E3A5F">
+<rect x="16" y="254" width="105" height="36" rx="18" fill="#EFF6FF"/><text x="34" y="277">Fundação</text>
+<rect x="127" y="254" width="105" height="36" rx="18" fill="#EFF6FF"/><text x="150" y="277">Estrutura</text>
+<rect x="238" y="254" width="112" height="36" rx="18" fill="#EFF6FF"/><text x="256" y="277">Elétrica</text>
+<rect x="16" y="298" width="105" height="36" rx="18" fill="#EFF6FF"/><text x="34" y="321">Hidráulica</text>
+<rect x="127" y="298" width="105" height="36" rx="18" fill="#EFF6FF"/><text x="150" y="321">Acessib.</text>
+<rect x="238" y="298" width="112" height="36" rx="18" fill="#EFF6FF"/><text x="256" y="321">Orçamento</text>
+</g>
+
+<!-- normas mais consultadas -->
+<text x="20" y="366" fill="#111827" font-family="Arial" font-size="13" font-weight="bold">Normas ABNT — Referência Rápida</text>
+
+<g font-family="Arial" font-size="11">
+<rect x="16" y="378" width="348" height="60" rx="10" fill="#FFFFFF"/>
+<text x="30" y="398" fill="#111827" font-weight="bold">NBR 6118 — Estruturas de Concreto</text>
+<text x="30" y="416" fill="#6B7280">Projeto de estruturas de concreto armado</text>
+<text x="290" y="416" fill="#3B82F6">Ver ↗</text>
+
+<rect x="16" y="444" width="348" height="60" rx="10" fill="#FFFFFF"/>
+<text x="30" y="464" fill="#111827" font-weight="bold">NBR 5410 — Instalações Elétricas</text>
+<text x="30" y="482" fill="#6B7280">Instalações elétricas de baixa tensão</text>
+<text x="290" y="482" fill="#3B82F6">Ver ↗</text>
+
+<rect x="16" y="510" width="348" height="60" rx="10" fill="#FFFFFF"/>
+<text x="30" y="530" fill="#111827" font-weight="bold">NBR 9050 — Acessibilidade</text>
+<text x="30" y="548" fill="#6B7280">Acessibilidade a edificações e espaços</text>
+<text x="290" y="548" fill="#3B82F6">Ver ↗</text>
+</g>
+
+<!-- meus manuais recentes -->
+<text x="20" y="596" fill="#111827" font-family="Arial" font-size="13" font-weight="bold">Meus Manuais Recentes</text>
+<g font-family="Arial" font-size="11">
+<rect x="16" y="608" width="167" height="72" rx="10" fill="#FFFFFF"/>
+<text x="30" y="632" font-size="18">📕</text>
+<text x="30" y="656" fill="#111827">Manual Cimento X</text>
+<text x="30" y="670" fill="#9CA3AF" font-size="9">Estrutura • 2,4 MB</text>
+
+<rect x="197" y="608" width="167" height="72" rx="10" fill="#FFFFFF"/>
+<text x="211" y="632" font-size="18">📗</text>
+<text x="211" y="656" fill="#111827">Catálogo Fiação Y</text>
+<text x="211" y="670" fill="#9CA3AF" font-size="9">Elétrica • 5,1 MB</text>
+</g>
+
+<rect x="0" y="700" width="380" height="60" fill="#FFFFFF"/>
+<line x1="0" y1="700" x2="380" y2="700" stroke="#E5E7EB"/>
+</svg>

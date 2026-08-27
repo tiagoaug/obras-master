@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="380" height="760" viewBox="0 0 380 760">
+<rect width="380" height="760" fill="#F4F5F7"/>
+<rect width="380" height="88" fill="#1E3A5F"/>
+<text x="20" y="35" fill="#FFFFFF" font-family="Arial" font-size="13">Bom dia, Tiago</text>
+<text x="20" y="60" fill="#FFFFFF" font-family="Arial" font-size="20" font-weight="bold">ObraMaster</text>
+<circle cx="345" cy="44" r="16" fill="#FFFFFF" opacity="0.15"/>
+<text x="337" y="49" fill="#FFFFFF" font-family="Arial" font-size="14">👤</text>
+
+<!-- Cards resumo -->
+<rect x="16" y="104" width="168" height="90" rx="10" fill="#FFFFFF"/>
+<text x="30" y="128" fill="#6B7280" font-family="Arial" font-size="11">SALDO CONSOLIDADO</text>
+<text x="30" y="158" fill="#1E3A5F" font-family="Arial" font-size="20" font-weight="bold">R$ 84.320,50</text>
+<text x="30" y="178" fill="#16A34A" font-family="Arial" font-size="11">▲ 3 contas ativas</text>
+
+<rect x="196" y="104" width="168" height="90" rx="10" fill="#FFFFFF"/>
+<text x="210" y="128" fill="#6B7280" font-family="Arial" font-size="11">LUCRO NO MÊS</text>
+<text x="210" y="158" fill="#16A34A" font-family="Arial" font-size="20" font-weight="bold">R$ 12.4k</text>
+<text x="210" y="178" fill="#6B7280" font-family="Arial" font-size="11">Receitas − Despesas</text>
+
+<!-- Alerta orçamento -->
+<rect x="16" y="206" width="348" height="56" rx="10" fill="#FEF3C7"/>
+<text x="30" y="228" fill="#92400E" font-family="Arial" font-size="12" font-weight="bold">⚠ Obra Residencial Silva — 82% do orçamento</text>
+<text x="30" y="246" fill="#92400E" font-family="Arial" font-size="11">Etapa: Acabamento — atenção ao saldo</text>
+
+<!-- Projetos em execução -->
+<text x="20" y="290" fill="#111827" font-family="Arial" font-size="14" font-weight="bold">Projetos em Execução</text>
+
+<rect x="16" y="302" width="348" height="76" rx="10" fill="#FFFFFF"/>
+<rect x="16" y="302" width="6" height="76" rx="3" fill="#3B82F6"/>
+<text x="34" y="324" fill="#111827" font-family="Arial" font-size="13" font-weight="bold">Residencial Silva</text>
+<text x="34" y="342" fill="#6B7280" font-family="Arial" font-size="11">Etapa atual: Acabamento • 240 m²</text>
+<rect x="34" y="352" width="300" height="6" rx="3" fill="#E5E7EB"/>
+<rect x="34" y="352" width="246" height="6" rx="3" fill="#3B82F6"/>
+<text x="300" y="342" fill="#3B82F6" font-family="Arial" font-size="11">82%</text>
+
+<rect x="16" y="388" width="348" height="76" rx="10" fill="#FFFFFF"/>
+<rect x="16" y="388" width="6" height="76" rx="3" fill="#16A34A"/>
+<text x="34" y="410" fill="#111827" font-family="Arial" font-size="13" font-weight="bold">Galpão Comercial Cláudio</text>
+<text x="34" y="428" fill="#6B7280" font-family="Arial" font-size="11">Etapa atual: Estrutura • 520 m²</text>
+<rect x="34" y="438" width="300" height="6" rx="3" fill="#E5E7EB"/>
+<rect x="34" y="438" width="105" height="6" rx="3" fill="#16A34A"/>
+<text x="300" y="428" fill="#16A34A" font-family="Arial" font-size="11">35%</text>
+
+<!-- Módulos ativos -->
+<text x="20" y="500" fill="#111827" font-family="Arial" font-size="14" font-weight="bold">Módulos</text>
+<g font-family="Arial" font-size="11" fill="#374151">
+<rect x="16" y="512" width="82" height="70" rx="10" fill="#FFFFFF"/><text x="42" y="545" font-size="20">📋</text><text x="30" y="570">Projetos</text>
+<rect x="106" y="512" width="82" height="70" rx="10" fill="#FFFFFF"/><text x="132" y="545" font-size="20">💰</text><text x="118" y="570">Financeiro</text>
+<rect x="196" y="512" width="82" height="70" rx="10" fill="#FFFFFF"/><text x="222" y="545" font-size="20">🧾</text><text x="210" y="570">Compras</text>
+<rect x="286" y="512" width="82" height="70" rx="10" fill="#FFFFFF"/><text x="312" y="545" font-size="20">🧮</text><text x="298" y="570">Calc.</text>
+</g>
+
+<!-- Bottom nav -->
+<rect x="0" y="700" width="380" height="60" fill="#FFFFFF"/>
+<line x1="0" y1="700" x2="380" y2="700" stroke="#E5E7EB"/>
+<g font-family="Arial" font-size="10" fill="#3B82F6" text-anchor="middle">
+<text x="47" y="722" font-size="18">🏠</text><text x="47" y="742">Home</text>
+</g>
+<g font-family="Arial" font-size="10" fill="#9CA3AF" text-anchor="middle">
+<text x="142" y="722" font-size="18">📋</text><text x="142" y="742">Projetos</text>
+<text x="237" y="722" font-size="18">💰</text><text x="237" y="742">Financeiro</text>
+<text x="332" y="722" font-size="18">☰</text><text x="332" y="742">Mais</text>
+</g>
+<circle cx="345" cy="670" r="26" fill="#3B82F6"/>
+<text x="336" y="678" fill="#FFFFFF" font-family="Arial" font-size="20">?</text>
+<text x="240" y="695" fill="#6B7280" font-family="Arial" font-size="9">Assistente IA</text>
+</svg>

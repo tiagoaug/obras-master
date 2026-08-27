@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="380" height="760" viewBox="0 0 380 760">
+<rect width="380" height="760" fill="#F4F5F7"/>
+<rect width="380" height="60" fill="#1E3A5F"/>
+<text x="20" y="36" fill="#FFFFFF" font-family="Arial" font-size="18" font-weight="bold">Financeiro</text>
+<text x="300" y="36" fill="#FFFFFF" font-family="Arial" font-size="18">📤</text>
+
+<!-- Filtro -->
+<rect x="16" y="76" width="348" height="40" rx="20" fill="#FFFFFF"/>
+<text x="34" y="101" fill="#374151" font-family="Arial" font-size="12">📅 Este mês  ▾     🏗 Todos os projetos ▾</text>
+
+<!-- Resumo -->
+<rect x="16" y="128" width="112" height="76" rx="10" fill="#FFFFFF"/>
+<text x="26" y="150" fill="#6B7280" font-family="Arial" font-size="10">RECEITAS</text>
+<text x="26" y="172" fill="#16A34A" font-family="Arial" font-size="15" font-weight="bold">R$ 68,2k</text>
+
+<rect x="134" y="128" width="112" height="76" rx="10" fill="#FFFFFF"/>
+<text x="144" y="150" fill="#6B7280" font-family="Arial" font-size="10">DESPESAS</text>
+<text x="144" y="172" fill="#DC2626" font-family="Arial" font-size="15" font-weight="bold">R$ 55,8k</text>
+
+<rect x="252" y="128" width="112" height="76" rx="10" fill="#EFF6FF"/>
+<text x="262" y="150" fill="#1E3A5F" font-family="Arial" font-size="10">LUCRO</text>
+<text x="262" y="172" fill="#1E3A5F" font-family="Arial" font-size="15" font-weight="bold">R$ 12,4k</text>
+
+<!-- Grafico -->
+<rect x="16" y="216" width="348" height="150" rx="10" fill="#FFFFFF"/>
+<text x="30" y="238" fill="#111827" font-family="Arial" font-size="12" font-weight="bold">Despesas por Categoria</text>
+<circle cx="90" cy="300" r="45" fill="none" stroke="#3B82F6" stroke-width="22" stroke-dasharray="120 283"/>
+<circle cx="90" cy="300" r="45" fill="none" stroke="#F59E0B" stroke-width="22" stroke-dasharray="80 283" stroke-dashoffset="-120"/>
+<circle cx="90" cy="300" r="45" fill="none" stroke="#16A34A" stroke-width="22" stroke-dasharray="83 283" stroke-dashoffset="-200"/>
+<g font-family="Arial" font-size="10" fill="#374151">
+<rect x="160" y="270" width="10" height="10" fill="#3B82F6"/><text x="176" y="279">Materiais 42%</text>
+<rect x="160" y="290" width="10" height="10" fill="#F59E0B"/><text x="176" y="299">Mão de obra 28%</text>
+<rect x="160" y="310" width="10" height="10" fill="#16A34A"/><text x="176" y="319">Administrativo 29%</text>
+</g>
+
+<!-- Contas -->
+<text x="20" y="392" fill="#111827" font-family="Arial" font-size="13" font-weight="bold">Contas</text>
+<rect x="16" y="402" width="167" height="66" rx="10" fill="#FFFFFF"/>
+<text x="28" y="422" fill="#6B7280" font-family="Arial" font-size="10">CAIXA OBRA</text>
+<text x="28" y="446" fill="#111827" font-family="Arial" font-size="14" font-weight="bold">R$ 8.420,00</text>
+
+<rect x="197" y="402" width="167" height="66" rx="10" fill="#FFFFFF"/>
+<text x="209" y="422" fill="#6B7280" font-family="Arial" font-size="10">C/C BANCO XP</text>
+<text x="209" y="446" fill="#111827" font-family="Arial" font-size="14" font-weight="bold">R$ 75.900,50</text>
+
+<!-- Lançamentos -->
+<text x="20" y="498" fill="#111827" font-family="Arial" font-size="13" font-weight="bold">Últimos Lançamentos</text>
+<g font-family="Arial" font-size="11">
+<rect x="16" y="508" width="348" height="46" rx="8" fill="#FFFFFF"/>
+<text x="30" y="528" fill="#111827">Cimento e Argamassa</text>
+<text x="30" y="544" fill="#9CA3AF" font-size="10">Compras • Residencial Silva</text>
+<text x="300" y="536" fill="#DC2626" font-weight="bold">-R$ 3.240</text>
+
+<rect x="16" y="560" width="348" height="46" rx="8" fill="#FFFFFF"/>
+<text x="30" y="580" fill="#111827">Medição nº 3 — Cliente</text>
+<text x="30" y="596" fill="#9CA3AF" font-size="10">Vendas • Residencial Silva</text>
+<text x="290" y="588" fill="#16A34A" font-weight="bold">+R$ 42.000</text>
+</g>
+
+<rect x="16" y="620" width="348" height="46" rx="10" fill="#1E3A5F"/>
+<text x="110" y="648" fill="#FFFFFF" font-family="Arial" font-size="13">+ Novo Lançamento</text>
+
+<rect x="0" y="700" width="380" height="60" fill="#FFFFFF"/>
+<line x1="0" y1="700" x2="380" y2="700" stroke="#E5E7EB"/>
+</svg>

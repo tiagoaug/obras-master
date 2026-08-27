@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="380" height="760" viewBox="0 0 380 760">
+<rect width="380" height="760" fill="#F4F5F7"/>
+<rect width="380" height="70" fill="#1E3A5F"/>
+<text x="20" y="30" fill="#FFFFFF" font-family="Arial" font-size="15">✨ Configuração com IA</text>
+<text x="20" y="52" fill="#CBD5E1" font-family="Arial" font-size="11">6 de 9 informações coletadas</text>
+
+<rect x="20" y="82" width="340" height="6" rx="3" fill="#E5E7EB"/>
+<rect x="20" y="82" width="227" height="6" rx="3" fill="#3B82F6"/>
+
+<!-- IA fala -->
+<rect x="16" y="106" width="290" height="70" rx="14" fill="#FFFFFF"/>
+<text x="30" y="128" fill="#111827" font-family="Arial" font-size="12">Legal! Já tenho os dados da empresa</text>
+<text x="30" y="146" fill="#111827" font-family="Arial" font-size="12">e o seu acesso de Gestor prontos.</text>
+<text x="30" y="164" fill="#111827" font-family="Arial" font-size="12">Agora, quantos colaboradores</text>
+
+<rect x="16" y="182" width="230" height="40" rx="14" fill="#FFFFFF"/>
+<text x="30" y="206" fill="#111827" font-family="Arial" font-size="12">vão usar o app com você?</text>
+
+<!-- resposta usuario -->
+<rect x="150" y="232" width="214" height="46" rx="14" fill="#3B82F6"/>
+<text x="166" y="260" fill="#FFFFFF" font-family="Arial" font-size="12">2 pedreiros e 1 administrativo</text>
+
+<!-- IA processa -->
+<rect x="16" y="288" width="330" height="96" rx="14" fill="#FFFFFF"/>
+<text x="30" y="310" fill="#111827" font-family="Arial" font-size="12">Perfeito. Vou sugerir permissões:</text>
+<text x="30" y="330" fill="#374151" font-family="Arial" font-size="11">• Pedreiros → só Execução (leitura)</text>
+<text x="30" y="348" fill="#374151" font-family="Arial" font-size="11">• Administrativo → Compras + Financeiro</text>
+<text x="30" y="368" fill="#3B82F6" font-family="Arial" font-size="11">Pode ajustar depois em Configurações.</text>
+
+<!-- Cartões de confirmação indo sendo preenchidos -->
+<text x="20" y="418" fill="#111827" font-family="Arial" font-size="12" font-weight="bold">O que já foi configurado:</text>
+<g font-family="Arial" font-size="11" fill="#166534">
+<rect x="16" y="428" width="348" height="34" rx="8" fill="#F0FDF4"/><text x="30" y="450">✅ Empresa: Silva Construções</text>
+<rect x="16" y="466" width="348" height="34" rx="8" fill="#F0FDF4"/><text x="30" y="488">✅ Gestor: Tiago</text>
+<rect x="16" y="504" width="348" height="34" rx="8" fill="#F0FDF4"/><text x="30" y="526">✅ Módulos sugeridos: 8 ativos</text>
+<rect x="16" y="542" width="348" height="34" rx="8" fill="#EFF6FF"/><text x="30" y="564" fill="#1E3A5F">⏳ Colaboradores (em andamento)</text>
+</g>
+
+<!-- input -->
+<rect x="16" y="600" width="290" height="46" rx="23" fill="#FFFFFF" stroke="#E5E7EB"/>
+<text x="34" y="628" fill="#9CA3AF" font-family="Arial" font-size="12">Digite ou fale sua resposta...</text>
+<circle cx="336" cy="623" r="23" fill="#3B82F6"/>
+<text x="326" y="630" fill="#FFFFFF" font-family="Arial" font-size="16">➤</text>
+
+<rect x="16" y="660" width="348" height="40" rx="20" fill="#FFFFFF" stroke="#D1D5DB"/>
+<text x="90" y="685" fill="#6B7280" font-family="Arial" font-size="11">Prefiro preencher pelo formulário</text>
+</svg>

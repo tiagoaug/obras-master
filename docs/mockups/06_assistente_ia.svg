@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="380" height="760" viewBox="0 0 380 760">
+<rect width="380" height="760" fill="#F4F5F7"/>
+<rect width="380" height="60" fill="#1E3A5F"/>
+<text x="20" y="36" fill="#FFFFFF" font-family="Arial" font-size="16">✕     Assistente ObraMaster</text>
+
+<rect x="16" y="76" width="348" height="34" rx="17" fill="#EFF6FF"/>
+<text x="30" y="98" fill="#1E3A5F" font-family="Arial" font-size="11">📍 Contexto: Projeto "Residencial Silva" • Etapa Acabamento</text>
+
+<!-- pergunta do usuário -->
+<rect x="90" y="128" width="274" height="56" rx="14" fill="#3B82F6"/>
+<text x="106" y="150" fill="#FFFFFF" font-family="Arial" font-size="12">Como faço para lançar um gasto</text>
+<text x="106" y="168" fill="#FFFFFF" font-family="Arial" font-size="12">só nesta etapa?</text>
+
+<!-- resposta da IA -->
+<rect x="16" y="198" width="290" height="150" rx="14" fill="#FFFFFF"/>
+<text x="30" y="222" fill="#111827" font-family="Arial" font-size="12">Na tela do projeto, toque em</text>
+<text x="30" y="240" fill="#111827" font-family="Arial" font-size="12" font-weight="bold">"+ Lançar Novo Gasto"</text>
+<text x="30" y="258" fill="#111827" font-family="Arial" font-size="12">e escolha a etapa "Acabamento"</text>
+<text x="30" y="276" fill="#111827" font-family="Arial" font-size="12">no campo Etapa. O valor abate</text>
+<text x="30" y="294" fill="#111827" font-family="Arial" font-size="12">automaticamente do saldo dela.</text>
+<text x="30" y="322" fill="#3B82F6" font-family="Arial" font-size="11">📖 Ver no Manual: Seção 4.1</text>
+<text x="30" y="338" fill="#9CA3AF" font-family="Arial" font-size="10">Projetos e Etapas → Lançar Gasto</text>
+
+<!-- exemplo contextualizado -->
+<rect x="16" y="358" width="348" height="110" rx="14" fill="#F0FDF4"/>
+<text x="30" y="380" fill="#166534" font-family="Arial" font-size="11" font-weight="bold">💡 Exemplo com seus dados atuais</text>
+<text x="30" y="400" fill="#166534" font-family="Arial" font-size="11">Etapa "Acabamento" tem saldo de</text>
+<text x="30" y="416" fill="#166534" font-family="Arial" font-size="11" font-weight="bold">R$ 42.400,00.</text>
+<text x="30" y="436" fill="#166534" font-family="Arial" font-size="11">Se você lançar R$ 5.000 em pintura,</text>
+<text x="30" y="452" fill="#166534" font-family="Arial" font-size="11">o saldo da etapa cairá para R$ 37.400.</text>
+
+<!-- sugestao de acao -->
+<rect x="16" y="478" width="348" height="40" rx="20" fill="#FFFFFF" stroke="#3B82F6"/>
+<text x="34" y="503" fill="#3B82F6" font-family="Arial" font-size="12">→ Abrir "Lançar Novo Gasto" agora</text>
+
+<!-- input -->
+<rect x="16" y="680" width="290" height="46" rx="23" fill="#FFFFFF" stroke="#E5E7EB"/>
+<text x="34" y="708" fill="#9CA3AF" font-family="Arial" font-size="12">Pergunte qualquer coisa sobre o app...</text>
+<circle cx="336" cy="703" r="23" fill="#3B82F6"/>
+<text x="326" y="710" fill="#FFFFFF" font-family="Arial" font-size="16">➤</text>
+</svg>

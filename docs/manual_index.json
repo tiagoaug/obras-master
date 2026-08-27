@@ -1,0 +1,214 @@
+{
+  "versaoManual": "1.1",
+  "geradoEm": "2026-08-21",
+  "secoes": [
+    {
+      "id": "login",
+      "modulo": null,
+      "titulo": "Primeiro Acesso e Login",
+      "conteudo": "Ao instalar o app pela primeira vez, um assistente de configuração inicial cria o Gestor, o usuário com acesso total ao sistema. Pede nome, login e senha, e não pode ser excluído depois. Nos acessos seguintes, a tela de login pede usuário e senha. Colaboradores cadastrados pelo Gestor entram com seu próprio login e só veem os módulos que tiverem permissão.",
+      "exemploPratico": "Você contrata um administrativo para lançar notas de compra. O Gestor cadastra esse colaborador com acesso de escrita só no módulo Compras e leitura no Financeiro — ele lança as notas, mas não vê o lucro da empresa.",
+      "palavrasChave": ["login", "senha", "gestor", "acesso", "primeiro uso", "colaborador", "onboarding", "configuração inicial"]
+    },
+    {
+      "id": "onboarding",
+      "modulo": null,
+      "titulo": "Configuração Inicial (Onboarding)",
+      "conteudo": "No primeiro uso, um assistente pede os dados da empresa, cria o acesso de Gestor e já deixa contas financeiras, categorias e módulos prontos para uso. É possível preencher pelo formulário tradicional (wizard) ou pedir para a IA conduzir a conversa, perguntando um dado de cada vez em português simples. Dá para trocar de modo a qualquer momento, e nada é gravado até a confirmação final na tela de Resumo. Só empresa, Gestor, um módulo e uma conta são obrigatórios — o resto pode ser configurado depois.",
+      "exemploPratico": "No modo IA, ao informar '2 pedreiros e 1 administrativo', o assistente já sugere permissões (pedreiros só em Execução, administrativo em Compras e Financeiro) — o Gestor confirma ou ajusta antes de gravar.",
+      "palavrasChave": ["configuração inicial", "wizard", "primeiro acesso", "empresa", "onboarding", "assistente", "ia"]
+    },
+    {
+      "id": "home",
+      "modulo": null,
+      "titulo": "Tela Inicial (Home)",
+      "conteudo": "A Home mostra o saldo consolidado de todas as contas ativas, o lucro do mês, alertas de projetos acima de 80% do orçamento, os projetos em execução com barra de progresso, e a grade de módulos ativos. O botão flutuante azul abre o Assistente de IA em qualquer tela.",
+      "exemploPratico": "Ao abrir o app de manhã, você vê que a obra Residencial Silva está em 82% do orçamento na etapa Acabamento — sinal para revisar os próximos gastos antes de continuar comprando.",
+      "palavrasChave": ["home", "dashboard", "início", "saldo", "resumo", "alertas"]
+    },
+    {
+      "id": "modulos",
+      "modulo": null,
+      "titulo": "Módulos — Ligar e Desligar",
+      "conteudo": "Cada setor do sistema pode ser ativado ou desativado pelo Gestor em Configurações → Módulos. Módulo desativado some do menu de todos os colaboradores.",
+      "exemploPratico": "Se a empresa não trabalha com vendas formais, pode desligar o módulo Vendas até precisar dele.",
+      "palavrasChave": ["módulo", "ativar", "desativar", "ligar", "desligar", "configurações"]
+    },
+    {
+      "id": "projetos",
+      "modulo": "PROJETOS",
+      "titulo": "Projetos e Etapas",
+      "conteudo": "Cada obra é um Projeto, com endereço, área construída, área do terreno e orçamento total. Dentro do projeto, cadastram-se etapas, cada uma com seu próprio orçamento. Todo gasto lançado abate automaticamente o saldo do projeto e da etapa. O custo por m² é calculado automaticamente pelas duas áreas.",
+      "exemploPratico": "A etapa Acabamento está orçada em R$ 110.000, já gastou R$ 67.600 — o app mostra o saldo de R$ 42.400 automaticamente.",
+      "palavrasChave": ["projeto", "etapa", "obra", "orçamento", "saldo", "m2", "custo por metro quadrado", "gasto"]
+    },
+    {
+      "id": "financeiro",
+      "modulo": "FINANCEIRO",
+      "titulo": "Financeiro",
+      "conteudo": "O painel financeiro mostra receitas, despesas e lucro, com filtros por período e por projeto.",
+      "exemploPratico": null,
+      "palavrasChave": ["financeiro", "receita", "despesa", "lucro", "filtro"]
+    },
+    {
+      "id": "financeiro-contas",
+      "modulo": "FINANCEIRO",
+      "titulo": "Contas",
+      "conteudo": "Contas (caixa da obra, conta corrente, cartão) são cadastradas em Configurações → Contas. Todo pagamento ou recebimento é debitado/creditado de uma conta específica.",
+      "exemploPratico": null,
+      "palavrasChave": ["conta", "caixa", "banco", "saldo da conta", "cartão"]
+    },
+    {
+      "id": "financeiro-transferencia",
+      "modulo": "FINANCEIRO",
+      "titulo": "Transferência entre contas",
+      "conteudo": "O botão Transferir move dinheiro entre duas contas próprias (ex.: do caixa da obra para a conta corrente). Isso não entra como receita nem despesa, é só movimentação de patrimônio.",
+      "exemploPratico": "Transferir R$ 10.000 do caixa da obra para a conta corrente não aparece no relatório de lucro, só no extrato das duas contas.",
+      "palavrasChave": ["transferência", "mover dinheiro", "entre contas", "patrimônio"]
+    },
+    {
+      "id": "financeiro-centro-custo",
+      "modulo": "FINANCEIRO",
+      "titulo": "Centro de Custo",
+      "conteudo": "Além de projeto/etapa, despesas administrativas (aluguel do escritório, combustível da frota) podem ser lançadas num Centro de Custo próprio, sem misturar com o custo de uma obra específica.",
+      "exemploPratico": null,
+      "palavrasChave": ["centro de custo", "administrativo", "rateio", "despesa geral"]
+    },
+    {
+      "id": "financeiro-natureza",
+      "modulo": "FINANCEIRO",
+      "titulo": "Contábil x Não Contábil",
+      "conteudo": "Cada lançamento é marcado como Contábil (formal, com nota, vai para o contador) ou Não Contábil (gerencial, ex.: um vale interno). Relatórios têm filtro para mostrar só um tipo, os dois, ou gerar o fechamento oficial considerando só os contábeis.",
+      "exemploPratico": "Um adiantamento em dinheiro a um funcionário, sem nota, é lançado como Não Contábil — aparece no controle gerencial, mas não no relatório do contador.",
+      "palavrasChave": ["contábil", "não contábil", "dre", "fechamento", "contador", "natureza do lançamento"]
+    },
+    {
+      "id": "compras",
+      "modulo": "COMPRAS",
+      "titulo": "Compras",
+      "conteudo": "Pedidos de compra são vinculados a um projeto/etapa e um fornecedor. Ao marcar um pedido como Comprado, o sistema gera automaticamente a despesa correspondente no Financeiro.",
+      "exemploPratico": "Ao fechar compra de cimento e marcar Comprado, o gasto já aparece na etapa Estrutura do projeto, sem lançamento duplicado.",
+      "palavrasChave": ["compras", "pedido", "fornecedor", "cotação"]
+    },
+    {
+      "id": "orcamentos",
+      "modulo": "ORCAMENTOS",
+      "titulo": "Orçamentos (com BDI)",
+      "conteudo": "Um orçamento soma itens de material e mão de obra (custo direto) e aplica o BDI, percentual que cobre administração, impostos, risco e lucro, para chegar no preço de venda proposto ao cliente. É possível ter perfis diferentes de BDI cadastrados.",
+      "exemploPratico": "Um orçamento com R$ 100.000 de custo direto e BDI de 24,5% mostra automaticamente o preço final de R$ 124.520 para o cliente.",
+      "palavrasChave": ["orçamento", "bdi", "custo direto", "preço de venda", "proposta", "material", "mão de obra"]
+    },
+    {
+      "id": "vendas",
+      "modulo": "VENDAS",
+      "titulo": "Vendas",
+      "conteudo": "Registro da venda fechada com o cliente, parcelada ou à vista. Cada parcela recebida gera o recebimento no Financeiro. Projetos com medição por etapa geram cobrança automática quando a medição é aprovada.",
+      "exemploPratico": null,
+      "palavrasChave": ["venda", "parcela", "medição", "recebimento", "cliente"]
+    },
+    {
+      "id": "equipes",
+      "modulo": "EQUIPES",
+      "titulo": "Equipes e Pagamentos",
+      "conteudo": "Funcionários (diária, empreitada ou mensal) são organizados em equipes. O trabalho de cada um é registrado por dia/projeto/etapa. Ao final do período, o pagamento gerado já cria a despesa de mão de obra no Financeiro e debita a conta escolhida.",
+      "exemploPratico": "Um pedreiro trabalhou 12 diárias na etapa Acabamento. No fim do mês, o pagamento é gerado, aplica retenção se houver, e debita o caixa da obra automaticamente.",
+      "palavrasChave": ["equipe", "funcionário", "pagamento", "diária", "empreitada", "mão de obra", "retenção"]
+    },
+    {
+      "id": "planejamento-execucao",
+      "modulo": "PLANEJAMENTO",
+      "titulo": "Planejamento e Execução",
+      "conteudo": "Cronograma por etapa com data prevista x realizada, checklist de tarefas, e Diário de Obra com fotos e observações. Atrasos aparecem destacados.",
+      "exemploPratico": null,
+      "palavrasChave": ["planejamento", "cronograma", "diário de obra", "atraso", "tarefa", "checklist"]
+    },
+    {
+      "id": "metas",
+      "modulo": "METAS",
+      "titulo": "Metas",
+      "conteudo": "Metas financeiras, de prazo ou de progresso, calculadas automaticamente com base nos dados dos outros módulos.",
+      "exemploPratico": null,
+      "palavrasChave": ["meta", "objetivo", "prazo", "progresso"]
+    },
+    {
+      "id": "pessoas",
+      "modulo": "PESSOAS",
+      "titulo": "Pessoas",
+      "conteudo": "Cadastro único de clientes, fornecedores e funcionários. Uma pessoa pode ter mais de uma etiqueta. Permite importar contatos direto da agenda do celular.",
+      "exemploPratico": null,
+      "palavrasChave": ["pessoa", "cliente", "fornecedor", "funcionário", "contato", "agenda"]
+    },
+    {
+      "id": "cadastros-basicos",
+      "modulo": "CADASTROS_BASE",
+      "titulo": "Cadastros Básicos",
+      "conteudo": "Cores, materiais, unidades de medida, categorias e templates de etapas — listas de apoio usadas pelos outros módulos, com CRUD completo.",
+      "exemploPratico": null,
+      "palavrasChave": ["cadastro", "cores", "materiais", "unidade de medida", "template"]
+    },
+    {
+      "id": "calculadoras",
+      "modulo": "CALCULADORAS",
+      "titulo": "Calculadoras",
+      "conteudo": "Todo campo de valor tem um ícone de calculadora ao lado, abrindo uma calculadora completa sem sair da tela. Também há um hub dedicado: científica, trigonométrica, áreas, perímetros, volumes e calculadoras de engenharia civil (traço de concreto, argamassa, tijolos, tinta, telhado, escada, ferragem).",
+      "exemploPratico": "Ao lançar um gasto de material, toque no ícone da calculadora, faça a conta (ex.: 45 × 72) e o resultado já preenche o campo de valor.",
+      "palavrasChave": ["calculadora", "científica", "trigonometria", "área", "volume", "perímetro", "engenharia", "concreto", "traço"]
+    },
+    {
+      "id": "exportacao",
+      "modulo": "RELATORIOS",
+      "titulo": "Exportação",
+      "conteudo": "Qualquer lista ou relatório pode ser exportado em PDF, Excel (XLSX) ou imagem (JPG), pelo botão de compartilhar no topo da tela.",
+      "exemploPratico": null,
+      "palavrasChave": ["exportar", "pdf", "excel", "xlsx", "jpg", "compartilhar", "relatório"]
+    },
+    {
+      "id": "configuracoes",
+      "modulo": null,
+      "titulo": "Configurações e Permissões",
+      "conteudo": "Área central de administração do sistema, acessível ao Gestor.",
+      "exemploPratico": null,
+      "palavrasChave": ["configurações", "administração"]
+    },
+    {
+      "id": "configuracoes-permissoes",
+      "modulo": null,
+      "titulo": "Colaboradores e Permissões",
+      "conteudo": "O Gestor cadastra cada colaborador e define, módulo por módulo, se ele pode não ver, só ver, ou ver e editar.",
+      "exemploPratico": null,
+      "palavrasChave": ["permissão", "colaborador", "acesso", "nível de acesso"]
+    },
+    {
+      "id": "configuracoes-modulos",
+      "modulo": null,
+      "titulo": "Módulos (em Configurações)",
+      "conteudo": "Liga/desliga cada setor do sistema.",
+      "exemploPratico": "O módulo Vendas está desligado numa empresa que só executa obra para terceiros — ele some do menu de todo mundo.",
+      "palavrasChave": ["módulo", "ativar", "desativar"]
+    },
+    {
+      "id": "configuracoes-categorias-bdi",
+      "modulo": null,
+      "titulo": "Categorias e BDI",
+      "conteudo": "Cadastro de categorias financeiras (com hierarquia) e perfis de BDI.",
+      "exemploPratico": null,
+      "palavrasChave": ["categoria", "bdi", "perfil"]
+    },
+    {
+      "id": "acessibilidade",
+      "modulo": null,
+      "titulo": "Acessibilidade",
+      "conteudo": "Qualquer usuário pode ajustar tema (claro, escuro, alto contraste), tipo de fonte e tamanho da letra no próprio perfil. A mudança se aplica no app inteiro na hora.",
+      "exemploPratico": null,
+      "palavrasChave": ["acessibilidade", "tema", "fonte", "tamanho da letra", "contraste"]
+    },
+    {
+      "id": "assistente-ia",
+      "modulo": null,
+      "titulo": "Assistente de IA",
+      "conteudo": "O botão flutuante com ícone de interrogação, presente em qualquer tela, abre o Assistente. Ele sabe em qual tela e projeto o usuário está e responde com explicação, referência à seção do manual, exemplo prático com os dados atuais, e um atalho de ação quando aplicável.",
+      "exemploPratico": "Perguntar 'como faço para lançar um gasto só nesta etapa?' estando na tela do projeto Residencial Silva traz o passo a passo, aponta a seção de Projetos e Etapas do manual, e mostra o efeito no saldo da etapa Acabamento se um gasto de R$ 5.000 for lançado agora.",
+      "palavrasChave": ["assistente", "ia", "ajuda", "dúvida", "pergunta", "manual"]
+    }
+  ]
+}

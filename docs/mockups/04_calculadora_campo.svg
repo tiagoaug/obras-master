@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="380" height="760" viewBox="0 0 380 760">
+<rect width="380" height="760" fill="#F4F5F7"/>
+<rect width="380" height="60" fill="#1E3A5F"/>
+<text x="20" y="36" fill="#FFFFFF" font-family="Arial" font-size="16">←  Novo Lançamento</text>
+
+<text x="20" y="94" fill="#374151" font-family="Arial" font-size="11">Descrição</text>
+<rect x="16" y="102" width="348" height="44" rx="8" fill="#FFFFFF" stroke="#E5E7EB"/>
+<text x="28" y="129" fill="#111827" font-family="Arial" font-size="13">Cimento e Argamassa</text>
+
+<text x="20" y="168" fill="#374151" font-family="Arial" font-size="11">Valor</text>
+<rect x="16" y="176" width="348" height="44" rx="8" fill="#FFFFFF" stroke="#3B82F6" stroke-width="2"/>
+<text x="28" y="203" fill="#111827" font-family="Arial" font-size="14" font-weight="bold">R$ 3.240,00</text>
+<rect x="316" y="184" width="36" height="28" rx="6" fill="#EFF6FF"/>
+<text x="326" y="203" font-family="Arial" font-size="14">🧮</text>
+
+<!-- Calculadora bottom sheet -->
+<rect x="0" y="290" width="380" height="470" rx="16" fill="#FFFFFF"/>
+<rect x="164" y="304" width="52" height="5" rx="2.5" fill="#D1D5DB"/>
+<text x="20" y="340" fill="#111827" font-family="Arial" font-size="13" font-weight="bold">Calculadora</text>
+
+<rect x="16" y="356" width="348" height="50" rx="8" fill="#F4F5F7"/>
+<text x="340" y="388" fill="#111827" font-family="Arial" font-size="18" text-anchor="end">45 × 72</text>
+
+<rect x="16" y="414" width="348" height="50" rx="8" fill="#F4F5F7"/>
+<text x="340" y="446" fill="#111827" font-family="Arial" font-size="22" font-weight="bold" text-anchor="end">3.240</text>
+
+<g font-family="Arial" font-size="16" fill="#111827" text-anchor="middle">
+<rect x="16" y="478" width="80" height="52" rx="8" fill="#F4F5F7"/><text x="56" y="510">7</text>
+<rect x="102" y="478" width="80" height="52" rx="8" fill="#F4F5F7"/><text x="142" y="510">8</text>
+<rect x="188" y="478" width="80" height="52" rx="8" fill="#F4F5F7"/><text x="228" y="510">9</text>
+<rect x="274" y="478" width="90" height="52" rx="8" fill="#FEE2E2"/><text x="319" y="510" fill="#DC2626">÷</text>
+
+<rect x="16" y="536" width="80" height="52" rx="8" fill="#F4F5F7"/><text x="56" y="568">4</text>
+<rect x="102" y="536" width="80" height="52" rx="8" fill="#F4F5F7"/><text x="142" y="568">5</text>
+<rect x="188" y="536" width="80" height="52" rx="8" fill="#F4F5F7"/><text x="228" y="568">6</text>
+<rect x="274" y="536" width="90" height="52" rx="8" fill="#FEE2E2"/><text x="319" y="568" fill="#DC2626">×</text>
+
+<rect x="16" y="594" width="80" height="52" rx="8" fill="#F4F5F7"/><text x="56" y="626">1</text>
+<rect x="102" y="594" width="80" height="52" rx="8" fill="#F4F5F7"/><text x="142" y="626">2</text>
+<rect x="188" y="594" width="80" height="52" rx="8" fill="#F4F5F7"/><text x="228" y="626">3</text>
+<rect x="274" y="594" width="90" height="52" rx="8" fill="#FEE2E2"/><text x="319" y="626" fill="#DC2626">−</text>
+
+<rect x="16" y="652" width="164" height="52" rx="8" fill="#F4F5F7"/><text x="98" y="684">0</text>
+<rect x="188" y="652" width="80" height="52" rx="8" fill="#F4F5F7"/><text x="228" y="684">,</text>
+<rect x="274" y="652" width="90" height="52" rx="8" fill="#3B82F6"/><text x="319" y="684" fill="#FFFFFF">OK</text>
+</g>
+</svg>

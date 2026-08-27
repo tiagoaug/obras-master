@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="380" height="760" viewBox="0 0 380 760">
+<rect width="380" height="760" fill="#F4F5F7"/>
+<rect width="380" height="60" fill="#1E3A5F"/>
+<text x="20" y="36" fill="#FFFFFF" font-family="Arial" font-size="16">←  Configurações • Módulos</text>
+
+<text x="20" y="90" fill="#6B7280" font-family="Arial" font-size="11">Apenas o Gestor pode ligar/desligar módulos</text>
+
+<g font-family="Arial" font-size="13" fill="#111827">
+<rect x="16" y="104" width="348" height="56" rx="10" fill="#FFFFFF"/>
+<text x="30" y="138" font-weight="bold">Planejamento</text>
+<rect x="300" y="120" width="46" height="24" rx="12" fill="#16A34A"/><circle cx="334" cy="132" r="10" fill="#FFFFFF"/>
+
+<rect x="16" y="168" width="348" height="56" rx="10" fill="#FFFFFF"/>
+<text x="30" y="202" font-weight="bold">Execução</text>
+<rect x="300" y="184" width="46" height="24" rx="12" fill="#16A34A"/><circle cx="334" cy="196" r="10" fill="#FFFFFF"/>
+
+<rect x="16" y="232" width="348" height="56" rx="10" fill="#FFFFFF"/>
+<text x="30" y="266" font-weight="bold">Compras</text>
+<rect x="300" y="248" width="46" height="24" rx="12" fill="#16A34A"/><circle cx="334" cy="260" r="10" fill="#FFFFFF"/>
+
+<rect x="16" y="296" width="348" height="56" rx="10" fill="#FFFFFF"/>
+<text x="30" y="330" font-weight="bold">Vendas</text>
+<rect x="300" y="312" width="46" height="24" rx="12" fill="#D1D5DB"/><circle cx="312" cy="324" r="10" fill="#FFFFFF"/>
+<text x="30" y="346" fill="#9CA3AF" font-size="10">Desativado</text>
+
+<rect x="16" y="360" width="348" height="56" rx="10" fill="#FFFFFF"/>
+<text x="30" y="394" font-weight="bold">Orçamentos (Material + M.O.)</text>
+<rect x="300" y="376" width="46" height="24" rx="12" fill="#16A34A"/><circle cx="334" cy="388" r="10" fill="#FFFFFF"/>
+
+<rect x="16" y="424" width="348" height="56" rx="10" fill="#FFFFFF"/>
+<text x="30" y="458" font-weight="bold">Financeiro</text>
+<rect x="300" y="440" width="46" height="24" rx="12" fill="#16A34A"/><circle cx="334" cy="452" r="10" fill="#FFFFFF"/>
+</g>
+
+<text x="20" y="512" fill="#111827" font-family="Arial" font-size="14" font-weight="bold">Outras Configurações</text>
+<g font-family="Arial" font-size="12" fill="#374151">
+<rect x="16" y="524" width="348" height="46" rx="8" fill="#FFFFFF"/><text x="30" y="552">👥 Colaboradores e Permissões</text>
+<rect x="16" y="576" width="348" height="46" rx="8" fill="#FFFFFF"/><text x="30" y="604">🏷 Categorias Financeiras</text>
+<rect x="16" y="628" width="348" height="46" rx="8" fill="#FFFFFF"/><text x="30" y="656">📊 Perfis de BDI</text>
+<rect x="16" y="680" width="348" height="46" rx="8" fill="#FFFFFF"/><text x="30" y="708">♿ Acessibilidade (Tema / Fonte)</text>
+</g>
+</svg>

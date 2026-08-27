@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="380" height="760" viewBox="0 0 380 760">
+<rect width="380" height="760" fill="#F4F5F7"/>
+<rect width="380" height="70" fill="#1E3A5F"/>
+<text x="20" y="30" fill="#FFFFFF" font-family="Arial" font-size="16">←  Residencial Silva</text>
+<text x="20" y="52" fill="#CBD5E1" font-family="Arial" font-size="11">Rua das Flores, 123 — Cláudio/MG</text>
+
+<rect x="16" y="86" width="348" height="120" rx="10" fill="#FFFFFF"/>
+<text x="30" y="110" fill="#6B7280" font-family="Arial" font-size="11">ORÇAMENTO TOTAL</text>
+<text x="30" y="134" fill="#111827" font-family="Arial" font-size="18" font-weight="bold">R$ 320.000,00</text>
+<text x="230" y="110" fill="#6B7280" font-family="Arial" font-size="11">GASTO ATÉ AGORA</text>
+<text x="230" y="134" fill="#DC2626" font-family="Arial" font-size="18" font-weight="bold">R$ 262.400,00</text>
+<rect x="30" y="150" width="318" height="10" rx="5" fill="#E5E7EB"/>
+<rect x="30" y="150" width="261" height="10" rx="5" fill="#F59E0B"/>
+<text x="30" y="178" fill="#92400E" font-family="Arial" font-size="12">82% do orçamento consumido — R$ 57.600 restantes</text>
+<text x="230" y="178" fill="#6B7280" font-family="Arial" font-size="11">Custo/m²: R$ 1.093</text>
+
+<text x="20" y="228" fill="#111827" font-family="Arial" font-size="14" font-weight="bold">Etapas da Obra</text>
+
+<g font-family="Arial" font-size="12">
+<rect x="16" y="240" width="348" height="50" rx="8" fill="#FFFFFF"/>
+<text x="30" y="262" fill="#111827">✅ Fundação</text>
+<text x="290" y="262" fill="#16A34A">100%</text>
+<text x="30" y="278" fill="#6B7280" font-size="10">Orçado R$ 45.000 • Gasto R$ 43.200</text>
+
+<rect x="16" y="296" width="348" height="50" rx="8" fill="#FFFFFF"/>
+<text x="30" y="318" fill="#111827">✅ Estrutura</text>
+<text x="290" y="318" fill="#16A34A">100%</text>
+<text x="30" y="334" fill="#6B7280" font-size="10">Orçado R$ 90.000 • Gasto R$ 88.500</text>
+
+<rect x="16" y="352" width="348" height="50" rx="8" fill="#FFFFFF"/>
+<text x="30" y="374" fill="#111827">✅ Alvenaria</text>
+<text x="290" y="374" fill="#16A34A">100%</text>
+<text x="30" y="390" fill="#6B7280" font-size="10">Orçado R$ 60.000 • Gasto R$ 61.100</text>
+
+<rect x="16" y="408" width="348" height="56" rx="8" fill="#EFF6FF"/>
+<rect x="16" y="408" width="5" height="56" fill="#3B82F6"/>
+<text x="30" y="430" fill="#111827" font-weight="bold">🔧 Acabamento (atual)</text>
+<text x="290" y="430" fill="#3B82F6">61%</text>
+<rect x="30" y="438" width="300" height="6" rx="3" fill="#DBEAFE"/>
+<rect x="30" y="438" width="183" height="6" rx="3" fill="#3B82F6"/>
+<text x="30" y="456" fill="#6B7280" font-size="10">Orçado R$ 110.000 • Gasto R$ 67.600 • Saldo R$ 42.400</text>
+
+<rect x="16" y="472" width="348" height="46" rx="8" fill="#FFFFFF" opacity="0.6"/>
+<text x="30" y="500" fill="#9CA3AF">⏳ Entrega e Vistoria</text>
+<text x="290" y="500" fill="#9CA3AF">0%</text>
+</g>
+
+<rect x="16" y="534" width="348" height="46" rx="10" fill="#1E3A5F"/>
+<text x="140" y="562" fill="#FFFFFF" font-family="Arial" font-size="13">+ Lançar Novo Gasto</text>
+
+<rect x="16" y="592" width="168" height="42" rx="10" fill="#FFFFFF"/>
+<text x="45" y="618" fill="#374151" font-family="Arial" font-size="12">📷 Diário de Obra</text>
+<rect x="196" y="592" width="168" height="42" rx="10" fill="#FFFFFF"/>
+<text x="225" y="618" fill="#374151" font-family="Arial" font-size="12">📤 Exportar</text>
+
+<rect x="0" y="700" width="380" height="60" fill="#FFFFFF"/>
+<line x1="0" y1="700" x2="380" y2="700" stroke="#E5E7EB"/>
+</svg>
