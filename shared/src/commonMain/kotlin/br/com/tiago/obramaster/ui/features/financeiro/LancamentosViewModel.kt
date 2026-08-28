@@ -11,6 +11,7 @@ import br.com.tiago.obramaster.data.repository.LancamentoFinanceiroRepository
 import br.com.tiago.obramaster.data.repository.MovimentoContaRepository
 import br.com.tiago.obramaster.data.repository.ProjetoRepository
 import br.com.tiago.obramaster.data.repository.RateioLancamentoRepository
+import br.com.tiago.obramaster.data.repository.RetencaoLancamentoRepository
 import br.com.tiago.obramaster.domain.CategoriaFinanceira
 import br.com.tiago.obramaster.domain.CentroDeCusto
 import br.com.tiago.obramaster.domain.Conta
@@ -19,8 +20,10 @@ import br.com.tiago.obramaster.domain.MovimentoConta
 import br.com.tiago.obramaster.domain.NaturezaLancamento
 import br.com.tiago.obramaster.domain.Projeto
 import br.com.tiago.obramaster.domain.RateioLancamento
+import br.com.tiago.obramaster.domain.RetencaoLancamento
 import br.com.tiago.obramaster.domain.TipoLancamento
 import br.com.tiago.obramaster.domain.TipoMovimentoConta
+import br.com.tiago.obramaster.domain.TipoRetencao
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -55,6 +58,7 @@ class LancamentosViewModel(
     private val rateioRepository: RateioLancamentoRepository,
     private val contaRepository: ContaRepository,
     private val movimentoContaRepository: MovimentoContaRepository,
+    private val retencaoRepository: RetencaoLancamentoRepository,
 ) : ViewModel() {
 
     private val _filtro = MutableStateFlow(FiltroFinanceiro())
@@ -106,6 +110,7 @@ class LancamentosViewModel(
         pago: Boolean,
         contaId: String?,
         rateios: List<Pair<String, Double>>, // centroDeCustoId to percentual
+        retencoes: List<Pair<TipoRetencao, Double>>, // tipo to percentual
     ) {
         viewModelScope.launch {
             val id = existente?.id ?: Uuid.random().toString()
@@ -133,6 +138,17 @@ class LancamentosViewModel(
                 },
             )
 
+            val retencoesSalvas = retencoes.map { (tipoRetencao, percentual) ->
+                RetencaoLancamento(
+                    id = Uuid.random().toString(),
+                    lancamentoId = id,
+                    tipo = tipoRetencao,
+                    percentual = percentual,
+                    valorCalculado = FinanceEngine.calcularValorRetencao(valor, percentual),
+                )
+            }
+            retencaoRepository.substituir(id, retencoesSalvas)
+
             movimentoContaRepository.excluirPorLancamentoId(id)
             if (pago && contaId != null) {
                 movimentoContaRepository.salvar(
@@ -140,7 +156,7 @@ class LancamentosViewModel(
                         id = Uuid.random().toString(),
                         contaId = contaId,
                         tipo = if (tipo == TipoLancamento.RECEITA) TipoMovimentoConta.RECEBIMENTO else TipoMovimentoConta.PAGAMENTO,
-                        valor = valor,
+                        valor = FinanceEngine.valorLiquido(valor, retencoesSalvas),
                         data = data,
                         descricao = descricao,
                         lancamentoFinanceiroId = id,
@@ -158,4 +174,5 @@ class LancamentosViewModel(
     }
 
     suspend fun rateiosDoLancamento(lancamentoId: String): List<RateioLancamento> = rateioRepository.listarDoLancamento(lancamentoId)
+    suspend fun retencoesDoLancamento(lancamentoId: String): List<RetencaoLancamento> = retencaoRepository.listarDoLancamento(lancamentoId)
 }

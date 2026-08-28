@@ -1,0 +1,34 @@
+CREATE TABLE RegistroTrabalho (
+    id TEXT NOT NULL PRIMARY KEY,
+    pessoaId TEXT NOT NULL,
+    projetoId TEXT NOT NULL,
+    etapaId TEXT,
+    data INTEGER NOT NULL,
+    tipo TEXT NOT NULL,
+    valor INTEGER NOT NULL,
+    observacao TEXT,
+    pago INTEGER AS kotlin.Boolean NOT NULL DEFAULT 0,
+    pagamentoId TEXT,
+    ativo INTEGER AS kotlin.Boolean NOT NULL DEFAULT 1,
+    FOREIGN KEY (pessoaId) REFERENCES Pessoa(id),
+    FOREIGN KEY (projetoId) REFERENCES Projeto(id)
+);
+
+selectAtivosDaPessoa:
+SELECT * FROM RegistroTrabalho WHERE pessoaId = ? AND ativo = 1 ORDER BY data DESC;
+
+selectNaoPagosDaPessoa:
+SELECT * FROM RegistroTrabalho WHERE pessoaId = ? AND ativo = 1 AND pago = 0 ORDER BY data;
+
+selectTodosAtivos:
+SELECT * FROM RegistroTrabalho WHERE ativo = 1 ORDER BY data DESC;
+
+insert:
+INSERT INTO RegistroTrabalho(id, pessoaId, projetoId, etapaId, data, tipo, valor, observacao, pago, pagamentoId, ativo)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+marcarPagos:
+UPDATE RegistroTrabalho SET pago = 1, pagamentoId = ? WHERE id = ?;
+
+softDelete:
+UPDATE RegistroTrabalho SET ativo = 0 WHERE id = ?;

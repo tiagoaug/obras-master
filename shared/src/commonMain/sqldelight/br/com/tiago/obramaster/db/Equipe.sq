@@ -1,0 +1,35 @@
+CREATE TABLE Equipe (
+    id TEXT NOT NULL PRIMARY KEY,
+    nome TEXT NOT NULL,
+    liderPessoaId TEXT,
+    ativo INTEGER AS kotlin.Boolean NOT NULL DEFAULT 1
+);
+
+CREATE TABLE EquipeMembro (
+    equipeId TEXT NOT NULL,
+    pessoaId TEXT NOT NULL,
+    PRIMARY KEY (equipeId, pessoaId),
+    FOREIGN KEY (equipeId) REFERENCES Equipe(id)
+);
+
+selectAtivas:
+SELECT * FROM Equipe WHERE ativo = 1 ORDER BY nome;
+
+selectTodosMembros:
+SELECT * FROM EquipeMembro;
+
+insert:
+INSERT INTO Equipe(id, nome, liderPessoaId, ativo)
+VALUES (?, ?, ?, ?);
+
+update:
+UPDATE Equipe SET nome = ?, liderPessoaId = ? WHERE id = ?;
+
+softDelete:
+UPDATE Equipe SET ativo = 0 WHERE id = ?;
+
+insertMembro:
+INSERT OR REPLACE INTO EquipeMembro(equipeId, pessoaId) VALUES (?, ?);
+
+deleteMembrosDaEquipe:
+DELETE FROM EquipeMembro WHERE equipeId = ?;

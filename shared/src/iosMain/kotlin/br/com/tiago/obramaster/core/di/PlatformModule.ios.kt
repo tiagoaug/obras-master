@@ -11,7 +11,9 @@ import br.com.tiago.obramaster.data.repository.ComodoRepository
 import br.com.tiago.obramaster.data.repository.ContaRepository
 import br.com.tiago.obramaster.data.repository.CorRepository
 import br.com.tiago.obramaster.data.repository.EmpresaRepository
+import br.com.tiago.obramaster.data.repository.EquipeRepository
 import br.com.tiago.obramaster.data.repository.EtapaRepository
+import br.com.tiago.obramaster.data.repository.FuncionarioRepository
 import br.com.tiago.obramaster.data.repository.LancamentoFinanceiroRepository
 import br.com.tiago.obramaster.data.repository.MaterialRepository
 import br.com.tiago.obramaster.data.repository.MovimentoContaRepository
@@ -22,6 +24,8 @@ import br.com.tiago.obramaster.data.repository.PessoaRepository
 import br.com.tiago.obramaster.data.repository.PlantaBaixaRepository
 import br.com.tiago.obramaster.data.repository.ProjetoRepository
 import br.com.tiago.obramaster.data.repository.RateioLancamentoRepository
+import br.com.tiago.obramaster.data.repository.RegistroTrabalhoRepository
+import br.com.tiago.obramaster.data.repository.RetencaoLancamentoRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightAberturaRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightArquivoImportadoRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightCategoriaFinanceiraRepository
@@ -31,7 +35,9 @@ import br.com.tiago.obramaster.data.repository.SqlDelightComodoRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightContaRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightCorRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightEmpresaRepository
+import br.com.tiago.obramaster.data.repository.SqlDelightEquipeRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightEtapaRepository
+import br.com.tiago.obramaster.data.repository.SqlDelightFuncionarioRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightLancamentoFinanceiroRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightMaterialRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightMovimentoContaRepository
@@ -42,6 +48,8 @@ import br.com.tiago.obramaster.data.repository.SqlDelightPessoaRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightPlantaBaixaRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightProjetoRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightRateioLancamentoRepository
+import br.com.tiago.obramaster.data.repository.SqlDelightRegistroTrabalhoRepository
+import br.com.tiago.obramaster.data.repository.SqlDelightRetencaoLancamentoRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightUnidadeMedidaRepository
 import br.com.tiago.obramaster.data.repository.UnidadeMedidaRepository
 import br.com.tiago.obramaster.platform.AppSettingsFactory
@@ -85,4 +93,8 @@ val platformModule = module {
     single<LancamentoFinanceiroRepository> { SqlDelightLancamentoFinanceiroRepository(get()) }
     single<RateioLancamentoRepository> { SqlDelightRateioLancamentoRepository(get()) }
     single<MovimentoContaRepository> { SqlDelightMovimentoContaRepository(get()) }
+    single<FuncionarioRepository> { SqlDelightFuncionarioRepository(get()) }
+    single<EquipeRepository> { SqlDelightEquipeRepository(get()) }
+    single<RegistroTrabalhoRepository> { SqlDelightRegistroTrabalhoRepository(get()) }
+    single<RetencaoLancamentoRepository> { SqlDelightRetencaoLancamentoRepository(get()) }
 }

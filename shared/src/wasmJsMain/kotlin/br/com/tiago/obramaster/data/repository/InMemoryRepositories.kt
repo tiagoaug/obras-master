@@ -11,13 +11,17 @@ import br.com.tiago.obramaster.domain.Comodo
 import br.com.tiago.obramaster.domain.Conta
 import br.com.tiago.obramaster.domain.Cor
 import br.com.tiago.obramaster.domain.DadosEmpresa
+import br.com.tiago.obramaster.domain.Equipe
 import br.com.tiago.obramaster.domain.Etapa
+import br.com.tiago.obramaster.domain.Funcionario
 import br.com.tiago.obramaster.domain.LancamentoFinanceiro
 import br.com.tiago.obramaster.domain.Material
 import br.com.tiago.obramaster.domain.MovimentoConta
 import br.com.tiago.obramaster.domain.NaturezaLancamento
 import br.com.tiago.obramaster.domain.Parede
 import br.com.tiago.obramaster.domain.RateioLancamento
+import br.com.tiago.obramaster.domain.RegistroTrabalho
+import br.com.tiago.obramaster.domain.RetencaoLancamento
 import br.com.tiago.obramaster.domain.TipoLancamento
 import br.com.tiago.obramaster.domain.Permissao
 import br.com.tiago.obramaster.domain.Pessoa
@@ -420,4 +424,68 @@ class InMemoryMovimentoContaRepository : MovimentoContaRepository {
     override fun observarDaConta(contaId: String): Flow<List<MovimentoConta>> =
         state.map { lista -> lista.filter { it.contaId == contaId }.sortedByDescending { it.data } }
     override fun observarTodos(): Flow<List<MovimentoConta>> = state
+}
+
+class InMemoryFuncionarioRepository : FuncionarioRepository {
+    private val state = MutableStateFlow<List<Funcionario>>(emptyList())
+
+    override suspend fun listarAtivos(): List<Funcionario> = state.value.filter { it.ativo }
+    override suspend fun buscarPorPessoaId(pessoaId: String): Funcionario? = state.value.firstOrNull { it.pessoaId == pessoaId }
+    override suspend fun salvar(funcionario: Funcionario) {
+        state.value = state.value + funcionario
+    }
+    override suspend fun atualizar(funcionario: Funcionario) {
+        state.value = state.value.map { if (it.pessoaId == funcionario.pessoaId) funcionario else it }
+    }
+    override suspend fun desativar(pessoaId: String) {
+        state.value = state.value.map { if (it.pessoaId == pessoaId) it.copy(ativo = false) else it }
+    }
+    override fun observarAtivos(): Flow<List<Funcionario>> = state.map { lista -> lista.filter { it.ativo } }
+}
+
+class InMemoryEquipeRepository : EquipeRepository {
+    private val state = MutableStateFlow<List<Equipe>>(emptyList())
+
+    override suspend fun listarAtivas(): List<Equipe> = state.value.filter { it.ativo }
+    override suspend fun salvar(equipe: Equipe) {
+        state.value = state.value + equipe
+    }
+    override suspend fun atualizar(equipe: Equipe) {
+        state.value = state.value.map { if (it.id == equipe.id) equipe else it }
+    }
+    override suspend fun desativar(id: String) {
+        state.value = state.value.map { if (it.id == id) it.copy(ativo = false) else it }
+    }
+    override fun observarAtivas(): Flow<List<Equipe>> = state.map { lista -> lista.filter { it.ativo } }
+}
+
+class InMemoryRegistroTrabalhoRepository : RegistroTrabalhoRepository {
+    private val state = MutableStateFlow<List<RegistroTrabalho>>(emptyList())
+
+    override suspend fun listarDaPessoa(pessoaId: String): List<RegistroTrabalho> =
+        state.value.filter { it.pessoaId == pessoaId && it.ativo }.sortedByDescending { it.data }
+    override suspend fun listarNaoPagosDaPessoa(pessoaId: String): List<RegistroTrabalho> =
+        state.value.filter { it.pessoaId == pessoaId && it.ativo && !it.pago }.sortedBy { it.data }
+    override suspend fun listarTodos(): List<RegistroTrabalho> = state.value.filter { it.ativo }
+    override suspend fun salvar(registro: RegistroTrabalho) {
+        state.value = state.value + registro
+    }
+    override suspend fun marcarPagos(ids: List<String>, pagamentoId: String) {
+        state.value = state.value.map { if (it.id in ids) it.copy(pago = true, pagamentoId = pagamentoId) else it }
+    }
+    override suspend fun desativar(id: String) {
+        state.value = state.value.map { if (it.id == id) it.copy(ativo = false) else it }
+    }
+    override fun observarTodos(): Flow<List<RegistroTrabalho>> = state.map { lista -> lista.filter { it.ativo } }
+}
+
+class InMemoryRetencaoLancamentoRepository : RetencaoLancamentoRepository {
+    private val state = MutableStateFlow<List<RetencaoLancamento>>(emptyList())
+
+    override suspend fun listarDoLancamento(lancamentoId: String): List<RetencaoLancamento> =
+        state.value.filter { it.lancamentoId == lancamentoId }
+
+    override suspend fun substituir(lancamentoId: String, retencoes: List<RetencaoLancamento>) {
+        state.value = state.value.filterNot { it.lancamentoId == lancamentoId } + retencoes
+    }
 }

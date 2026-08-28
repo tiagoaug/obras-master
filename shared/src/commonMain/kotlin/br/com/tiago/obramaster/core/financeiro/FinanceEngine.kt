@@ -3,6 +3,7 @@ package br.com.tiago.obramaster.core.financeiro
 import br.com.tiago.obramaster.domain.LancamentoFinanceiro
 import br.com.tiago.obramaster.domain.NaturezaLancamento
 import br.com.tiago.obramaster.domain.RateioLancamento
+import br.com.tiago.obramaster.domain.RetencaoLancamento
 import br.com.tiago.obramaster.domain.TipoLancamento
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.Instant
@@ -12,6 +13,7 @@ import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.minus
 import kotlinx.datetime.toLocalDateTime
 import kotlin.math.abs
+import kotlin.math.roundToLong
 
 enum class PeriodoPreset { HOJE, SEMANA, MES, ANO }
 
@@ -76,6 +78,12 @@ object FinanceEngine {
     /** Critério de aceite: "Rateio de lançamento entre centros de custo soma sempre 100%". */
     fun rateioSomaCemPorCento(rateios: List<RateioLancamento>, toleranciaPercentual: Double = 0.01): Boolean =
         rateios.isNotEmpty() && abs(rateios.sumOf { it.percentual } - 100.0) <= toleranciaPercentual
+
+    /** SPEC_OBRA_MASTER_ADENDO_FINANCEIRO.md §6/§7 — retenção fiscal sobre um valor bruto (ex.: INSS 11%). */
+    fun calcularValorRetencao(valorBruto: Long, percentual: Double): Long = (valorBruto * percentual / 100.0).roundToLong()
+
+    /** "cálculo automático do valor líquido a pagar" — valor bruto menos a soma de todas as retenções. */
+    fun valorLiquido(valorBruto: Long, retencoes: List<RetencaoLancamento>): Long = valorBruto - retencoes.sumOf { it.valorCalculado }
 
     /** [agora] é parâmetro (não Clock.System direto) pra manter a função pura e testável. */
     fun periodoPreset(preset: PeriodoPreset, agora: Long): Pair<Long, Long> {

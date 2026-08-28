@@ -9,7 +9,9 @@ import br.com.tiago.obramaster.data.repository.ComodoRepository
 import br.com.tiago.obramaster.data.repository.ContaRepository
 import br.com.tiago.obramaster.data.repository.CorRepository
 import br.com.tiago.obramaster.data.repository.EmpresaRepository
+import br.com.tiago.obramaster.data.repository.EquipeRepository
 import br.com.tiago.obramaster.data.repository.EtapaRepository
+import br.com.tiago.obramaster.data.repository.FuncionarioRepository
 import br.com.tiago.obramaster.data.repository.InMemoryAberturaRepository
 import br.com.tiago.obramaster.data.repository.InMemoryArquivoImportadoRepository
 import br.com.tiago.obramaster.data.repository.InMemoryCategoriaFinanceiraRepository
@@ -19,7 +21,9 @@ import br.com.tiago.obramaster.data.repository.InMemoryComodoRepository
 import br.com.tiago.obramaster.data.repository.InMemoryContaRepository
 import br.com.tiago.obramaster.data.repository.InMemoryCorRepository
 import br.com.tiago.obramaster.data.repository.InMemoryEmpresaRepository
+import br.com.tiago.obramaster.data.repository.InMemoryEquipeRepository
 import br.com.tiago.obramaster.data.repository.InMemoryEtapaRepository
+import br.com.tiago.obramaster.data.repository.InMemoryFuncionarioRepository
 import br.com.tiago.obramaster.data.repository.InMemoryLancamentoFinanceiroRepository
 import br.com.tiago.obramaster.data.repository.InMemoryMaterialRepository
 import br.com.tiago.obramaster.data.repository.InMemoryMovimentoContaRepository
@@ -30,9 +34,13 @@ import br.com.tiago.obramaster.data.repository.InMemoryPessoaRepository
 import br.com.tiago.obramaster.data.repository.InMemoryPlantaBaixaRepository
 import br.com.tiago.obramaster.data.repository.InMemoryProjetoRepository
 import br.com.tiago.obramaster.data.repository.InMemoryRateioLancamentoRepository
+import br.com.tiago.obramaster.data.repository.InMemoryRegistroTrabalhoRepository
+import br.com.tiago.obramaster.data.repository.InMemoryRetencaoLancamentoRepository
 import br.com.tiago.obramaster.data.repository.InMemoryUnidadeMedidaRepository
 import br.com.tiago.obramaster.data.repository.LancamentoFinanceiroRepository
 import br.com.tiago.obramaster.data.repository.MaterialRepository
+import br.com.tiago.obramaster.data.repository.RegistroTrabalhoRepository
+import br.com.tiago.obramaster.data.repository.RetencaoLancamentoRepository
 import br.com.tiago.obramaster.data.repository.MovimentoContaRepository
 import br.com.tiago.obramaster.data.repository.ModuleConfigRepository
 import br.com.tiago.obramaster.data.repository.ParedeRepository
@@ -81,4 +89,8 @@ val platformModule = module {
     single<LancamentoFinanceiroRepository> { InMemoryLancamentoFinanceiroRepository() }
     single<RateioLancamentoRepository> { InMemoryRateioLancamentoRepository() }
     single<MovimentoContaRepository> { InMemoryMovimentoContaRepository() }
+    single<FuncionarioRepository> { InMemoryFuncionarioRepository() }
+    single<EquipeRepository> { InMemoryEquipeRepository() }
+    single<RegistroTrabalhoRepository> { InMemoryRegistroTrabalhoRepository() }
+    single<RetencaoLancamentoRepository> { InMemoryRetencaoLancamentoRepository() }
 }

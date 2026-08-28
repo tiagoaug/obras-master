@@ -1,0 +1,24 @@
+CREATE TABLE Funcionario (
+    pessoaId TEXT NOT NULL PRIMARY KEY,
+    funcao TEXT NOT NULL,
+    tipoContratacao TEXT NOT NULL,
+    valorBase INTEGER NOT NULL,
+    ativo INTEGER AS kotlin.Boolean NOT NULL DEFAULT 1,
+    FOREIGN KEY (pessoaId) REFERENCES Pessoa(id)
+);
+
+selectAtivos:
+SELECT * FROM Funcionario WHERE ativo = 1;
+
+selectPorPessoaId:
+SELECT * FROM Funcionario WHERE pessoaId = ?;
+
+insert:
+INSERT INTO Funcionario(pessoaId, funcao, tipoContratacao, valorBase, ativo)
+VALUES (?, ?, ?, ?, ?);
+
+update:
+UPDATE Funcionario SET funcao = ?, tipoContratacao = ?, valorBase = ? WHERE pessoaId = ?;
+
+softDelete:
+UPDATE Funcionario SET ativo = 0 WHERE pessoaId = ?;

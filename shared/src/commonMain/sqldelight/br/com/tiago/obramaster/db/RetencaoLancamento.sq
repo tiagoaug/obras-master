@@ -1,0 +1,18 @@
+CREATE TABLE RetencaoLancamento (
+    id TEXT NOT NULL PRIMARY KEY,
+    lancamentoId TEXT NOT NULL,
+    tipo TEXT NOT NULL,
+    percentual REAL NOT NULL,
+    valorCalculado INTEGER NOT NULL,
+    FOREIGN KEY (lancamentoId) REFERENCES LancamentoFinanceiro(id)
+);
+
+selectDoLancamento:
+SELECT * FROM RetencaoLancamento WHERE lancamentoId = ?;
+
+insert:
+INSERT INTO RetencaoLancamento(id, lancamentoId, tipo, percentual, valorCalculado)
+VALUES (?, ?, ?, ?, ?);
+
+deleteDoLancamento:
+DELETE FROM RetencaoLancamento WHERE lancamentoId = ?;

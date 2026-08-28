@@ -182,6 +182,8 @@ O ícone de transferência na tela de Contas move dinheiro entre duas contas sua
 ### 5.3 Lançamentos `#financeiro-lancamentos`
 Cada lançamento (receita ou despesa) tem categoria, valor, data, forma de pagamento, natureza (Contábil/Não Contábil) e um Centro de Custo — que já vem preenchido sozinho quando você vincula o lançamento a um Projeto (o projeto tem seu próprio Centro de Custo automático, ver 5.5). Se preferir, um lançamento pode ser **rateado** entre vários Centros de Custo por percentual (ex.: a conta de luz do escritório dividida entre 3 obras) — a soma dos percentuais precisa fechar em 100%. Ao marcar um lançamento como **pago/recebido**, o app pede a conta de origem/destino e já gera o movimento correspondente nela automaticamente — você nunca precisa lançar o mesmo dinheiro duas vezes.
 
+Um lançamento também pode ter **retenções fiscais** (INSS, ISS, IRRF ou outra) — comum em nota de mão de obra/empreitada. Você escolhe o tipo e o percentual de cada retenção (o app já sugere 11% pro INSS, o valor mais comum), e o **valor líquido** é calculado na hora. É esse valor líquido — não o valor bruto do lançamento — que sai de fato da conta quando você marca como pago.
+
 ### 5.4 Categorias Financeiras `#financeiro-categorias`
 Categorias têm tipo (Receita/Despesa), uma natureza padrão que já pré-preenche o lançamento, e podem ter uma categoria "pai" (ex.: "Cimento e Argamassa" dentro de "Materiais") — a lista mostra as categorias-filhas logo abaixo da categoria-mãe. Oito categorias básicas (Materiais, Mão de Obra, Equipamentos, Administrativo, Impostos, Transporte, Alimentação de equipe, Combustível) já vêm prontas e não podem ser excluídas, só as que você mesmo criar.
 
@@ -225,9 +227,18 @@ Se o projeto usa **medição por etapa** (comum em obra formal), cada medição 
 
 ## 9. Equipes e Pagamentos `#equipes`
 
-Cadastre funcionários (diária, empreitada ou mensal) e organize em equipes. Registre o trabalho de cada um por dia/projeto/etapa, e ao final do período, gere o pagamento — isso já cria a despesa de mão de obra no Financeiro e debita a conta escolhida.
+### 9.1 Funcionários `#equipes-funcionarios`
+Transforma uma Pessoa já cadastrada em funcionário: função, tipo de contratação (Diária, Empreitada ou Mensal) e valor base. A pessoa ganha a tag "Funcionário" automaticamente, mesmo que já tivesse outras (ex.: também é cliente).
 
-**Exemplo prático:** um pedreiro trabalhou 12 diárias na etapa de Acabamento. No fim do mês, você gera o pagamento dele — o app soma tudo, aplica retenção se houver, e já debita do caixa da obra.
+### 9.2 Equipes `#equipes-equipes`
+Agrupe pessoas numa equipe, com um líder opcional escolhido entre os membros.
+
+### 9.3 Registro de Trabalho `#equipes-registro`
+Registre diárias, parcelas de empreitada ou horas extras de um funcionário, vinculadas a um projeto (e opcionalmente uma etapa). Ao escolher um funcionário com contratação por Diária, o valor já vem pré-preenchido com o valor base dele. Cada registro fica marcado como pendente até entrar num pagamento.
+
+*(Gerar o pagamento do período — que soma os registros pendentes de um funcionário, aplica retenções fiscais quando houver e já cria a despesa no Financeiro debitando a conta escolhida — e o relatório por funcionário/equipe chegam na próxima etapa desta fase. Retenções fiscais (INSS, ISS, IRRF) já estão disponíveis por enquanto direto no formulário de Lançamento do Financeiro, seção 5.3.)*
+
+**Exemplo prático (quando o pagamento do período já existir):** um pedreiro trabalhou 12 diárias na etapa de Acabamento. No fim do mês, você gera o pagamento dele — o app soma tudo, aplica retenção se houver, e já debita do caixa da obra.
 
 ---
 

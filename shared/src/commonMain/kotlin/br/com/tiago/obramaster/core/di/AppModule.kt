@@ -6,6 +6,9 @@ import br.com.tiago.obramaster.core.onboarding.OnboardingDraftStore
 import br.com.tiago.obramaster.core.prefs.AccessibilityPrefsStore
 import br.com.tiago.obramaster.domain.Colaborador
 import br.com.tiago.obramaster.ui.features.configuracoes.ConfiguracoesViewModel
+import br.com.tiago.obramaster.ui.features.equipes.EquipesViewModel
+import br.com.tiago.obramaster.ui.features.equipes.FuncionariosViewModel
+import br.com.tiago.obramaster.ui.features.equipes.RegistroTrabalhoViewModel
 import br.com.tiago.obramaster.ui.features.financeiro.CategoriasFinanceirasViewModel
 import br.com.tiago.obramaster.ui.features.financeiro.CentrosDeCustoViewModel
 import br.com.tiago.obramaster.ui.features.financeiro.ContasViewModel
@@ -55,8 +58,11 @@ val appModule = module {
     factory { (plantaId: String) -> PlantaBaixaViewModel(plantaId, get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     factory { CategoriasFinanceirasViewModel(get()) }
     factory { CentrosDeCustoViewModel(get()) }
-    factory { LancamentosViewModel(get(), get(), get(), get(), get(), get(), get()) }
+    factory { LancamentosViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
     factory { FinanceiroDashboardViewModel(get(), get(), get(), get(), get(), get()) }
     factory { ContasViewModel(get(), get()) }
     factory { (contaId: String) -> ExtratoContaViewModel(contaId, get(), get()) }
+    factory { FuncionariosViewModel(get(), get()) }
+    factory { EquipesViewModel(get(), get()) }
+    factory { RegistroTrabalhoViewModel(get(), get(), get(), get(), get()) }
 }

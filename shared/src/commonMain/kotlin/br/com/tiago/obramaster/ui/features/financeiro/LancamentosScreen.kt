@@ -39,7 +39,9 @@ import br.com.tiago.obramaster.domain.CategoriaFinanceira
 import br.com.tiago.obramaster.domain.LancamentoFinanceiro
 import br.com.tiago.obramaster.domain.NaturezaLancamento
 import br.com.tiago.obramaster.domain.RateioLancamento
+import br.com.tiago.obramaster.domain.RetencaoLancamento
 import br.com.tiago.obramaster.domain.TipoLancamento
+import br.com.tiago.obramaster.domain.TipoRetencao
 import br.com.tiago.obramaster.ui.components.CalculatorTextField
 import br.com.tiago.obramaster.ui.components.LcrudFormScaffold
 import br.com.tiago.obramaster.ui.components.LcrudListScaffold
@@ -61,11 +63,12 @@ fun LancamentosScreen(onVoltar: () -> Unit, viewModel: LancamentosViewModel = ko
             existente = editando,
             uiState = uiState,
             onVoltar = { mostrarForm = false },
-            onSalvar = { tipo, categoriaId, centroId, natureza, projetoId, descricao, valor, data, formaPagamento, pago, contaId, rateios ->
-                viewModel.salvar(editando, tipo, categoriaId, centroId, natureza, projetoId, null, descricao, valor, data, formaPagamento, pago, contaId, rateios)
+            onSalvar = { tipo, categoriaId, centroId, natureza, projetoId, descricao, valor, data, formaPagamento, pago, contaId, rateios, retencoes ->
+                viewModel.salvar(editando, tipo, categoriaId, centroId, natureza, projetoId, null, descricao, valor, data, formaPagamento, pago, contaId, rateios, retencoes)
                 mostrarForm = false
             },
             carregarRateios = { id -> viewModel.rateiosDoLancamento(id) },
+            carregarRetencoes = { id -> viewModel.retencoesDoLancamento(id) },
         )
         return
     }
@@ -157,8 +160,9 @@ private fun LancamentoFormScreen(
     existente: LancamentoFinanceiro?,
     uiState: LancamentosUiState,
     onVoltar: () -> Unit,
-    onSalvar: (TipoLancamento, String, String, NaturezaLancamento, String?, String, Long, Long, String, Boolean, String?, List<Pair<String, Double>>) -> Unit,
+    onSalvar: (TipoLancamento, String, String, NaturezaLancamento, String?, String, Long, Long, String, Boolean, String?, List<Pair<String, Double>>, List<Pair<TipoRetencao, Double>>) -> Unit,
     carregarRateios: suspend (String) -> List<RateioLancamento>,
+    carregarRetencoes: suspend (String) -> List<RetencaoLancamento>,
 ) {
     var tipo by remember { mutableStateOf(existente?.tipo ?: TipoLancamento.DESPESA) }
     var categoriaId by remember { mutableStateOf(existente?.categoriaId) }
@@ -173,6 +177,8 @@ private fun LancamentoFormScreen(
     var centroManualId by remember { mutableStateOf(existente?.centroDeCustoId) }
     var rateioAtivo by remember { mutableStateOf(false) }
     var rateios by remember { mutableStateOf(listOf<Pair<String, String>>()) } // centroId to texto do percentual
+    var retencaoAtiva by remember { mutableStateOf(false) }
+    var retencoes by remember { mutableStateOf(listOf<Pair<TipoRetencao, String>>()) } // tipo to texto do percentual
 
     LaunchedEffect(existente?.id) {
         if (existente != null) {
@@ -180,6 +186,11 @@ private fun LancamentoFormScreen(
             if (rateiosExistentes.isNotEmpty()) {
                 rateioAtivo = true
                 rateios = rateiosExistentes.map { it.centroDeCustoId to it.percentual.toString() }
+            }
+            val retencoesExistentes = carregarRetencoes(existente.id)
+            if (retencoesExistentes.isNotEmpty()) {
+                retencaoAtiva = true
+                retencoes = retencoesExistentes.map { it.tipo to it.percentual.toString() }
             }
         }
     }
@@ -190,6 +201,8 @@ private fun LancamentoFormScreen(
     val centrosManuais = uiState.centros.filter { it.projetoId == null }
     val somaRateio = rateios.sumOf { it.second.replace(',', '.').toDoubleOrNull() ?: 0.0 }
     val rateioValido = !rateioAtivo || kotlin.math.abs(somaRateio - 100.0) <= 0.01
+    val retencoesValidas = retencoes.mapNotNull { (tipoRetencao, texto) -> texto.replace(',', '.').toDoubleOrNull()?.let { tipoRetencao to it } }
+    val valorLiquido = valor - retencoesValidas.sumOf { (_, percentual) -> FinanceEngine.calcularValorRetencao(valor, percentual) }
 
     LcrudFormScaffold(
         titulo = if (existente == null) "Novo lançamento" else "Editar lançamento",
@@ -202,7 +215,8 @@ private fun LancamentoFormScreen(
             } else {
                 emptyList()
             }
-            onSalvar(tipo, categoriaId!!, centroDeCustoId!!, natureza, projetoId, descricao, valor, data, formaPagamento, pago, contaId, rateiosFinal)
+            val retencoesFinal = if (retencaoAtiva) retencoesValidas else emptyList()
+            onSalvar(tipo, categoriaId!!, centroDeCustoId!!, natureza, projetoId, descricao, valor, data, formaPagamento, pago, contaId, rateiosFinal, retencoesFinal)
         },
     ) {
         Text("Tipo", style = MaterialTheme.typography.labelLarge)
@@ -224,7 +238,38 @@ private fun LancamentoFormScreen(
         }
 
         OutlinedTextField(descricao, { descricao = it }, label = { Text("Descrição") }, modifier = Modifier.fillMaxWidth().padding(top = 12.dp))
-        CalculatorTextField(valueCentavos = valor, onValueChange = { valor = it }, label = "Valor", modifier = Modifier.fillMaxWidth().padding(top = 12.dp))
+        CalculatorTextField(valueCentavos = valor, onValueChange = { valor = it }, label = "Valor (bruto)", modifier = Modifier.fillMaxWidth().padding(top = 12.dp))
+
+        Row(Modifier.fillMaxWidth().padding(top = 12.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+            Text("Retenções fiscais (INSS, ISS, IRRF...)", style = MaterialTheme.typography.labelLarge)
+            Switch(checked = retencaoAtiva, onCheckedChange = { retencaoAtiva = it; if (it && retencoes.isEmpty()) retencoes = listOf(TipoRetencao.INSS to "11") })
+        }
+        if (retencaoAtiva) {
+            retencoes.forEachIndexed { indice, (tipoRetencao, percentualTexto) ->
+                Row(Modifier.fillMaxWidth().padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        TipoRetencao.entries.forEach { opcao ->
+                            FilterChip(
+                                selected = tipoRetencao == opcao,
+                                onClick = { retencoes = retencoes.toMutableList().also { it[indice] = opcao to percentualTexto } },
+                                label = { Text(opcao.name) },
+                            )
+                        }
+                    }
+                    OutlinedTextField(
+                        value = percentualTexto,
+                        onValueChange = { novo -> retencoes = retencoes.toMutableList().also { it[indice] = tipoRetencao to novo } },
+                        label = { Text("%") },
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+            }
+            Row(Modifier.fillMaxWidth().padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedButton(onClick = { retencoes = retencoes + (TipoRetencao.INSS to "") }) { Text("+ Retenção") }
+                Text("Valor líquido: ${MoneyFormatter.formatar(valorLiquido)}", modifier = Modifier.padding(top = 12.dp))
+            }
+        }
+
         OutlinedTextField(dataTexto, { dataTexto = it }, label = { Text("Data (dd/mm/aaaa)") }, modifier = Modifier.fillMaxWidth().padding(top = 12.dp))
         OutlinedTextField(formaPagamento, { formaPagamento = it }, label = { Text("Forma de pagamento") }, modifier = Modifier.fillMaxWidth().padding(top = 12.dp))
 

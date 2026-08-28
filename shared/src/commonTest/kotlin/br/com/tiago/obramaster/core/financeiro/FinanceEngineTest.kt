@@ -3,7 +3,9 @@ package br.com.tiago.obramaster.core.financeiro
 import br.com.tiago.obramaster.domain.LancamentoFinanceiro
 import br.com.tiago.obramaster.domain.NaturezaLancamento
 import br.com.tiago.obramaster.domain.RateioLancamento
+import br.com.tiago.obramaster.domain.RetencaoLancamento
 import br.com.tiago.obramaster.domain.TipoLancamento
+import br.com.tiago.obramaster.domain.TipoRetencao
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
@@ -147,5 +149,22 @@ class FinanceEngineTest {
 
         val (inicioHoje, _) = FinanceEngine.periodoPreset(PeriodoPreset.HOJE, agora)
         assertEquals(dataEm(2026, 3, 15), inicioHoje)
+    }
+
+    @Test
+    fun calcularValorRetencao_aplicaPercentualSobreValorBruto() {
+        // INSS 11% sobre R$ 1.000,00 (100_000 centavos) = R$ 110,00
+        assertEquals(11_000L, FinanceEngine.calcularValorRetencao(100_000L, 11.0))
+        assertEquals(0L, FinanceEngine.calcularValorRetencao(100_000L, 0.0))
+    }
+
+    @Test
+    fun valorLiquido_subtraiSomaDasRetencoesDoValorBruto() {
+        val retencoes = listOf(
+            RetencaoLancamento(id = "r1", lancamentoId = "l1", tipo = TipoRetencao.INSS, percentual = 11.0, valorCalculado = 11_000L),
+            RetencaoLancamento(id = "r2", lancamentoId = "l1", tipo = TipoRetencao.ISS, percentual = 5.0, valorCalculado = 5_000L),
+        )
+        assertEquals(84_000L, FinanceEngine.valorLiquido(100_000L, retencoes))
+        assertEquals(100_000L, FinanceEngine.valorLiquido(100_000L, emptyList()))
     }
 }
