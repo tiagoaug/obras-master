@@ -28,6 +28,7 @@ import br.com.tiago.obramaster.data.repository.InMemoryLancamentoFinanceiroRepos
 import br.com.tiago.obramaster.data.repository.InMemoryMaterialRepository
 import br.com.tiago.obramaster.data.repository.InMemoryMovimentoContaRepository
 import br.com.tiago.obramaster.data.repository.InMemoryModuleConfigRepository
+import br.com.tiago.obramaster.data.repository.InMemoryPagamentoRepository
 import br.com.tiago.obramaster.data.repository.InMemoryParedeRepository
 import br.com.tiago.obramaster.data.repository.InMemoryPermissaoRepository
 import br.com.tiago.obramaster.data.repository.InMemoryPessoaRepository
@@ -43,6 +44,7 @@ import br.com.tiago.obramaster.data.repository.RegistroTrabalhoRepository
 import br.com.tiago.obramaster.data.repository.RetencaoLancamentoRepository
 import br.com.tiago.obramaster.data.repository.MovimentoContaRepository
 import br.com.tiago.obramaster.data.repository.ModuleConfigRepository
+import br.com.tiago.obramaster.data.repository.PagamentoRepository
 import br.com.tiago.obramaster.data.repository.ParedeRepository
 import br.com.tiago.obramaster.data.repository.PermissaoRepository
 import br.com.tiago.obramaster.data.repository.PessoaRepository
@@ -93,4 +95,5 @@ val platformModule = module {
     single<EquipeRepository> { InMemoryEquipeRepository() }
     single<RegistroTrabalhoRepository> { InMemoryRegistroTrabalhoRepository() }
     single<RetencaoLancamentoRepository> { InMemoryRetencaoLancamentoRepository() }
+    single<PagamentoRepository> { InMemoryPagamentoRepository() }
 }

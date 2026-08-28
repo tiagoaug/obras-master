@@ -18,6 +18,7 @@ import br.com.tiago.obramaster.domain.LancamentoFinanceiro
 import br.com.tiago.obramaster.domain.Material
 import br.com.tiago.obramaster.domain.MovimentoConta
 import br.com.tiago.obramaster.domain.NaturezaLancamento
+import br.com.tiago.obramaster.domain.Pagamento
 import br.com.tiago.obramaster.domain.Parede
 import br.com.tiago.obramaster.domain.RateioLancamento
 import br.com.tiago.obramaster.domain.RegistroTrabalho
@@ -488,4 +489,15 @@ class InMemoryRetencaoLancamentoRepository : RetencaoLancamentoRepository {
     override suspend fun substituir(lancamentoId: String, retencoes: List<RetencaoLancamento>) {
         state.value = state.value.filterNot { it.lancamentoId == lancamentoId } + retencoes
     }
+}
+
+class InMemoryPagamentoRepository : PagamentoRepository {
+    private val state = MutableStateFlow<List<Pagamento>>(emptyList())
+
+    override suspend fun listarDaPessoa(pessoaId: String): List<Pagamento> =
+        state.value.filter { it.pessoaId == pessoaId }.sortedByDescending { it.dataPagamento }
+    override suspend fun salvar(pagamento: Pagamento) {
+        state.value = state.value + pagamento
+    }
+    override fun observarTodos(): Flow<List<Pagamento>> = state.map { lista -> lista.sortedByDescending { it.dataPagamento } }
 }

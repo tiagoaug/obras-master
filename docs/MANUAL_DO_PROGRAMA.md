@@ -236,9 +236,17 @@ Agrupe pessoas numa equipe, com um líder opcional escolhido entre os membros.
 ### 9.3 Registro de Trabalho `#equipes-registro`
 Registre diárias, parcelas de empreitada ou horas extras de um funcionário, vinculadas a um projeto (e opcionalmente uma etapa). Ao escolher um funcionário com contratação por Diária, o valor já vem pré-preenchido com o valor base dele. Cada registro fica marcado como pendente até entrar num pagamento.
 
-*(Gerar o pagamento do período — que soma os registros pendentes de um funcionário, aplica retenções fiscais quando houver e já cria a despesa no Financeiro debitando a conta escolhida — e o relatório por funcionário/equipe chegam na próxima etapa desta fase. Retenções fiscais (INSS, ISS, IRRF) já estão disponíveis por enquanto direto no formulário de Lançamento do Financeiro, seção 5.3.)*
+### 9.4 Gerar Pagamento `#equipes-pagamento`
+Escolha um funcionário, marque quais dos registros pendentes dele entram nesse pagamento (não precisa ser todos), informe o período e a data. O app já soma o valor bruto, permite aplicar retenções fiscais (INSS, ISS, IRRF) com cálculo automático do valor líquido, e pede a conta de onde o dinheiro sai. Ao confirmar, tudo acontece de uma vez: os registros escolhidos ficam marcados como pagos, uma despesa "Mão de Obra" é criada no Financeiro, e a conta é debitada pelo valor líquido — você nunca lança a mesma coisa duas vezes.
 
-**Exemplo prático (quando o pagamento do período já existir):** um pedreiro trabalhou 12 diárias na etapa de Acabamento. No fim do mês, você gera o pagamento dele — o app soma tudo, aplica retenção se houver, e já debita do caixa da obra.
+Se todos os registros escolhidos forem do mesmo projeto, o Centro de Custo daquele projeto é usado automaticamente; se forem de projetos diferentes (ou nenhum), você escolhe manualmente.
+
+### 9.5 Relatório de Equipes `#equipes-relatorio`
+Veja, por funcionário e por equipe, quantas diárias foram trabalhadas, quanto ainda está pendente de pagamento e quanto já foi pago.
+
+**Exemplo prático:** um pedreiro trabalhou 12 diárias na etapa de Acabamento, todas pendentes. Você abre "Gerar Pagamento", escolhe ele, marca as 12 diárias, o app já soma R$ 1.800,00 de bruto — você aplica 11% de INSS, vê o líquido de R$ 1.602,00, escolhe o caixa da obra como conta, confirma. As 12 diárias somem da lista de pendentes, a despesa aparece no Financeiro, e o caixa da obra já reflete o desconto.
+
+*(Recibo de pagamento exportável em PDF/JPG chega junto do módulo de Exportação, Fase 9.)*
 
 ---
 

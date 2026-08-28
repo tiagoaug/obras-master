@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Groups
+import androidx.compose.material.icons.filled.Payments
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Summarize
 import androidx.compose.material.icons.filled.WorkHistory
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -31,6 +33,8 @@ private sealed interface DestinoEquipes {
     data object Funcionarios : DestinoEquipes
     data object Equipes : DestinoEquipes
     data object RegistroTrabalho : DestinoEquipes
+    data object GerarPagamento : DestinoEquipes
+    data object Relatorio : DestinoEquipes
 }
 
 /** SPEC_OBRA_MASTER.md §4.3 — ponto de entrada do módulo Equipes e Pagamentos. */
@@ -54,12 +58,16 @@ fun EquipesModuloScreen(onVoltar: () -> Unit) {
                 ItemHub("Funcionários", Icons.Filled.Person) { destino = DestinoEquipes.Funcionarios }
                 ItemHub("Equipes", Icons.Filled.Groups) { destino = DestinoEquipes.Equipes }
                 ItemHub("Registro de Trabalho", Icons.Filled.WorkHistory) { destino = DestinoEquipes.RegistroTrabalho }
+                ItemHub("Gerar Pagamento", Icons.Filled.Payments) { destino = DestinoEquipes.GerarPagamento }
+                ItemHub("Relatório", Icons.Filled.Summarize) { destino = DestinoEquipes.Relatorio }
             }
         }
 
         DestinoEquipes.Funcionarios -> FuncionariosScreen(onVoltar = { destino = DestinoEquipes.Hub })
         DestinoEquipes.Equipes -> EquipesScreen(onVoltar = { destino = DestinoEquipes.Hub })
         DestinoEquipes.RegistroTrabalho -> RegistroTrabalhoScreen(onVoltar = { destino = DestinoEquipes.Hub })
+        DestinoEquipes.GerarPagamento -> GerarPagamentoScreen(onVoltar = { destino = DestinoEquipes.Hub })
+        DestinoEquipes.Relatorio -> RelatorioEquipesScreen(onVoltar = { destino = DestinoEquipes.Hub })
     }
 }
 

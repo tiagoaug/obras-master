@@ -8,7 +8,9 @@ import br.com.tiago.obramaster.domain.Colaborador
 import br.com.tiago.obramaster.ui.features.configuracoes.ConfiguracoesViewModel
 import br.com.tiago.obramaster.ui.features.equipes.EquipesViewModel
 import br.com.tiago.obramaster.ui.features.equipes.FuncionariosViewModel
+import br.com.tiago.obramaster.ui.features.equipes.GerarPagamentoViewModel
 import br.com.tiago.obramaster.ui.features.equipes.RegistroTrabalhoViewModel
+import br.com.tiago.obramaster.ui.features.equipes.RelatorioEquipesViewModel
 import br.com.tiago.obramaster.ui.features.financeiro.CategoriasFinanceirasViewModel
 import br.com.tiago.obramaster.ui.features.financeiro.CentrosDeCustoViewModel
 import br.com.tiago.obramaster.ui.features.financeiro.ContasViewModel
@@ -65,4 +67,6 @@ val appModule = module {
     factory { FuncionariosViewModel(get(), get()) }
     factory { EquipesViewModel(get(), get()) }
     factory { RegistroTrabalhoViewModel(get(), get(), get(), get(), get()) }
+    factory { GerarPagamentoViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+    factory { RelatorioEquipesViewModel(get(), get(), get()) }
 }

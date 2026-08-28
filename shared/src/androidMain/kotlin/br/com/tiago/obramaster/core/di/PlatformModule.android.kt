@@ -19,6 +19,7 @@ import br.com.tiago.obramaster.data.repository.LancamentoFinanceiroRepository
 import br.com.tiago.obramaster.data.repository.MaterialRepository
 import br.com.tiago.obramaster.data.repository.MovimentoContaRepository
 import br.com.tiago.obramaster.data.repository.ModuleConfigRepository
+import br.com.tiago.obramaster.data.repository.PagamentoRepository
 import br.com.tiago.obramaster.data.repository.ParedeRepository
 import br.com.tiago.obramaster.data.repository.PermissaoRepository
 import br.com.tiago.obramaster.data.repository.PessoaRepository
@@ -43,6 +44,7 @@ import br.com.tiago.obramaster.data.repository.SqlDelightLancamentoFinanceiroRep
 import br.com.tiago.obramaster.data.repository.SqlDelightMaterialRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightMovimentoContaRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightModuleConfigRepository
+import br.com.tiago.obramaster.data.repository.SqlDelightPagamentoRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightParedeRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightPermissaoRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightPessoaRepository
@@ -98,4 +100,5 @@ fun platformModule(context: Context) = module {
     single<EquipeRepository> { SqlDelightEquipeRepository(get()) }
     single<RegistroTrabalhoRepository> { SqlDelightRegistroTrabalhoRepository(get()) }
     single<RetencaoLancamentoRepository> { SqlDelightRetencaoLancamentoRepository(get()) }
+    single<PagamentoRepository> { SqlDelightPagamentoRepository(get()) }
 }
