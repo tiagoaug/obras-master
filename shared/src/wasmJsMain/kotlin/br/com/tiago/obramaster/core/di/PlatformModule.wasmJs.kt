@@ -38,6 +38,7 @@ import br.com.tiago.obramaster.platform.FilePicker
 import br.com.tiago.obramaster.platform.ImagePicker
 import br.com.tiago.obramaster.platform.ImageStore
 import br.com.tiago.obramaster.platform.PdfImageRenderer
+import br.com.tiago.obramaster.platform.PdfVectorExtractor
 import org.koin.dsl.module
 
 val platformModule = module {
@@ -47,6 +48,7 @@ val platformModule = module {
     single { ImageStore() }
     single { FilePicker() }
     single { PdfImageRenderer() }
+    single { PdfVectorExtractor() }
 
     single<ColaboradorRepository> { InMemoryColaboradorRepository() }
     single<PermissaoRepository> { InMemoryPermissaoRepository() }

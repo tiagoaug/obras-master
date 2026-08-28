@@ -24,6 +24,7 @@ import br.com.tiago.obramaster.platform.FilePicker
 import br.com.tiago.obramaster.platform.ImagePicker
 import br.com.tiago.obramaster.platform.ImageStore
 import br.com.tiago.obramaster.platform.PdfImageRenderer
+import br.com.tiago.obramaster.platform.PdfVectorExtractor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -83,6 +84,7 @@ class PlantaBaixaViewModel(
     private val filePicker: FilePicker,
     private val arquivoImportadoRepository: ArquivoImportadoRepository,
     private val pdfImageRenderer: PdfImageRenderer,
+    private val pdfVectorExtractor: PdfVectorExtractor,
 ) : ViewModel() {
 
     private var conteudoArquivoImportadoAtual: String? = null
@@ -413,9 +415,34 @@ class PlantaBaixaViewModel(
             }
             val nomeMinusculo = arquivo.nomeArquivo.lowercase()
 
-            // PDF (Tentativa 2, §4.2) não tem geometria pra prévia — é renderizado como imagem e
-            // entra direto no mesmo fluxo de foto + calibração manual do Caminho B (Fase 3.6).
             if (nomeMinusculo.endsWith(".pdf")) {
+                // Tentativa 1 (§4.1, Fase 3.68) — extração vetorial: se achar linhas/retângulos
+                // no content stream, usa exatamente o mesmo fluxo de prévia do DXF/SVG (só que
+                // sem cômodos — a extração de PDF só devolve segmentos, não polígonos fechados).
+                val geometria = pdfVectorExtractor.extrairGeometria(arquivo.bytes, pagina = 0)
+                if (geometria != null && geometria.segmentos.isNotEmpty()) {
+                    val previa = PreviaImportacao(
+                        formato = FormatoImportacao.PDF,
+                        paredes = geometria.segmentos.map { (a, b) ->
+                            Parede(id = Uuid.random().toString(), plantaId = "", pontoInicio = a, pontoFim = b)
+                        },
+                        comodos = emptyList(),
+                        escalaAutomaticaPxPorMetro = geometria.escalaDetectada,
+                        unidadeDetectadaTexto = if (geometria.escalaDetectada != null) "pontos PDF (72/polegada)" else null,
+                    )
+                    conteudoArquivoImportadoAtual = null
+                    _uiState.value = _uiState.value.copy(
+                        importandoArquivo = false,
+                        nomeArquivoImportado = arquivo.nomeArquivo,
+                        previaImportacao = previa,
+                        camadasSelecionadas = null,
+                    )
+                    return@launch
+                }
+
+                // Tentativa 2 (§4.2, Fase 3.67) — fallback como imagem: sem geometria vetorial
+                // reconhecível, a primeira página vira imagem de fundo pro fluxo de calibração
+                // manual do Caminho B (Fase 3.6). Não tem prévia — não faz sentido pra uma imagem.
                 val imagem = pdfImageRenderer.renderizarPrimeiraPagina(arquivo.bytes)
                 if (imagem == null) {
                     _uiState.value = _uiState.value.copy(

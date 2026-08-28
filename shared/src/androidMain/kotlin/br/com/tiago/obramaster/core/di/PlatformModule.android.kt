@@ -41,6 +41,7 @@ import br.com.tiago.obramaster.platform.FilePicker
 import br.com.tiago.obramaster.platform.ImagePicker
 import br.com.tiago.obramaster.platform.ImageStore
 import br.com.tiago.obramaster.platform.PdfImageRenderer
+import br.com.tiago.obramaster.platform.PdfVectorExtractor
 import org.koin.dsl.module
 
 fun platformModule(context: Context) = module {
@@ -52,6 +53,7 @@ fun platformModule(context: Context) = module {
     single { ImageStore(context) }
     single { FilePicker(context) }
     single { PdfImageRenderer(context) }
+    single { PdfVectorExtractor(context) }
 
     single<ColaboradorRepository> { SqlDelightColaboradorRepository(get()) }
     single<PermissaoRepository> { SqlDelightPermissaoRepository(get()) }
