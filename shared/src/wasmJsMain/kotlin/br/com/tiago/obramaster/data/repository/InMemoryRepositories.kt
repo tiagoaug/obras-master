@@ -3,14 +3,21 @@ package br.com.tiago.obramaster.data.repository
 import br.com.tiago.obramaster.core.auth.NivelPermissao
 import br.com.tiago.obramaster.domain.Abertura
 import br.com.tiago.obramaster.domain.ArquivoImportado
+import br.com.tiago.obramaster.domain.CATEGORIAS_PADRAO_NOMES
+import br.com.tiago.obramaster.domain.CategoriaFinanceira
+import br.com.tiago.obramaster.domain.CentroDeCusto
 import br.com.tiago.obramaster.domain.Colaborador
 import br.com.tiago.obramaster.domain.Comodo
 import br.com.tiago.obramaster.domain.Conta
 import br.com.tiago.obramaster.domain.Cor
 import br.com.tiago.obramaster.domain.DadosEmpresa
 import br.com.tiago.obramaster.domain.Etapa
+import br.com.tiago.obramaster.domain.LancamentoFinanceiro
 import br.com.tiago.obramaster.domain.Material
+import br.com.tiago.obramaster.domain.NaturezaLancamento
 import br.com.tiago.obramaster.domain.Parede
+import br.com.tiago.obramaster.domain.RateioLancamento
+import br.com.tiago.obramaster.domain.TipoLancamento
 import br.com.tiago.obramaster.domain.Permissao
 import br.com.tiago.obramaster.domain.Pessoa
 import br.com.tiago.obramaster.domain.PlantaBaixa
@@ -19,6 +26,8 @@ import br.com.tiago.obramaster.domain.UnidadeMedida
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 /**
  * Substituto temporário só para o alvo Web enquanto não há backend (Fase 10) — a spec
@@ -271,6 +280,86 @@ class InMemoryArquivoImportadoRepository : ArquivoImportadoRepository {
 
     override suspend fun salvar(arquivo: ArquivoImportado) {
         state.value = state.value + arquivo
+    }
+}
+
+class InMemoryCategoriaFinanceiraRepository : CategoriaFinanceiraRepository {
+    private val state = MutableStateFlow<List<CategoriaFinanceira>>(emptyList())
+
+    override suspend fun listarAtivas(): List<CategoriaFinanceira> = state.value.filter { it.ativo }
+    override suspend fun salvar(categoria: CategoriaFinanceira) {
+        state.value = state.value + categoria
+    }
+    override suspend fun atualizar(categoria: CategoriaFinanceira) {
+        state.value = state.value.map { if (it.id == categoria.id) categoria else it }
+    }
+    override suspend fun desativar(id: String) {
+        state.value = state.value.map { if (it.id == id) it.copy(ativo = false) else it }
+    }
+
+    @OptIn(ExperimentalUuidApi::class)
+    override suspend fun garantirCategoriasPadrao() {
+        if (state.value.any { it.padraoDoSistema }) return
+        state.value = state.value + CATEGORIAS_PADRAO_NOMES.map { nome ->
+            CategoriaFinanceira(
+                id = Uuid.random().toString(),
+                nome = nome,
+                tipo = TipoLancamento.DESPESA,
+                naturezaPadrao = NaturezaLancamento.CONTABIL,
+                cor = "#90A4AE",
+                padraoDoSistema = true,
+            )
+        }
+    }
+
+    override fun observarAtivas(): Flow<List<CategoriaFinanceira>> = state.map { lista -> lista.filter { it.ativo } }
+}
+
+class InMemoryCentroDeCustoRepository : CentroDeCustoRepository {
+    private val state = MutableStateFlow<List<CentroDeCusto>>(emptyList())
+
+    override suspend fun listarAtivos(): List<CentroDeCusto> = state.value.filter { it.ativo }
+    override suspend fun buscarPorProjetoId(projetoId: String): CentroDeCusto? =
+        state.value.firstOrNull { it.projetoId == projetoId && it.ativo }
+    override suspend fun salvar(centro: CentroDeCusto) {
+        state.value = state.value + centro
+    }
+    override suspend fun atualizar(centro: CentroDeCusto) {
+        state.value = state.value.map { if (it.id == centro.id) centro else it }
+    }
+    override suspend fun desativar(id: String) {
+        state.value = state.value.map { if (it.id == id) it.copy(ativo = false) else it }
+    }
+    override fun observarAtivos(): Flow<List<CentroDeCusto>> = state.map { lista -> lista.filter { it.ativo } }
+}
+
+class InMemoryLancamentoFinanceiroRepository : LancamentoFinanceiroRepository {
+    private val state = MutableStateFlow<List<LancamentoFinanceiro>>(emptyList())
+
+    override suspend fun listarAtivos(): List<LancamentoFinanceiro> = state.value.filter { it.ativo }
+    override suspend fun salvar(lancamento: LancamentoFinanceiro) {
+        state.value = state.value + lancamento
+    }
+    override suspend fun atualizar(lancamento: LancamentoFinanceiro) {
+        state.value = state.value.map { if (it.id == lancamento.id) lancamento else it }
+    }
+    override suspend fun marcarPago(id: String, pago: Boolean) {
+        state.value = state.value.map { if (it.id == id) it.copy(pago = pago) else it }
+    }
+    override suspend fun desativar(id: String) {
+        state.value = state.value.map { if (it.id == id) it.copy(ativo = false) else it }
+    }
+    override fun observarAtivos(): Flow<List<LancamentoFinanceiro>> = state.map { lista -> lista.filter { it.ativo } }
+}
+
+class InMemoryRateioLancamentoRepository : RateioLancamentoRepository {
+    private val state = MutableStateFlow<List<RateioLancamento>>(emptyList())
+
+    override suspend fun listarDoLancamento(lancamentoId: String): List<RateioLancamento> =
+        state.value.filter { it.lancamentoId == lancamentoId }
+
+    override suspend fun substituir(lancamentoId: String, rateios: List<RateioLancamento>) {
+        state.value = state.value.filterNot { it.lancamentoId == lancamentoId } + rateios
     }
 }
 

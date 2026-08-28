@@ -1,0 +1,39 @@
+CREATE TABLE LancamentoFinanceiro (
+    id TEXT NOT NULL PRIMARY KEY,
+    tipo TEXT NOT NULL,
+    categoriaId TEXT NOT NULL,
+    centroDeCustoId TEXT NOT NULL,
+    natureza TEXT NOT NULL,
+    projetoId TEXT,
+    etapaId TEXT,
+    descricao TEXT NOT NULL,
+    valor INTEGER NOT NULL,
+    data INTEGER NOT NULL,
+    formaPagamento TEXT NOT NULL,
+    pago INTEGER AS kotlin.Boolean NOT NULL DEFAULT 0,
+    pessoaId TEXT,
+    anexoUri TEXT,
+    contaId TEXT,
+    ativo INTEGER AS kotlin.Boolean NOT NULL DEFAULT 1,
+    FOREIGN KEY (categoriaId) REFERENCES CategoriaFinanceira(id),
+    FOREIGN KEY (centroDeCustoId) REFERENCES CentroDeCusto(id),
+    FOREIGN KEY (projetoId) REFERENCES Projeto(id),
+    FOREIGN KEY (etapaId) REFERENCES Etapa(id)
+);
+
+selectAtivos:
+SELECT * FROM LancamentoFinanceiro WHERE ativo = 1 ORDER BY data DESC;
+
+insert:
+INSERT INTO LancamentoFinanceiro(id, tipo, categoriaId, centroDeCustoId, natureza, projetoId, etapaId, descricao, valor, data, formaPagamento, pago, pessoaId, anexoUri, contaId, ativo)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+update:
+UPDATE LancamentoFinanceiro SET tipo = ?, categoriaId = ?, centroDeCustoId = ?, natureza = ?, projetoId = ?, etapaId = ?, descricao = ?, valor = ?, data = ?, formaPagamento = ?, pago = ?, pessoaId = ?, anexoUri = ?
+WHERE id = ?;
+
+marcarPago:
+UPDATE LancamentoFinanceiro SET pago = ? WHERE id = ?;
+
+softDelete:
+UPDATE LancamentoFinanceiro SET ativo = 0 WHERE id = ?;

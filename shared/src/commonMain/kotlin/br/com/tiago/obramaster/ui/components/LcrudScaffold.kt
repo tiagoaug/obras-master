@@ -50,6 +50,7 @@ fun <T> LcrudListScaffold(
     onExcluirConfirmado: (T) -> Unit,
     onVoltar: (() -> Unit)? = null,
     acoesTopBar: @Composable androidx.compose.foundation.layout.RowScope.() -> Unit = {},
+    podeExcluir: (T) -> Boolean = { true },
 ) {
     var busca by remember { mutableStateOf("") }
     var itemParaExcluir by remember { mutableStateOf<T?>(null) }
@@ -88,10 +89,14 @@ fun <T> LcrudListScaffold(
                         ListItem(
                             headlineContent = { Text(itemHeadline(item)) },
                             supportingContent = itemSupporting(item)?.let { texto -> { Text(texto) } },
-                            trailingContent = {
-                                IconButton(onClick = { itemParaExcluir = item }) {
-                                    Icon(Icons.Filled.Delete, contentDescription = "Excluir")
+                            trailingContent = if (podeExcluir(item)) {
+                                {
+                                    IconButton(onClick = { itemParaExcluir = item }) {
+                                        Icon(Icons.Filled.Delete, contentDescription = "Excluir")
+                                    }
                                 }
+                            } else {
+                                null
                             },
                         )
                     }

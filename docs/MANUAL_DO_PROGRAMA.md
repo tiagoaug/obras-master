@@ -13,7 +13,7 @@
 2. Tela Inicial (Home)
 3. Módulos — Ligar e Desligar
 4. Projetos e Etapas
-5. Financeiro (Contas, Categorias, Centro de Custo)
+5. Financeiro (Dashboard, Lançamentos, Categorias, Centro de Custo)
 6. Compras
 7. Orçamentos (com BDI)
 8. Vendas
@@ -171,21 +171,23 @@ Se o PDF foi exportado direto de um programa de CAD (não é um escaneamento), o
 
 ![Financeiro](mockups/03_financeiro.svg)
 
-O painel financeiro mostra receitas, despesas e lucro, com **filtros por período** (mês, ano, intervalo personalizado) e por projeto.
+O painel financeiro (Dashboard) mostra **receitas, despesas e lucro** do período, com filtros por período (Hoje, Semana, Mês, Ano ou "Tudo"), por projeto, por natureza (Contábil/Não Contábil/Ambos) e por Centro de Custo. Três gráficos acompanham os números: **pizza** de despesas por categoria, **barras** de receita x despesa por mês, e **linha** da evolução do lucro mês a mês. Os ícones no topo do Dashboard abrem Lançamentos, Categorias e Centros de Custo.
 
-### 5.1 Contas `#financeiro-contas`
-Cadastre suas contas (caixa da obra, conta corrente, cartão) em Configurações → Contas. Todo pagamento ou recebimento é debitado/creditado de uma conta específica, e você sempre sabe o saldo real de cada uma.
+### 5.1 Lançamentos `#financeiro-lancamentos`
+Cada lançamento (receita ou despesa) tem categoria, valor, data, forma de pagamento, se já foi pago/recebido, natureza (Contábil/Não Contábil) e um Centro de Custo — que já vem preenchido sozinho quando você vincula o lançamento a um Projeto (o projeto tem seu próprio Centro de Custo automático, ver 5.3). Se preferir, um lançamento pode ser **rateado** entre vários Centros de Custo por percentual (ex.: a conta de luz do escritório dividida entre 3 obras) — a soma dos percentuais precisa fechar em 100%.
 
-### 5.2 Transferência entre contas `#financeiro-transferencia`
-Botão "Transferir" move dinheiro entre duas contas suas (ex.: do caixa da obra para a conta corrente) — isso **não** entra como receita nem despesa, é só movimentação de patrimônio.
+### 5.2 Categorias Financeiras `#financeiro-categorias`
+Categorias têm tipo (Receita/Despesa), uma natureza padrão que já pré-preenche o lançamento, e podem ter uma categoria "pai" (ex.: "Cimento e Argamassa" dentro de "Materiais") — a lista mostra as categorias-filhas logo abaixo da categoria-mãe. Oito categorias básicas (Materiais, Mão de Obra, Equipamentos, Administrativo, Impostos, Transporte, Alimentação de equipe, Combustível) já vêm prontas e não podem ser excluídas, só as que você mesmo criar.
 
 ### 5.3 Centro de Custo `#financeiro-centro-custo`
-Além de projeto/etapa, despesas administrativas (aluguel do escritório, combustível da frota) podem ser lançadas num Centro de Custo próprio, sem misturar com o custo de uma obra específica.
+Toda vez que você cria um Projeto, o app já cria sozinho um Centro de Custo vinculado a ele — é o que amarra os lançamentos daquela obra. Além disso, despesas administrativas que não pertencem a nenhuma obra específica (aluguel do escritório, combustível da frota) podem ser lançadas num Centro de Custo próprio (Administrativo, Comercial ou Outro), cadastrado manualmente em Financeiro → Centros de Custo. O Dashboard mostra o resultado (receita − despesa) de cada centro separadamente.
 
 ### 5.4 Contábil x Não Contábil `#financeiro-natureza`
-Cada lançamento é marcado como **Contábil** (formal, com nota, vai para o contador) ou **Não Contábil** (gerencial, ex.: um vale interno). Relatórios têm filtro para mostrar só um tipo, os dois, ou gerar o fechamento oficial (DRE) considerando só os contábeis.
+Cada lançamento é marcado como **Contábil** (formal, com nota, vai para o contador) ou **Não Contábil** (gerencial, ex.: um vale interno). O Dashboard e a lista de Lançamentos têm filtro para mostrar só um tipo, ou os dois juntos.
 
 **Exemplo prático:** você paga um adiantamento em dinheiro a um funcionário, sem nota — lança como Não Contábil. Isso aparece no seu controle gerencial, mas não entra no relatório que vai para o contador.
+
+*(Contas bancárias/caixa, extrato, saldo e transferência entre contas chegam numa próxima fase — por enquanto, marcar um lançamento como "pago" não pede uma conta de origem/destino. Exportação de qualquer visão em XLS/PDF/JPG chega junto do módulo de Exportação.)*
 
 ---
 

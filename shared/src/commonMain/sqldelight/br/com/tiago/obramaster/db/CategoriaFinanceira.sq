@@ -1,0 +1,29 @@
+CREATE TABLE CategoriaFinanceira (
+    id TEXT NOT NULL PRIMARY KEY,
+    nome TEXT NOT NULL,
+    tipo TEXT NOT NULL,
+    naturezaPadrao TEXT NOT NULL,
+    categoriaPaiId TEXT,
+    cor TEXT NOT NULL,
+    icone TEXT,
+    padraoDoSistema INTEGER AS kotlin.Boolean NOT NULL DEFAULT 0,
+    ativo INTEGER AS kotlin.Boolean NOT NULL DEFAULT 1,
+    FOREIGN KEY (categoriaPaiId) REFERENCES CategoriaFinanceira(id)
+);
+
+selectAtivas:
+SELECT * FROM CategoriaFinanceira WHERE ativo = 1 ORDER BY nome;
+
+existeAlgumaPadrao:
+SELECT COUNT(*) FROM CategoriaFinanceira WHERE padraoDoSistema = 1;
+
+insert:
+INSERT INTO CategoriaFinanceira(id, nome, tipo, naturezaPadrao, categoriaPaiId, cor, icone, padraoDoSistema, ativo)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+update:
+UPDATE CategoriaFinanceira SET nome = ?, tipo = ?, naturezaPadrao = ?, categoriaPaiId = ?, cor = ?, icone = ?
+WHERE id = ?;
+
+softDelete:
+UPDATE CategoriaFinanceira SET ativo = 0 WHERE id = ?;

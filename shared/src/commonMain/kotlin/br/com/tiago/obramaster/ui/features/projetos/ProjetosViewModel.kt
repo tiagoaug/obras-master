@@ -5,11 +5,14 @@ import androidx.lifecycle.viewModelScope
 import br.com.tiago.obramaster.core.onboarding.OnboardingDraftStore
 import br.com.tiago.obramaster.core.onboarding.ProjetoDraft
 import br.com.tiago.obramaster.core.projetos.TEMPLATE_ETAPAS_PADRAO
+import br.com.tiago.obramaster.data.repository.CentroDeCustoRepository
 import br.com.tiago.obramaster.data.repository.EtapaRepository
 import br.com.tiago.obramaster.data.repository.ProjetoRepository
+import br.com.tiago.obramaster.domain.CentroDeCusto
 import br.com.tiago.obramaster.domain.Etapa
 import br.com.tiago.obramaster.domain.Projeto
 import br.com.tiago.obramaster.domain.StatusProjeto
+import br.com.tiago.obramaster.domain.TipoCentroDeCusto
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -28,6 +31,7 @@ class ProjetosViewModel(
     private val repository: ProjetoRepository,
     private val etapaRepository: EtapaRepository,
     private val draftStore: OnboardingDraftStore,
+    private val centroDeCustoRepository: CentroDeCustoRepository,
 ) : ViewModel() {
 
     val projetos: StateFlow<List<Projeto>> = repository.observarAtivos()
@@ -106,6 +110,10 @@ class ProjetosViewModel(
                 orcamentoTotal = orcamentoTotal,
                 status = StatusProjeto.PLANEJAMENTO,
             ),
+        )
+        // SPEC_OBRA_MASTER_ADENDO_FINANCEIRO.md §3 — todo Projeto ganha um Centro de Custo 1:1 automático.
+        centroDeCustoRepository.salvar(
+            CentroDeCusto(id = Uuid.random().toString(), nome = nome, tipo = TipoCentroDeCusto.PROJETO, projetoId = projetoId),
         )
         if (aplicarTemplateEtapas) {
             TEMPLATE_ETAPAS_PADRAO.forEachIndexed { indice, nomeEtapa ->

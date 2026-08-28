@@ -1,0 +1,18 @@
+CREATE TABLE RateioLancamento (
+    id TEXT NOT NULL PRIMARY KEY,
+    lancamentoId TEXT NOT NULL,
+    centroDeCustoId TEXT NOT NULL,
+    percentual REAL NOT NULL,
+    FOREIGN KEY (lancamentoId) REFERENCES LancamentoFinanceiro(id),
+    FOREIGN KEY (centroDeCustoId) REFERENCES CentroDeCusto(id)
+);
+
+selectDoLancamento:
+SELECT * FROM RateioLancamento WHERE lancamentoId = ?;
+
+insert:
+INSERT INTO RateioLancamento(id, lancamentoId, centroDeCustoId, percentual)
+VALUES (?, ?, ?, ?);
+
+deleteDoLancamento:
+DELETE FROM RateioLancamento WHERE lancamentoId = ?;

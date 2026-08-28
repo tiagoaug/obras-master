@@ -3,6 +3,7 @@ package br.com.tiago.obramaster.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.tiago.obramaster.core.auth.SessionManager
+import br.com.tiago.obramaster.data.repository.CategoriaFinanceiraRepository
 import br.com.tiago.obramaster.data.repository.ColaboradorRepository
 import br.com.tiago.obramaster.domain.Colaborador
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,12 +22,14 @@ sealed interface AppRootUiState {
 class AppRootViewModel(
     private val colaboradorRepository: ColaboradorRepository,
     private val sessionManager: SessionManager,
+    private val categoriaFinanceiraRepository: CategoriaFinanceiraRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<AppRootUiState>(AppRootUiState.Carregando)
     val uiState: StateFlow<AppRootUiState> = _uiState.asStateFlow()
 
     init {
+        viewModelScope.launch { categoriaFinanceiraRepository.garantirCategoriasPadrao() }
         viewModelScope.launch {
             sessionManager.restaurar()
             val colaboradorSessao = sessionManager.colaboradorLogado.value
