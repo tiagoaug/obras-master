@@ -216,11 +216,17 @@ Quando o mesmo material aparece em mais de um pedido em Cotação (fornecedores 
 
 ## 7. Orçamentos (com BDI) `#orcamentos`
 
-Monte um orçamento somando itens de material e mão de obra. O sistema soma o **custo direto** e aplica o **BDI** (percentual que cobre administração, impostos, risco e lucro) para chegar no **preço de venda** que você vai propor ao cliente.
+Monte um orçamento somando itens de material e mão de obra. O sistema soma o **custo direto** e aplica o **BDI** (percentual que cobre administração, impostos, risco e lucro) para chegar no **preço de venda** que você vai propor ao cliente. Título, cliente (opcional), projeto existente (opcional), data, validade em dias e observações completam o cabeçalho do orçamento.
 
-Você pode ter perfis diferentes de BDI cadastrados (ex.: um para obra particular, outro para obra pública) e escolher qual usar em cada orçamento.
+Cada item é lançado como **Material** (vinculado ao cadastro de Materiais, unidade preenchida automaticamente) ou **Mão de Obra** (descrição livre, ex.: "Pedreiro", "Servente"), sempre com quantidade, unidade e valor unitário — o total do item é calculado na hora.
 
-**Exemplo prático:** um orçamento com R$ 100.000 de custo direto e um perfil de BDI de 24,5% mostra automaticamente o preço final de R$ 124.520 para o cliente — sem você calcular na calculadora do celular.
+Você pode ter perfis diferentes de BDI cadastrados em Configurações → BDI (ex.: um para obra particular, outro para obra pública) e escolher qual usar em cada orçamento — ou sobrescrever o percentual manualmente só naquele orçamento específico (fica registrado como "customizado" pra não perder o rastro). Um **desconto opcional (%)** pode ser aplicado sobre o preço já com BDI, pra negociações pontuais com o cliente.
+
+O card de BDI mostra em tempo real: percentual de BDI aplicado, preço de venda total e o markup (preço de venda ÷ custo direto). Enquanto o orçamento está em **Rascunho**, esses valores são recalculados a cada alteração; assim que ele muda de status pela primeira vez (Enviado, Aprovado ou Recusado), o cálculo fica **congelado** — mudar o perfil de BDI padrão depois não altera orçamentos já enviados.
+
+Orçamento com status **Aprovado** ganha o botão **"Converter em Projeto"**: cria o projeto automaticamente com o orçamento total = preço de venda aprovado, já com Centro de Custo e etapas padrão.
+
+**Exemplo prático:** um orçamento com R$ 100.000 de custo direto e um perfil de BDI de administração 4% + seguro 0,8% + risco 1% + despesas financeiras 1% + lucro 10% + tributos 5,65% resulta em ~24,52% de BDI e um preço final em torno de R$ 124.515 para o cliente — sem você calcular na calculadora do celular. O orçamento é aprovado, o Gestor clica em "Converter em Projeto" e a obra já nasce com o orçamento certo, sem redigitar nada.
 
 ---
 
@@ -322,7 +328,7 @@ O Gestor cadastra cada colaborador e define, módulo por módulo, se ele pode: n
 Liga/desliga cada setor do sistema (ver seção 3).
 
 ### 16.3 Categorias e BDI `#configuracoes-categorias-bdi`
-Cadastro de categorias financeiras (com hierarquia) e perfis de BDI. *(Chega nas Fases 2 e 6, junto dos módulos Cadastros Básicos e Orçamentos — ainda não disponível.)*
+Cadastro de categorias financeiras (com hierarquia, em Financeiro → Categorias) e perfis de BDI (Configurações → BDI). Cada perfil de BDI guarda as seis taxas (Administração Central, Seguros e Garantias, Riscos, Despesas Financeiras, Lucro, Tributos) e mostra o BDI calculado na hora — a tela bloqueia salvar se os tributos chegarem a 100% ou mais (combinação inválida, dividiria por zero). Um perfil pode ser marcado como padrão para pré-selecionar em novos orçamentos.
 
 **Exemplo prático (mostrado na imagem acima):** o módulo "Vendas" está desligado nesta empresa porque ela só executa obra para terceiros — o Gestor desativou e ele some do menu de todo mundo.
 

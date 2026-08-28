@@ -25,6 +25,7 @@ import br.com.tiago.obramaster.ui.features.financeiro.FinanceiroScreen
 import br.com.tiago.obramaster.ui.features.home.HomeScreen
 import br.com.tiago.obramaster.ui.features.login.LoginScreen
 import br.com.tiago.obramaster.ui.features.onboarding.OnboardingScreen
+import br.com.tiago.obramaster.ui.features.orcamentos.OrcamentosScreen
 import br.com.tiago.obramaster.ui.features.pessoas.PessoasScreen
 import br.com.tiago.obramaster.ui.features.plantabaixa.EditorPlantaScreen
 import br.com.tiago.obramaster.ui.features.projetos.ProjetoDetalheScreen
@@ -32,7 +33,7 @@ import br.com.tiago.obramaster.ui.features.projetos.ProjetosScreen
 import br.com.tiago.obramaster.ui.theme.ObraMasterTheme
 import org.koin.compose.koinInject
 
-private val MODULOS_IMPLEMENTADOS = setOf(AppModule.PESSOAS, AppModule.CADASTROS_BASE, AppModule.PROJETOS, AppModule.FINANCEIRO, AppModule.EQUIPES, AppModule.COMPRAS)
+private val MODULOS_IMPLEMENTADOS = setOf(AppModule.PESSOAS, AppModule.CADASTROS_BASE, AppModule.PROJETOS, AppModule.FINANCEIRO, AppModule.EQUIPES, AppModule.COMPRAS, AppModule.ORCAMENTOS)
 
 private sealed interface TelaRaiz {
     data object Onboarding : TelaRaiz
@@ -47,6 +48,7 @@ private sealed interface TelaRaiz {
     data class Financeiro(val colaborador: Colaborador) : TelaRaiz
     data class Equipes(val colaborador: Colaborador) : TelaRaiz
     data class Compras(val colaborador: Colaborador) : TelaRaiz
+    data class Orcamentos(val colaborador: Colaborador) : TelaRaiz
 }
 
 @Composable
@@ -89,6 +91,7 @@ fun App() {
                             AppModule.FINANCEIRO -> TelaRaiz.Financeiro(telaAtual.colaborador)
                             AppModule.EQUIPES -> TelaRaiz.Equipes(telaAtual.colaborador)
                             AppModule.COMPRAS -> TelaRaiz.Compras(telaAtual.colaborador)
+                            AppModule.ORCAMENTOS -> TelaRaiz.Orcamentos(telaAtual.colaborador)
                             else -> telaAtual
                         }
                     },
@@ -126,6 +129,8 @@ fun App() {
                 is TelaRaiz.Equipes -> EquipesModuloScreen(onVoltar = { tela = TelaRaiz.Home(telaAtual.colaborador) })
 
                 is TelaRaiz.Compras -> ComprasModuloScreen(onVoltar = { tela = TelaRaiz.Home(telaAtual.colaborador) })
+
+                is TelaRaiz.Orcamentos -> OrcamentosScreen(onVoltar = { tela = TelaRaiz.Home(telaAtual.colaborador) })
             }
         }
     }

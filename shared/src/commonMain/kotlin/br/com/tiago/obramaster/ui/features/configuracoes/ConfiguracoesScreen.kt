@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessibilityNew
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Calculate
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,6 +35,7 @@ private sealed interface Destino {
     data object Inicio : Destino
     data object Colaboradores : Destino
     data object Acessibilidade : Destino
+    data object Bdi : Destino
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -93,6 +95,16 @@ fun ConfiguracoesScreen(
                             modifier = Modifier.fillMaxWidth(),
                         )
                     }
+                    Card(
+                        onClick = { destino = Destino.Bdi },
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp),
+                    ) {
+                        ListItem(
+                            headlineContent = { Text("BDI (Orçamentos)") },
+                            leadingContent = { Icon(Icons.Filled.Calculate, contentDescription = null) },
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    }
                 }
                 Card(
                     onClick = { destino = Destino.Acessibilidade },
@@ -116,5 +128,7 @@ fun ConfiguracoesScreen(
         )
 
         Destino.Acessibilidade -> AcessibilidadeScreen(onVoltar = { destino = Destino.Inicio })
+
+        Destino.Bdi -> ConfigBdiScreen(onVoltar = { destino = Destino.Inicio })
     }
 }

@@ -8,6 +8,7 @@ import br.com.tiago.obramaster.domain.CategoriaFinanceira
 import br.com.tiago.obramaster.domain.CentroDeCusto
 import br.com.tiago.obramaster.domain.Colaborador
 import br.com.tiago.obramaster.domain.Comodo
+import br.com.tiago.obramaster.domain.ConfigBDI
 import br.com.tiago.obramaster.domain.Conta
 import br.com.tiago.obramaster.domain.Cor
 import br.com.tiago.obramaster.domain.DadosEmpresa
@@ -16,16 +17,19 @@ import br.com.tiago.obramaster.domain.Etapa
 import br.com.tiago.obramaster.domain.Fornecedor
 import br.com.tiago.obramaster.domain.Funcionario
 import br.com.tiago.obramaster.domain.ItemCompra
+import br.com.tiago.obramaster.domain.ItemOrcamento
 import br.com.tiago.obramaster.domain.LancamentoFinanceiro
 import br.com.tiago.obramaster.domain.Material
 import br.com.tiago.obramaster.domain.MovimentoConta
 import br.com.tiago.obramaster.domain.NaturezaLancamento
+import br.com.tiago.obramaster.domain.Orcamento
 import br.com.tiago.obramaster.domain.Pagamento
 import br.com.tiago.obramaster.domain.Parede
 import br.com.tiago.obramaster.domain.PedidoCompra
 import br.com.tiago.obramaster.domain.RateioLancamento
 import br.com.tiago.obramaster.domain.RegistroTrabalho
 import br.com.tiago.obramaster.domain.RetencaoLancamento
+import br.com.tiago.obramaster.domain.StatusOrcamento
 import br.com.tiago.obramaster.domain.StatusPedidoCompra
 import br.com.tiago.obramaster.domain.TipoLancamento
 import br.com.tiago.obramaster.domain.Permissao
@@ -546,4 +550,53 @@ class InMemoryPedidoCompraRepository : PedidoCompraRepository {
     override suspend fun itensDoPedido(pedidoId: String): List<ItemCompra> = itens.value.filter { it.pedidoId == pedidoId }
     override suspend fun itensDeTodos(): List<ItemCompra> = itens.value
     override fun observarTodos(): Flow<List<PedidoCompra>> = pedidos.map { lista -> lista.filter { it.ativo }.sortedByDescending { it.data } }
+}
+
+class InMemoryConfigBDIRepository : ConfigBDIRepository {
+    private val state = MutableStateFlow<List<ConfigBDI>>(emptyList())
+
+    override suspend fun listarAtivos(): List<ConfigBDI> = state.value.filter { it.ativo }
+
+    override suspend fun salvar(config: ConfigBDI) {
+        state.value = (if (config.padrao) state.value.map { it.copy(padrao = false) } else state.value) + config
+    }
+
+    override suspend fun atualizar(config: ConfigBDI) {
+        state.value = state.value.map {
+            when {
+                it.id == config.id -> config
+                config.padrao -> it.copy(padrao = false)
+                else -> it
+            }
+        }
+    }
+
+    override suspend fun desativar(id: String) {
+        state.value = state.value.map { if (it.id == id) it.copy(ativo = false) else it }
+    }
+
+    override fun observarAtivos(): Flow<List<ConfigBDI>> = state.map { lista -> lista.filter { it.ativo } }
+}
+
+class InMemoryOrcamentoRepository : OrcamentoRepository {
+    private val orcamentos = MutableStateFlow<List<Orcamento>>(emptyList())
+    private val itens = MutableStateFlow<List<ItemOrcamento>>(emptyList())
+
+    override suspend fun listarTodos(): List<Orcamento> = orcamentos.value.filter { it.ativo }.sortedByDescending { it.data }
+
+    override suspend fun salvar(orcamento: Orcamento, itens: List<ItemOrcamento>) {
+        orcamentos.value = orcamentos.value.filterNot { it.id == orcamento.id } + orcamento
+        this.itens.value = this.itens.value.filterNot { it.orcamentoId == orcamento.id } + itens
+    }
+
+    override suspend fun atualizarStatus(id: String, status: StatusOrcamento) {
+        orcamentos.value = orcamentos.value.map { if (it.id == id) it.copy(status = status) else it }
+    }
+
+    override suspend fun desativar(id: String) {
+        orcamentos.value = orcamentos.value.map { if (it.id == id) it.copy(ativo = false) else it }
+    }
+
+    override suspend fun itensDoOrcamento(orcamentoId: String): List<ItemOrcamento> = itens.value.filter { it.orcamentoId == orcamentoId }
+    override fun observarTodos(): Flow<List<Orcamento>> = orcamentos.map { lista -> lista.filter { it.ativo }.sortedByDescending { it.data } }
 }

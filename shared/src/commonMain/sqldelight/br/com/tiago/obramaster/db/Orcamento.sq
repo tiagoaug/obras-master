@@ -1,0 +1,54 @@
+CREATE TABLE Orcamento (
+    id TEXT NOT NULL PRIMARY KEY,
+    projetoId TEXT,
+    clientePessoaId TEXT,
+    titulo TEXT NOT NULL,
+    data INTEGER NOT NULL,
+    validadeDias INTEGER NOT NULL,
+    status TEXT NOT NULL,
+    descontoPercent REAL,
+    observacoes TEXT,
+    configBdiId TEXT,
+    bdiPercentualCalculado REAL NOT NULL,
+    bdiCustomizado INTEGER AS kotlin.Boolean NOT NULL DEFAULT 0,
+    custoDiretoTotal INTEGER NOT NULL,
+    precoVendaTotal INTEGER NOT NULL,
+    ativo INTEGER AS kotlin.Boolean NOT NULL DEFAULT 1,
+    FOREIGN KEY (projetoId) REFERENCES Projeto(id)
+);
+
+CREATE TABLE ItemOrcamento (
+    id TEXT NOT NULL PRIMARY KEY,
+    orcamentoId TEXT NOT NULL,
+    tipo TEXT NOT NULL,
+    descricao TEXT NOT NULL,
+    materialId TEXT,
+    quantidade REAL NOT NULL,
+    unidade TEXT NOT NULL,
+    valorUnitario INTEGER NOT NULL,
+    valorTotal INTEGER NOT NULL,
+    FOREIGN KEY (orcamentoId) REFERENCES Orcamento(id)
+);
+
+selectTodosAtivos:
+SELECT * FROM Orcamento WHERE ativo = 1 ORDER BY data DESC;
+
+insertOrcamento:
+INSERT INTO Orcamento(id, projetoId, clientePessoaId, titulo, data, validadeDias, status, descontoPercent, observacoes, configBdiId, bdiPercentualCalculado, bdiCustomizado, custoDiretoTotal, precoVendaTotal, ativo)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+updateStatus:
+UPDATE Orcamento SET status = ? WHERE id = ?;
+
+softDeleteOrcamento:
+UPDATE Orcamento SET ativo = 0 WHERE id = ?;
+
+selectItensDoOrcamento:
+SELECT * FROM ItemOrcamento WHERE orcamentoId = ?;
+
+insertItem:
+INSERT INTO ItemOrcamento(id, orcamentoId, tipo, descricao, materialId, quantidade, unidade, valorUnitario, valorTotal)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+deleteItensDoOrcamento:
+DELETE FROM ItemOrcamento WHERE orcamentoId = ?;

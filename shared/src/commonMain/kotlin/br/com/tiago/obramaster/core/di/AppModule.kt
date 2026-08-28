@@ -7,6 +7,7 @@ import br.com.tiago.obramaster.core.prefs.AccessibilityPrefsStore
 import br.com.tiago.obramaster.domain.Colaborador
 import br.com.tiago.obramaster.ui.features.compras.FornecedoresViewModel
 import br.com.tiago.obramaster.ui.features.compras.PedidosCompraViewModel
+import br.com.tiago.obramaster.ui.features.configuracoes.ConfigBdiViewModel
 import br.com.tiago.obramaster.ui.features.configuracoes.ConfiguracoesViewModel
 import br.com.tiago.obramaster.ui.features.equipes.EquipesViewModel
 import br.com.tiago.obramaster.ui.features.equipes.FuncionariosViewModel
@@ -26,6 +27,7 @@ import br.com.tiago.obramaster.ui.features.cadastros.CoresViewModel
 import br.com.tiago.obramaster.ui.features.cadastros.MateriaisViewModel
 import br.com.tiago.obramaster.ui.features.cadastros.UnidadesMedidaViewModel
 import br.com.tiago.obramaster.ui.features.onboarding.OnboardingViewModel
+import br.com.tiago.obramaster.ui.features.orcamentos.OrcamentosViewModel
 import br.com.tiago.obramaster.ui.features.pessoas.PessoasViewModel
 import br.com.tiago.obramaster.ui.features.plantabaixa.PlantaBaixaViewModel
 import br.com.tiago.obramaster.ui.features.projetos.ProjetoDetalheViewModel
@@ -73,4 +75,6 @@ val appModule = module {
     factory { RelatorioEquipesViewModel(get(), get(), get()) }
     factory { FornecedoresViewModel(get(), get()) }
     factory { PedidosCompraViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+    factory { ConfigBdiViewModel(get()) }
+    factory { OrcamentosViewModel(get(), get(), get(), get(), get(), get(), get()) }
 }
