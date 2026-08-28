@@ -14,6 +14,8 @@ interface PlantaBaixaRepository {
     suspend fun buscarPorId(id: String): PlantaBaixa?
     suspend fun salvar(planta: PlantaBaixa)
     suspend fun atualizarEscala(id: String, escalaPxPorMetro: Double, atualizadaEm: Long)
+    suspend fun atualizarImagemFundo(id: String, imagemFundoKey: String?, atualizadaEm: Long)
+    suspend fun atualizarOpacidadeFundo(id: String, opacidade: Float)
     suspend fun renomear(id: String, nome: String, atualizadaEm: Long)
     suspend fun desativar(id: String)
     fun observarDoProjeto(projetoId: String): Flow<List<PlantaBaixa>>
@@ -50,6 +52,14 @@ class SqlDelightPlantaBaixaRepository(
 
     override suspend fun atualizarEscala(id: String, escalaPxPorMetro: Double, atualizadaEm: Long) {
         withContext(Dispatchers.Default) { queries.updateEscala(escalaPxPorMetro, atualizadaEm, id) }
+    }
+
+    override suspend fun atualizarImagemFundo(id: String, imagemFundoKey: String?, atualizadaEm: Long) {
+        withContext(Dispatchers.Default) { queries.atualizarImagemFundo(imagemFundoKey, atualizadaEm, id) }
+    }
+
+    override suspend fun atualizarOpacidadeFundo(id: String, opacidade: Float) {
+        withContext(Dispatchers.Default) { queries.atualizarOpacidadeFundo(opacidade.toDouble(), id) }
     }
 
     override suspend fun renomear(id: String, nome: String, atualizadaEm: Long) {

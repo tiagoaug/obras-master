@@ -34,6 +34,8 @@ import br.com.tiago.obramaster.data.repository.SqlDelightUnidadeMedidaRepository
 import br.com.tiago.obramaster.data.repository.UnidadeMedidaRepository
 import br.com.tiago.obramaster.platform.AppSettingsFactory
 import br.com.tiago.obramaster.platform.ContactsProvider
+import br.com.tiago.obramaster.platform.ImagePicker
+import br.com.tiago.obramaster.platform.ImageStore
 import org.koin.dsl.module
 
 val platformModule = module {
@@ -41,6 +43,8 @@ val platformModule = module {
     single { AppSettingsFactory() }
     single { createDatabase(get()) }
     single { ContactsProvider() }
+    single { ImagePicker() }
+    single { ImageStore() }
 
     single<ColaboradorRepository> { SqlDelightColaboradorRepository(get()) }
     single<PermissaoRepository> { SqlDelightPermissaoRepository(get()) }

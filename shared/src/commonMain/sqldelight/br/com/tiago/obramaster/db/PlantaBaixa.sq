@@ -24,6 +24,12 @@ VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
 updateEscala:
 UPDATE PlantaBaixa SET escalaPxPorMetro = ?, atualizadaEm = ? WHERE id = ?;
 
+atualizarImagemFundo:
+UPDATE PlantaBaixa SET imagemFundoKey = ?, atualizadaEm = ? WHERE id = ?;
+
+atualizarOpacidadeFundo:
+UPDATE PlantaBaixa SET imagemFundoOpacidade = ? WHERE id = ?;
+
 renomear:
 UPDATE PlantaBaixa SET nome = ?, atualizadaEm = ? WHERE id = ?;
 

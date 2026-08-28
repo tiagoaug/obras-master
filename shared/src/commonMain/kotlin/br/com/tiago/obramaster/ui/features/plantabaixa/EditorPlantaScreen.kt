@@ -18,23 +18,31 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.DoorFront
+import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.NearMe
 import androidx.compose.material.icons.filled.Straighten
 import androidx.compose.material.icons.automirrored.filled.Undo
 import androidx.compose.material.icons.filled.Window
 import androidx.compose.material.icons.outlined.CropSquare
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -54,6 +62,7 @@ import br.com.tiago.obramaster.core.util.DecimalFormatter
 import br.com.tiago.obramaster.domain.Comodo
 import br.com.tiago.obramaster.domain.PontoXY
 import br.com.tiago.obramaster.domain.TipoAbertura
+import br.com.tiago.obramaster.ui.components.decodeImageBitmap
 import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
 
@@ -69,6 +78,10 @@ fun EditorPlantaScreen(
     val uiState by viewModel.uiState.collectAsState()
     var arrastoAtual by remember { mutableStateOf<Pair<Offset, Offset>?>(null) }
     var mostrarEscala by remember { mutableStateOf(false) }
+    var mostrarImagemSheet by remember { mutableStateOf(false) }
+    var distanciaCalibracaoTexto by remember { mutableStateOf("") }
+
+    val imagemBitmap = uiState.imagemFundoBytes?.let { bytes -> remember(bytes) { decodeImageBitmap(bytes) } }
 
     Scaffold(
         topBar = {
@@ -78,6 +91,9 @@ fun EditorPlantaScreen(
                     IconButton(onClick = onVoltar) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar") }
                 },
                 actions = {
+                    IconButton(onClick = { mostrarImagemSheet = true }) {
+                        Icon(Icons.Filled.Image, contentDescription = "Imagem de fundo")
+                    }
                     IconButton(onClick = { mostrarEscala = true }) {
                         Icon(Icons.Filled.Straighten, contentDescription = "Ajustar escala")
                     }
@@ -99,6 +115,9 @@ fun EditorPlantaScreen(
                 FerramentaIcone(FerramentaDesenho.PORTA, Icons.Filled.DoorFront, uiState.ferramentaAtual, viewModel::selecionarFerramenta)
                 FerramentaIcone(FerramentaDesenho.JANELA, Icons.Filled.Window, uiState.ferramentaAtual, viewModel::selecionarFerramenta)
                 FerramentaIcone(FerramentaDesenho.MEDIR, Icons.Filled.Straighten, uiState.ferramentaAtual, viewModel::selecionarFerramenta)
+                if (imagemBitmap != null) {
+                    FerramentaIcone(FerramentaDesenho.CALIBRAR, Icons.Filled.Image, uiState.ferramentaAtual, viewModel::selecionarFerramenta)
+                }
             }
 
             if (uiState.ferramentaAtual == FerramentaDesenho.POLIGONO && uiState.pontosPoligonoEmDesenho.isNotEmpty()) {
@@ -112,6 +131,17 @@ fun EditorPlantaScreen(
                 Text(
                     "Distância medida: ${DecimalFormatter.formatar(medida)} m",
                     style = MaterialTheme.typography.labelLarge,
+                    modifier = Modifier.padding(horizontal = 12.dp),
+                )
+            }
+            if (uiState.ferramentaAtual == FerramentaDesenho.CALIBRAR) {
+                Text(
+                    if (uiState.pontoCalibracaoA == null) {
+                        "Toque no início de uma medida conhecida na foto"
+                    } else {
+                        "Toque no fim dessa medida"
+                    },
+                    style = MaterialTheme.typography.labelSmall,
                     modifier = Modifier.padding(horizontal = 12.dp),
                 )
             }
@@ -157,9 +187,22 @@ fun EditorPlantaScreen(
                                     val ponto = PontoXY(offset.x.toDouble(), offset.y.toDouble())
                                     viewModel.selecionarComodo(viewModel.comodoNoPonto(ponto)?.id)
                                 }
+
+                                FerramentaDesenho.CALIBRAR -> detectTapGestures { offset ->
+                                    viewModel.tocarParaCalibrar(PontoXY(offset.x.toDouble(), offset.y.toDouble()))
+                                }
                             }
                         },
                 ) {
+                    // Imagem de fundo (Caminho B — SPEC_PLANTA_BAIXA.md §5)
+                    if (uiState.mostrarImagemFundo && imagemBitmap != null) {
+                        drawImage(
+                            image = imagemBitmap,
+                            dstSize = androidx.compose.ui.unit.IntSize(size.width.toInt(), size.height.toInt()),
+                            alpha = uiState.planta?.imagemFundoOpacidade ?: 0.5f,
+                        )
+                    }
+
                     // Grade
                     var x = 0f
                     while (x < size.width) {
@@ -234,6 +277,19 @@ fun EditorPlantaScreen(
                         }
                     }
 
+                    // Ponto/linha de calibração
+                    uiState.pontoCalibracaoA?.let { ponto ->
+                        drawCircle(Color(0xFFD500F9), radius = 6f, center = Offset(ponto.x.toFloat(), ponto.y.toFloat()))
+                    }
+                    uiState.linhaCalibracaoPendente?.let { (a, b) ->
+                        drawLine(
+                            Color(0xFFD500F9),
+                            Offset(a.x.toFloat(), a.y.toFloat()),
+                            Offset(b.x.toFloat(), b.y.toFloat()),
+                            strokeWidth = 3f,
+                        )
+                    }
+
                     // Preview do retângulo sendo arrastado
                     arrastoAtual?.let { (inicio, fim) ->
                         drawRect(
@@ -264,6 +320,84 @@ fun EditorPlantaScreen(
             },
             onDispensar = { mostrarEscala = false },
         )
+    }
+
+    if (mostrarImagemSheet) {
+        ImagemFundoSheet(
+            uiState = uiState,
+            onImportar = { viewModel.importarImagemDaGaleria() },
+            onAlternarVisibilidade = { viewModel.alternarVisibilidadeImagemFundo() },
+            onOpacidadeMudou = { viewModel.definirOpacidadeImagemFundo(it) },
+            onRecalibrar = {
+                mostrarImagemSheet = false
+                viewModel.selecionarFerramenta(FerramentaDesenho.CALIBRAR)
+            },
+            onDismiss = { mostrarImagemSheet = false },
+        )
+    }
+
+    uiState.linhaCalibracaoPendente?.let {
+        AlertDialog(
+            onDismissRequest = { viewModel.cancelarCalibracao() },
+            title = { Text("Qual a distância real dessa linha?") },
+            text = {
+                OutlinedTextField(
+                    value = distanciaCalibracaoTexto,
+                    onValueChange = { distanciaCalibracaoTexto = it },
+                    label = { Text("Metros (ex.: 3,50)") },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            },
+            confirmButton = {
+                Button(onClick = {
+                    distanciaCalibracaoTexto.replace(",", ".").toDoubleOrNull()?.let { distancia ->
+                        viewModel.confirmarCalibracao(distancia)
+                        distanciaCalibracaoTexto = ""
+                    }
+                }) { Text("Calibrar") }
+            },
+            dismissButton = {
+                Button(onClick = { viewModel.cancelarCalibracao() }) { Text("Cancelar") }
+            },
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ImagemFundoSheet(
+    uiState: EditorPlantaUiState,
+    onImportar: () -> Unit,
+    onAlternarVisibilidade: () -> Unit,
+    onOpacidadeMudou: (Float) -> Unit,
+    onRecalibrar: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    ModalBottomSheet(onDismissRequest = onDismiss, sheetState = rememberModalBottomSheetState()) {
+        Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Text("Imagem de fundo", style = MaterialTheme.typography.titleMedium)
+
+            if (uiState.imagemFundoBytes == null) {
+                Text("Importe uma foto do projeto pra usar como referência por baixo do desenho.")
+                Button(onClick = onImportar, enabled = !uiState.importandoImagem) {
+                    Text(if (uiState.importandoImagem) "Importando..." else "Importar da galeria")
+                }
+                if (uiState.importandoImagem) CircularProgressIndicator()
+            } else {
+                Row {
+                    Text("Mostrar imagem", modifier = Modifier.weight(1f).padding(top = 12.dp))
+                    Switch(checked = uiState.mostrarImagemFundo, onCheckedChange = { onAlternarVisibilidade() })
+                }
+                Text("Opacidade: ${((uiState.planta?.imagemFundoOpacidade ?: 0.5f) * 100).toInt()}%")
+                Slider(
+                    value = uiState.planta?.imagemFundoOpacidade ?: 0.5f,
+                    onValueChange = onOpacidadeMudou,
+                    valueRange = 0.1f..1f,
+                )
+                Button(onClick = onRecalibrar) { Text("Recalibrar com essa foto") }
+                Button(onClick = onImportar, enabled = !uiState.importandoImagem) { Text("Trocar foto") }
+            }
+        }
     }
 }
 

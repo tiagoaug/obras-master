@@ -13,6 +13,8 @@ import br.com.tiago.obramaster.domain.Parede
 import br.com.tiago.obramaster.domain.PlantaBaixa
 import br.com.tiago.obramaster.domain.PontoXY
 import br.com.tiago.obramaster.domain.TipoAbertura
+import br.com.tiago.obramaster.platform.ImagePicker
+import br.com.tiago.obramaster.platform.ImageStore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -33,6 +35,11 @@ data class EditorPlantaUiState(
     val medidaResultadoM: Double? = null,
     val ultimaFormaCriadaId: String? = null,
     val corPreenchimentoPadrao: String = "#90CAF9",
+    val imagemFundoBytes: ByteArray? = null,
+    val mostrarImagemFundo: Boolean = true,
+    val pontoCalibracaoA: PontoXY? = null,
+    val linhaCalibracaoPendente: Pair<PontoXY, PontoXY>? = null,
+    val importandoImagem: Boolean = false,
 )
 
 class PlantaBaixaViewModel(
@@ -41,6 +48,8 @@ class PlantaBaixaViewModel(
     private val comodoRepository: ComodoRepository,
     private val paredeRepository: ParedeRepository,
     private val aberturaRepository: AberturaRepository,
+    private val imagePicker: ImagePicker,
+    private val imageStore: ImageStore,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(EditorPlantaUiState())
@@ -48,7 +57,11 @@ class PlantaBaixaViewModel(
 
     init {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(planta = plantaBaixaRepository.buscarPorId(plantaId))
+            val planta = plantaBaixaRepository.buscarPorId(plantaId)
+            _uiState.value = _uiState.value.copy(planta = planta)
+            planta?.imagemFundoKey?.let { chave ->
+                _uiState.value = _uiState.value.copy(imagemFundoBytes = imageStore.load(chave))
+            }
         }
         viewModelScope.launch {
             comodoRepository.observarDaPlanta(plantaId).collect { comodos ->
@@ -76,6 +89,7 @@ class PlantaBaixaViewModel(
             pontosPoligonoEmDesenho = emptyList(),
             medidaPontoA = null,
             medidaResultadoM = null,
+            pontoCalibracaoA = null,
         )
     }
 
@@ -248,4 +262,69 @@ class PlantaBaixaViewModel(
     }
 
     private fun agora(): Long = kotlinx.datetime.Clock.System.now().toEpochMilliseconds()
+
+    // --- Caminho B (SPEC_PLANTA_BAIXA.md §5) — importar foto e calibrar por ela ---
+
+    suspend fun imagemDisponivel(): Boolean = imagePicker.isAvailable()
+
+    fun importarImagemDaGaleria() {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(importandoImagem = true)
+            val imagem = imagePicker.pickFromGallery().firstOrNull()
+            if (imagem != null) {
+                val chave = imageStore.save(imagem)
+                plantaBaixaRepository.atualizarImagemFundo(plantaId, chave, agora())
+                _uiState.value = _uiState.value.copy(
+                    planta = _uiState.value.planta?.copy(imagemFundoKey = chave),
+                    imagemFundoBytes = imagem.bytes,
+                    importandoImagem = false,
+                    mostrarImagemFundo = true,
+                )
+            } else {
+                _uiState.value = _uiState.value.copy(importandoImagem = false)
+            }
+        }
+    }
+
+    fun alternarVisibilidadeImagemFundo() {
+        _uiState.value = _uiState.value.copy(mostrarImagemFundo = !_uiState.value.mostrarImagemFundo)
+    }
+
+    fun definirOpacidadeImagemFundo(opacidade: Float) {
+        val planta = _uiState.value.planta ?: return
+        viewModelScope.launch { plantaBaixaRepository.atualizarOpacidadeFundo(plantaId, opacidade) }
+        _uiState.value = _uiState.value.copy(planta = planta.copy(imagemFundoOpacidade = opacidade))
+    }
+
+    /** Ferramenta CALIBRAR: dois toques marcam uma medida conhecida na foto; ver confirmarCalibracao(). */
+    fun tocarParaCalibrar(ponto: PontoXY) {
+        val estadoAtual = _uiState.value
+        if (estadoAtual.pontoCalibracaoA == null) {
+            _uiState.value = estadoAtual.copy(pontoCalibracaoA = ponto)
+        } else {
+            _uiState.value = estadoAtual.copy(
+                linhaCalibracaoPendente = estadoAtual.pontoCalibracaoA to ponto,
+                pontoCalibracaoA = null,
+            )
+        }
+    }
+
+    fun cancelarCalibracao() {
+        _uiState.value = _uiState.value.copy(pontoCalibracaoA = null, linhaCalibracaoPendente = null)
+    }
+
+    /** Usuário informou a distância real da linha traçada — recalcula e grava a escala da planta. */
+    fun confirmarCalibracao(distanciaRealM: Double) {
+        val linha = _uiState.value.linhaCalibracaoPendente ?: return
+        if (distanciaRealM <= 0.0) return
+        val novaEscala = PlantaBaixaEngine.calcularEscala(linha.first, linha.second, distanciaRealM)
+        val planta = _uiState.value.planta ?: return
+        viewModelScope.launch {
+            plantaBaixaRepository.atualizarEscala(plantaId, novaEscala, agora())
+            _uiState.value = _uiState.value.copy(
+                planta = planta.copy(escalaPxPorMetro = novaEscala),
+                linhaCalibracaoPendente = null,
+            )
+        }
+    }
 }

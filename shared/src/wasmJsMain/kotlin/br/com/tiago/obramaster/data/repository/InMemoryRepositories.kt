@@ -222,6 +222,14 @@ class InMemoryPlantaBaixaRepository : PlantaBaixaRepository {
         state.value = state.value.map { if (it.id == id) it.copy(escalaPxPorMetro = escalaPxPorMetro, atualizadaEm = atualizadaEm) else it }
     }
 
+    override suspend fun atualizarImagemFundo(id: String, imagemFundoKey: String?, atualizadaEm: Long) {
+        state.value = state.value.map { if (it.id == id) it.copy(imagemFundoKey = imagemFundoKey, atualizadaEm = atualizadaEm) else it }
+    }
+
+    override suspend fun atualizarOpacidadeFundo(id: String, opacidade: Float) {
+        state.value = state.value.map { if (it.id == id) it.copy(imagemFundoOpacidade = opacidade) else it }
+    }
+
     override suspend fun renomear(id: String, nome: String, atualizadaEm: Long) {
         state.value = state.value.map { if (it.id == id) it.copy(nome = nome, atualizadaEm = atualizadaEm) else it }
     }

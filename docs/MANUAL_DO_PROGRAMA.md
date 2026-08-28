@@ -99,9 +99,21 @@ Dentro do projeto, a seção "Plantas Baixas" deixa desenhar um esboço da obra 
 
 Depois de desenhado, o botão **"Calcular área a partir da planta"** (na tela do projeto) soma a área de todos os cômodos de todas as plantas e preenche a área construída do projeto — sem sobrescrever nada sozinho, só quando você confirma.
 
-*(Importar uma foto do projeto como referência para desenhar por cima, e a calibração de escala a partir dela, chegam na próxima fase. Por enquanto a escala é sempre manual: "1 quadrado = X metros". Exportar a planta em PDF/JPG chega junto da Fase 9.)*
-
 **Exemplo prático:** você desenha a Sala (retângulo) e o Quarto 1 (polígono em L, por causa do closet) — o app mostra 18m² e 12m², respectivamente. Ao tocar em "Calcular área a partir da planta", os 30m² substituem o valor que estava (ou não) preenchido manualmente na área construída do projeto.
+
+#### Importar foto e calibrar escala `#planta-baixa-importar-foto`
+
+O ícone de imagem na barra superior do editor abre o painel "Imagem de fundo":
+
+- **Importar foto**: tira uma foto na hora ou escolhe da galeria (no Android e na Web; no iOS essa função ainda não está disponível — ver nota abaixo). A foto vira uma camada de fundo no editor, para você desenhar as paredes por cima dela.
+- **Mostrar/ocultar** a foto de fundo com um toque, sem perder o desenho.
+- **Opacidade**: um controle deslizante deixa a foto mais clara ou mais escura, pra facilitar enxergar as linhas desenhadas por cima.
+- **📐 Calibrar** (novo botão na barra de ferramentas, some quando não há foto importada): toque em dois pontos da foto que você sabe a distância real entre eles (ex.: as duas pontas de uma porta) e informe essa distância em metros — o app recalcula sozinho quanto vale cada quadrado da grade a partir daí, substituindo a escala manual.
+- **Trocar foto** troca a imagem de fundo a qualquer momento; a escala calibrada anteriormente não é alterada automaticamente — recalibre se a nova foto tiver uma proporção diferente.
+
+*(Esse fluxo não faz leitura automática de medidas na foto (OCR) — a calibração por dois toques é sempre manual, mas rápida. No iOS, importar foto ainda não está disponível nesta fase; a tela mostra a mensagem de indisponível e o restante do editor funciona normalmente. Exportar a planta em PDF/JPG chega junto da Fase 9.)*
+
+**Exemplo prático:** você fotografa uma planta impressa do projeto, importa a foto, toca nas duas pontas de uma porta que mede 0,80m na realidade e digita "0,8" quando o app pergunta a distância — a partir daí, cada quadrado da grade passa a refletir a escala real da foto, e os cômodos que você desenhar por cima já saem com a área certa.
 
 ---
 
