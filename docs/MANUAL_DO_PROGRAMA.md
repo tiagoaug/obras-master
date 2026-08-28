@@ -325,9 +325,14 @@ Todos com busca, criar/editar/excluir (exclusão sempre pede confirmação e nã
 
 Todo campo de valor no app tem um ícone de calculadora ao lado — toque nele para abrir uma calculadora completa sem sair da tela, e o resultado volta automaticamente para o campo.
 
-Também há um hub de calculadoras dedicado: científica, trigonométrica, áreas, perímetros, volumes e as de **engenharia civil** (traço de concreto, argamassa, tijolos por m², tinta, telhado, escada, ferragem).
+Também há um hub de calculadoras dedicado (módulo "Calculadoras" na Home), com duas calculadoras completas até agora:
 
-**Exemplo prático (mostrado na imagem acima):** ao lançar um gasto de material, você não precisa saber o valor de cabeça — toque no ícone da calculadora, faça a conta (ex.: 45 × 72) e o resultado já preenche o campo de valor.
+- **Científica**: além das operações básicas, tem potência, raiz (quadrada e de qualquer índice), log, ln, exp, fatorial e memória (M+, M−, MR, MC). Todo cálculo feito fica registrado no histórico da sessão.
+- **Trigonométrica**: seno/cosseno/tangente e as inversas (arcsen/arccos/arctan), sempre em graus. A seção de **resolução de triângulo** aceita três formas de entrada — 3 lados, 2 lados + o ângulo entre eles, ou 2 ângulos + 1 lado — e também o teorema de Pitágoras isolado. O resultado vem com um **desenho esquemático do triângulo**, calculado na hora a partir dos lados e ângulos resolvidos.
+
+*(Áreas, perímetros e volumes, e as calculadoras de engenharia civil — traço de concreto, argamassa, tijolos por m², tinta, telhado, escada, ferragem — chegam nas próximas sub-fases.)*
+
+**Exemplo prático:** você tem um terreno triangular e sabe os 3 lados (12m, 9m, 15m). Na calculadora Trigonométrica, escolhe "3 lados", digita os valores e calcula — ela devolve os 3 ângulos internos e desenha o triângulo na proporção certa, sem precisar abrir uma planilha ou fazer conta na mão.
 
 ---
 

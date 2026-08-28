@@ -18,6 +18,7 @@ import br.com.tiago.obramaster.domain.Colaborador
 import br.com.tiago.obramaster.ui.AppRootUiState
 import br.com.tiago.obramaster.ui.AppRootViewModel
 import br.com.tiago.obramaster.ui.features.cadastros.CadastrosBasicosScreen
+import br.com.tiago.obramaster.ui.features.calculadoras.CalculadorasModuloScreen
 import br.com.tiago.obramaster.ui.features.compras.ComprasModuloScreen
 import br.com.tiago.obramaster.ui.features.configuracoes.ConfiguracoesScreen
 import br.com.tiago.obramaster.ui.features.equipes.EquipesModuloScreen
@@ -36,7 +37,7 @@ import br.com.tiago.obramaster.ui.features.projetos.ProjetosScreen
 import br.com.tiago.obramaster.ui.theme.ObraMasterTheme
 import org.koin.compose.koinInject
 
-private val MODULOS_IMPLEMENTADOS = setOf(AppModule.PESSOAS, AppModule.CADASTROS_BASE, AppModule.PROJETOS, AppModule.FINANCEIRO, AppModule.EQUIPES, AppModule.COMPRAS, AppModule.ORCAMENTOS, AppModule.VENDAS)
+private val MODULOS_IMPLEMENTADOS = setOf(AppModule.PESSOAS, AppModule.CADASTROS_BASE, AppModule.PROJETOS, AppModule.FINANCEIRO, AppModule.EQUIPES, AppModule.COMPRAS, AppModule.ORCAMENTOS, AppModule.VENDAS, AppModule.CALCULADORAS)
 
 private sealed interface TelaRaiz {
     data object Onboarding : TelaRaiz
@@ -55,6 +56,7 @@ private sealed interface TelaRaiz {
     data class Compras(val colaborador: Colaborador) : TelaRaiz
     data class Orcamentos(val colaborador: Colaborador) : TelaRaiz
     data class Vendas(val colaborador: Colaborador) : TelaRaiz
+    data class Calculadoras(val colaborador: Colaborador) : TelaRaiz
 }
 
 @Composable
@@ -99,6 +101,7 @@ fun App() {
                             AppModule.COMPRAS -> TelaRaiz.Compras(telaAtual.colaborador)
                             AppModule.ORCAMENTOS -> TelaRaiz.Orcamentos(telaAtual.colaborador)
                             AppModule.VENDAS -> TelaRaiz.Vendas(telaAtual.colaborador)
+                            AppModule.CALCULADORAS -> TelaRaiz.Calculadoras(telaAtual.colaborador)
                             else -> telaAtual
                         }
                     },
@@ -152,6 +155,8 @@ fun App() {
                 is TelaRaiz.Orcamentos -> OrcamentosScreen(onVoltar = { tela = TelaRaiz.Home(telaAtual.colaborador) })
 
                 is TelaRaiz.Vendas -> VendasScreen(onVoltar = { tela = TelaRaiz.Home(telaAtual.colaborador) })
+
+                is TelaRaiz.Calculadoras -> CalculadorasModuloScreen(onVoltar = { tela = TelaRaiz.Home(telaAtual.colaborador) })
             }
         }
     }
