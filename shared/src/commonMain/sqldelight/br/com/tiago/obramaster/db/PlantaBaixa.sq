@@ -1,0 +1,31 @@
+CREATE TABLE PlantaBaixa (
+    id TEXT NOT NULL PRIMARY KEY,
+    projetoId TEXT NOT NULL,
+    nome TEXT NOT NULL,
+    escalaPxPorMetro REAL NOT NULL,
+    imagemFundoKey TEXT,
+    imagemFundoOpacidade REAL NOT NULL DEFAULT 0.5,
+    criadaEm INTEGER NOT NULL,
+    atualizadaEm INTEGER NOT NULL,
+    ativo INTEGER AS kotlin.Boolean NOT NULL DEFAULT 1,
+    FOREIGN KEY (projetoId) REFERENCES Projeto(id)
+);
+
+selectAtivasDoProjeto:
+SELECT * FROM PlantaBaixa WHERE projetoId = ? AND ativo = 1 ORDER BY criadaEm;
+
+selectPorId:
+SELECT * FROM PlantaBaixa WHERE id = ?;
+
+insert:
+INSERT INTO PlantaBaixa(id, projetoId, nome, escalaPxPorMetro, imagemFundoKey, imagemFundoOpacidade, criadaEm, atualizadaEm, ativo)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+updateEscala:
+UPDATE PlantaBaixa SET escalaPxPorMetro = ?, atualizadaEm = ? WHERE id = ?;
+
+renomear:
+UPDATE PlantaBaixa SET nome = ?, atualizadaEm = ? WHERE id = ?;
+
+softDelete:
+UPDATE PlantaBaixa SET ativo = 0 WHERE id = ?;

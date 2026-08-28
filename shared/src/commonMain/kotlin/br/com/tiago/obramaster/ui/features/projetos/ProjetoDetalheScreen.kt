@@ -55,12 +55,14 @@ import org.koin.core.parameter.parametersOf
 fun ProjetoDetalheScreen(
     projetoId: String,
     onVoltar: () -> Unit,
+    onAbrirPlanta: (String) -> Unit,
     viewModel: ProjetoDetalheViewModel = koinInject { parametersOf(projetoId) },
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val projeto = uiState.projeto
     var mostrarFormEtapa by remember { mutableStateOf(false) }
     var etapaEditando by remember { mutableStateOf<Etapa?>(null) }
+    var mostrarFormPlanta by remember { mutableStateOf(false) }
 
     if (projeto == null) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
@@ -155,6 +157,28 @@ fun ProjetoDetalheScreen(
                     }
                 }
             }
+
+            Text("Plantas Baixas", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 20.dp, bottom = 8.dp))
+            Text(
+                "Desenhe a planta pra calcular a área construída automaticamente, em vez de digitar.",
+                style = MaterialTheme.typography.bodySmall,
+            )
+
+            uiState.plantas.forEach { planta ->
+                Card(
+                    onClick = { onAbrirPlanta(planta.id) },
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                ) {
+                    Text(planta.nome, Modifier.padding(12.dp), style = MaterialTheme.typography.titleSmall)
+                }
+            }
+
+            Row(Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Button(onClick = { mostrarFormPlanta = true }) { Text("Nova planta") }
+                if (uiState.plantas.isNotEmpty()) {
+                    Button(onClick = { viewModel.calcularEAplicarAreaDaPlanta() }) { Text("Calcular área a partir da planta") }
+                }
+            }
         }
     }
 
@@ -167,6 +191,30 @@ fun ProjetoDetalheScreen(
                 mostrarFormEtapa = false
             },
         )
+    }
+
+    if (mostrarFormPlanta) {
+        NovaPlantaDialog(
+            onCriar = { nome ->
+                viewModel.criarNovaPlanta(nome) { idCriado -> onAbrirPlanta(idCriado) }
+                mostrarFormPlanta = false
+            },
+            onDispensar = { mostrarFormPlanta = false },
+        )
+    }
+}
+
+@Composable
+private fun NovaPlantaDialog(onCriar: (String) -> Unit, onDispensar: () -> Unit) {
+    var nome by remember { mutableStateOf("Pavimento Térreo") }
+    Card(Modifier.padding(24.dp)) {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Text("Nova planta baixa", style = MaterialTheme.typography.titleMedium)
+            OutlinedTextField(nome, { nome = it }, label = { Text("Nome") }, modifier = Modifier.fillMaxWidth())
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Button(onClick = { if (nome.isNotBlank()) onCriar(nome) }) { Text("Criar e abrir") }
+            }
+        }
     }
 }
 

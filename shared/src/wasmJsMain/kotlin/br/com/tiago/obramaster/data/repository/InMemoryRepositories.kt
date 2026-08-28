@@ -1,14 +1,18 @@
 package br.com.tiago.obramaster.data.repository
 
 import br.com.tiago.obramaster.core.auth.NivelPermissao
+import br.com.tiago.obramaster.domain.Abertura
 import br.com.tiago.obramaster.domain.Colaborador
+import br.com.tiago.obramaster.domain.Comodo
 import br.com.tiago.obramaster.domain.Conta
 import br.com.tiago.obramaster.domain.Cor
 import br.com.tiago.obramaster.domain.DadosEmpresa
 import br.com.tiago.obramaster.domain.Etapa
 import br.com.tiago.obramaster.domain.Material
+import br.com.tiago.obramaster.domain.Parede
 import br.com.tiago.obramaster.domain.Permissao
 import br.com.tiago.obramaster.domain.Pessoa
+import br.com.tiago.obramaster.domain.PlantaBaixa
 import br.com.tiago.obramaster.domain.Projeto
 import br.com.tiago.obramaster.domain.UnidadeMedida
 import kotlinx.coroutines.flow.Flow
@@ -200,4 +204,76 @@ class InMemoryEtapaRepository : EtapaRepository {
     }
     override fun observarDoProjeto(projetoId: String): Flow<List<Etapa>> =
         state.map { lista -> lista.filter { it.projetoId == projetoId && it.ativo }.sortedBy { it.ordem } }
+}
+
+class InMemoryPlantaBaixaRepository : PlantaBaixaRepository {
+    private val state = MutableStateFlow<List<PlantaBaixa>>(emptyList())
+
+    override suspend fun listarDoProjeto(projetoId: String): List<PlantaBaixa> =
+        state.value.filter { it.projetoId == projetoId && it.ativo }
+
+    override suspend fun buscarPorId(id: String): PlantaBaixa? = state.value.firstOrNull { it.id == id }
+
+    override suspend fun salvar(planta: PlantaBaixa) {
+        state.value = state.value + planta
+    }
+
+    override suspend fun atualizarEscala(id: String, escalaPxPorMetro: Double, atualizadaEm: Long) {
+        state.value = state.value.map { if (it.id == id) it.copy(escalaPxPorMetro = escalaPxPorMetro, atualizadaEm = atualizadaEm) else it }
+    }
+
+    override suspend fun renomear(id: String, nome: String, atualizadaEm: Long) {
+        state.value = state.value.map { if (it.id == id) it.copy(nome = nome, atualizadaEm = atualizadaEm) else it }
+    }
+
+    override suspend fun desativar(id: String) {
+        state.value = state.value.map { if (it.id == id) it.copy(ativo = false) else it }
+    }
+
+    override fun observarDoProjeto(projetoId: String): Flow<List<PlantaBaixa>> =
+        state.map { lista -> lista.filter { it.projetoId == projetoId && it.ativo } }
+}
+
+class InMemoryComodoRepository : ComodoRepository {
+    private val state = MutableStateFlow<List<Comodo>>(emptyList())
+
+    override suspend fun listarDaPlanta(plantaId: String): List<Comodo> = state.value.filter { it.plantaId == plantaId && it.ativo }
+    override suspend fun salvar(comodo: Comodo) {
+        state.value = state.value + comodo
+    }
+    override suspend fun renomear(id: String, nome: String) {
+        state.value = state.value.map { if (it.id == id) it.copy(nome = nome) else it }
+    }
+    override suspend fun desativar(id: String) {
+        state.value = state.value.map { if (it.id == id) it.copy(ativo = false) else it }
+    }
+    override fun observarDaPlanta(plantaId: String): Flow<List<Comodo>> =
+        state.map { lista -> lista.filter { it.plantaId == plantaId && it.ativo } }
+}
+
+class InMemoryParedeRepository : ParedeRepository {
+    private val state = MutableStateFlow<List<Parede>>(emptyList())
+
+    override suspend fun listarDaPlanta(plantaId: String): List<Parede> = state.value.filter { it.plantaId == plantaId && it.ativo }
+    override suspend fun salvar(parede: Parede) {
+        state.value = state.value + parede
+    }
+    override suspend fun desativar(id: String) {
+        state.value = state.value.map { if (it.id == id) it.copy(ativo = false) else it }
+    }
+    override fun observarDaPlanta(plantaId: String): Flow<List<Parede>> =
+        state.map { lista -> lista.filter { it.plantaId == plantaId && it.ativo } }
+}
+
+class InMemoryAberturaRepository : AberturaRepository {
+    private val state = MutableStateFlow<List<Abertura>>(emptyList())
+
+    override suspend fun listarDaParede(paredeId: String): List<Abertura> = state.value.filter { it.paredeId == paredeId && it.ativo }
+    override suspend fun salvar(abertura: Abertura) {
+        state.value = state.value + abertura
+    }
+    override suspend fun desativar(id: String) {
+        state.value = state.value.map { if (it.id == id) it.copy(ativo = false) else it }
+    }
+    override fun observarTodas(): Flow<List<Abertura>> = state.map { lista -> lista.filter { it.ativo } }
 }

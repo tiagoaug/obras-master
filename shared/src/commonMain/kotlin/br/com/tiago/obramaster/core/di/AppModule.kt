@@ -14,6 +14,7 @@ import br.com.tiago.obramaster.ui.features.cadastros.MateriaisViewModel
 import br.com.tiago.obramaster.ui.features.cadastros.UnidadesMedidaViewModel
 import br.com.tiago.obramaster.ui.features.onboarding.OnboardingViewModel
 import br.com.tiago.obramaster.ui.features.pessoas.PessoasViewModel
+import br.com.tiago.obramaster.ui.features.plantabaixa.PlantaBaixaViewModel
 import br.com.tiago.obramaster.ui.features.projetos.ProjetoDetalheViewModel
 import br.com.tiago.obramaster.ui.features.projetos.ProjetosViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -44,5 +45,6 @@ val appModule = module {
     factory { MateriaisViewModel(get(), get()) }
     factory { UnidadesMedidaViewModel(get()) }
     factory { ProjetosViewModel(get(), get(), get()) }
-    factory { (projetoId: String) -> ProjetoDetalheViewModel(projetoId, get(), get()) }
+    factory { (projetoId: String) -> ProjetoDetalheViewModel(projetoId, get(), get(), get(), get()) }
+    factory { (plantaId: String) -> PlantaBaixaViewModel(plantaId, get(), get(), get(), get()) }
 }

@@ -2,28 +2,39 @@ package br.com.tiago.obramaster.ui.features.projetos
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import br.com.tiago.obramaster.core.plantabaixa.PlantaBaixaEngine
 import br.com.tiago.obramaster.core.projetos.TEMPLATE_ETAPAS_PADRAO
+import br.com.tiago.obramaster.data.repository.ComodoRepository
 import br.com.tiago.obramaster.data.repository.EtapaRepository
+import br.com.tiago.obramaster.data.repository.PlantaBaixaRepository
 import br.com.tiago.obramaster.data.repository.ProjetoRepository
 import br.com.tiago.obramaster.domain.Etapa
+import br.com.tiago.obramaster.domain.PlantaBaixa
 import br.com.tiago.obramaster.domain.Projeto
 import br.com.tiago.obramaster.domain.StatusEtapa
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
+
+/** 1 quadrado da grade (40px) = 0,5m por padrão — mesma referência do editor (EditorPlantaScreen). */
+private const val ESCALA_PADRAO_PX_POR_METRO = 80.0
 
 data class ProjetoDetalheUiState(
     val projeto: Projeto? = null,
     val etapas: List<Etapa> = emptyList(),
+    val plantas: List<PlantaBaixa> = emptyList(),
 )
 
 class ProjetoDetalheViewModel(
     private val projetoId: String,
     private val projetoRepository: ProjetoRepository,
     private val etapaRepository: EtapaRepository,
+    private val plantaBaixaRepository: PlantaBaixaRepository,
+    private val comodoRepository: ComodoRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProjetoDetalheUiState())
@@ -36,6 +47,11 @@ class ProjetoDetalheViewModel(
         viewModelScope.launch {
             etapaRepository.observarDoProjeto(projetoId).collect { etapas ->
                 _uiState.value = _uiState.value.copy(etapas = etapas.sortedBy { it.ordem })
+            }
+        }
+        viewModelScope.launch {
+            plantaBaixaRepository.observarDoProjeto(projetoId).collect { plantas ->
+                _uiState.value = _uiState.value.copy(plantas = plantas)
             }
         }
     }
@@ -114,6 +130,36 @@ class ProjetoDetalheViewModel(
             val outra = lista[novoIndice]
             etapaRepository.reordenar(etapa.id, outra.ordem)
             etapaRepository.reordenar(outra.id, etapa.ordem)
+        }
+    }
+
+    @OptIn(ExperimentalUuidApi::class)
+    fun criarNovaPlanta(nome: String, onCriada: (String) -> Unit) {
+        viewModelScope.launch {
+            val id = Uuid.random().toString()
+            val agora = Clock.System.now().toEpochMilliseconds()
+            plantaBaixaRepository.salvar(
+                PlantaBaixa(
+                    id = id,
+                    projetoId = projetoId,
+                    nome = nome,
+                    escalaPxPorMetro = ESCALA_PADRAO_PX_POR_METRO,
+                    criadaEm = agora,
+                    atualizadaEm = agora,
+                ),
+            )
+            onCriada(id)
+        }
+    }
+
+    /** SPEC_PLANTA_BAIXA.md §6 — soma as áreas de todas as plantas e aplica no Projeto (nunca sobrescreve sozinho). */
+    fun calcularEAplicarAreaDaPlanta() {
+        viewModelScope.launch {
+            val plantas = _uiState.value.plantas
+            val todosOsComodos = plantas.flatMap { comodoRepository.listarDaPlanta(it.id) }
+            val areaTotal = PlantaBaixaEngine.areaTotalConstruida(plantas, todosOsComodos)
+            val projetoAtual = _uiState.value.projeto ?: return@launch
+            atualizarProjeto(projetoAtual.copy(areaConstruidaM2 = areaTotal))
         }
     }
 }

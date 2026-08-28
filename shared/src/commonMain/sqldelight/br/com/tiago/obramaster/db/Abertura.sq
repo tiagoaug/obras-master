@@ -1,0 +1,22 @@
+CREATE TABLE Abertura (
+    id TEXT NOT NULL PRIMARY KEY,
+    paredeId TEXT NOT NULL,
+    tipo TEXT NOT NULL,
+    posicaoNaParede REAL NOT NULL,
+    larguraCm REAL NOT NULL,
+    ativo INTEGER AS kotlin.Boolean NOT NULL DEFAULT 1,
+    FOREIGN KEY (paredeId) REFERENCES Parede(id)
+);
+
+selectAtivasDaParede:
+SELECT * FROM Abertura WHERE paredeId = ? AND ativo = 1;
+
+selectAtivasDaLista:
+SELECT * FROM Abertura WHERE ativo = 1;
+
+insert:
+INSERT INTO Abertura(id, paredeId, tipo, posicaoNaParede, larguraCm, ativo)
+VALUES (?, ?, ?, ?, ?, ?);
+
+softDelete:
+UPDATE Abertura SET ativo = 0 WHERE id = ?;

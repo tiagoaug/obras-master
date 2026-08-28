@@ -1,0 +1,24 @@
+CREATE TABLE Comodo (
+    id TEXT NOT NULL PRIMARY KEY,
+    plantaId TEXT NOT NULL,
+    nome TEXT NOT NULL,
+    pontosJson TEXT NOT NULL,
+    corPreenchimento TEXT NOT NULL,
+    areaM2 REAL NOT NULL,
+    perimetroM REAL NOT NULL,
+    ativo INTEGER AS kotlin.Boolean NOT NULL DEFAULT 1,
+    FOREIGN KEY (plantaId) REFERENCES PlantaBaixa(id)
+);
+
+selectAtivosDaPlanta:
+SELECT * FROM Comodo WHERE plantaId = ? AND ativo = 1;
+
+insert:
+INSERT INTO Comodo(id, plantaId, nome, pontosJson, corPreenchimento, areaM2, perimetroM, ativo)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+
+renomear:
+UPDATE Comodo SET nome = ? WHERE id = ?;
+
+softDelete:
+UPDATE Comodo SET ativo = 0 WHERE id = ?;

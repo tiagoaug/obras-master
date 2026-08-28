@@ -1,0 +1,22 @@
+CREATE TABLE Parede (
+    id TEXT NOT NULL PRIMARY KEY,
+    plantaId TEXT NOT NULL,
+    pontoInicioX REAL NOT NULL,
+    pontoInicioY REAL NOT NULL,
+    pontoFimX REAL NOT NULL,
+    pontoFimY REAL NOT NULL,
+    espessuraCm REAL NOT NULL DEFAULT 15.0,
+    estrutural INTEGER AS kotlin.Boolean NOT NULL DEFAULT 0,
+    ativo INTEGER AS kotlin.Boolean NOT NULL DEFAULT 1,
+    FOREIGN KEY (plantaId) REFERENCES PlantaBaixa(id)
+);
+
+selectAtivasDaPlanta:
+SELECT * FROM Parede WHERE plantaId = ? AND ativo = 1;
+
+insert:
+INSERT INTO Parede(id, plantaId, pontoInicioX, pontoInicioY, pontoFimX, pontoFimY, espessuraCm, estrutural, ativo)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+softDelete:
+UPDATE Parede SET ativo = 0 WHERE id = ?;

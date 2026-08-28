@@ -23,6 +23,7 @@ import br.com.tiago.obramaster.ui.features.home.HomeScreen
 import br.com.tiago.obramaster.ui.features.login.LoginScreen
 import br.com.tiago.obramaster.ui.features.onboarding.OnboardingScreen
 import br.com.tiago.obramaster.ui.features.pessoas.PessoasScreen
+import br.com.tiago.obramaster.ui.features.plantabaixa.EditorPlantaScreen
 import br.com.tiago.obramaster.ui.features.projetos.ProjetoDetalheScreen
 import br.com.tiago.obramaster.ui.features.projetos.ProjetosScreen
 import br.com.tiago.obramaster.ui.theme.ObraMasterTheme
@@ -39,6 +40,7 @@ private sealed interface TelaRaiz {
     data class CadastrosBasicos(val colaborador: Colaborador) : TelaRaiz
     data class Projetos(val colaborador: Colaborador) : TelaRaiz
     data class ProjetoDetalhe(val colaborador: Colaborador, val projetoId: String) : TelaRaiz
+    data class EditorPlanta(val colaborador: Colaborador, val projetoId: String, val plantaId: String) : TelaRaiz
 }
 
 @Composable
@@ -100,6 +102,14 @@ fun App() {
                 is TelaRaiz.ProjetoDetalhe -> ProjetoDetalheScreen(
                     projetoId = telaAtual.projetoId,
                     onVoltar = { tela = TelaRaiz.Projetos(telaAtual.colaborador) },
+                    onAbrirPlanta = { plantaId ->
+                        tela = TelaRaiz.EditorPlanta(telaAtual.colaborador, telaAtual.projetoId, plantaId)
+                    },
+                )
+
+                is TelaRaiz.EditorPlanta -> EditorPlantaScreen(
+                    plantaId = telaAtual.plantaId,
+                    onVoltar = { tela = TelaRaiz.ProjetoDetalhe(telaAtual.colaborador, telaAtual.projetoId) },
                 )
             }
         }

@@ -83,6 +83,26 @@ Cada obra é cadastrada como um **Projeto**, com endereço, área construída, �
 
 **Exemplo prático (visão final, quando os módulos de gasto existirem):** a etapa Acabamento está orçada em R$ 110.000, já gastou R$ 67.600 — o app mostra o saldo de R$ 42.400 automaticamente, sem você precisar somar nada na mão.
 
+### 4.1 Planta Baixa `#planta-baixa`
+
+![Editor de Planta](mockups/09_planta_baixa_editor.svg)
+
+Dentro do projeto, a seção "Plantas Baixas" deixa desenhar um esboço da obra em vez de digitar a área na mão:
+
+- **▭ Retângulo**: arrasta na tela e já vira um cômodo com 4 paredes.
+- **📐 Polígono livre**: toque ponto a ponto (cômodos em L, formatos irregulares) — fecha sozinho quando você toca perto do ponto onde começou.
+- **🚪/🪟 Porta e janela**: toque numa parede já desenhada para inserir.
+- **📏 Medir**: dois toques mostram a distância real entre eles, sem criar nada.
+- Cada cômodo mostra nome e área calculada direto no desenho; tocar nele abre um painel pra renomear ou excluir.
+- A grade (grid) ajuda a manter proporção; o ícone de régua na barra superior deixa ajustar quantos metros vale cada quadrado da grade.
+- Botão desfazer volta a última forma criada.
+
+Depois de desenhado, o botão **"Calcular área a partir da planta"** (na tela do projeto) soma a área de todos os cômodos de todas as plantas e preenche a área construída do projeto — sem sobrescrever nada sozinho, só quando você confirma.
+
+*(Importar uma foto do projeto como referência para desenhar por cima, e a calibração de escala a partir dela, chegam na próxima fase. Por enquanto a escala é sempre manual: "1 quadrado = X metros". Exportar a planta em PDF/JPG chega junto da Fase 9.)*
+
+**Exemplo prático:** você desenha a Sala (retângulo) e o Quarto 1 (polígono em L, por causa do closet) — o app mostra 18m² e 12m², respectivamente. Ao tocar em "Calcular área a partir da planta", os 30m² substituem o valor que estava (ou não) preenchido manualmente na área construída do projeto.
+
 ---
 
 ## 5. Financeiro `#financeiro`
