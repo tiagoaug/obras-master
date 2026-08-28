@@ -150,9 +150,20 @@ O mesmo botão "Importar arquivo" também aceita **PDF** — útil quando você 
 - Como PDF não traz geometria pronta pra ler (é tratado sempre como uma foto da planta, não como desenho vetorial), a escala **nunca** é detectada automaticamente — você sempre calibra manualmente depois de importar, com dois toques numa medida conhecida.
 - Não tem tela de prévia com contagem de paredes/cômodos (não faz sentido pra uma imagem) — a importação já entra direto como imagem de fundo.
 
-*(Essa é a versão "página vira imagem" da importação de PDF — cobre o caso mais comum na prática, que é PDF escaneado de uma planta impressa. Uma versão futura pode tentar ler a geometria vetorial de PDFs exportados direto de um CAD, quando o PDF tiver esse conteúdo, mas isso ainda não está implementado.)*
-
 **Exemplo prático:** o cliente manda a planta só em PDF — você importa pelo botão "Importar arquivo", a primeira página já aparece como imagem de fundo do editor, você toca em "Calibrar", marca duas pontas de uma medida conhecida (por exemplo, o vão de uma porta), digita a medida real e a partir daí desenha os cômodos por cima com a escala certa.
+
+#### Quando o PDF tem desenho vetorial (não é só uma imagem escaneada) `#planta-baixa-pdf-vetorial`
+
+Se o PDF foi exportado direto de um programa de CAD (não é um escaneamento), o app tenta primeiro ler as **linhas e retângulos do próprio desenho** antes de cair no fallback de imagem:
+
+- Nesse caso, a escala **é sempre detectada automaticamente** — coordenadas de PDF já vêm numa unidade física real (pontos, 72 por polegada), diferente do DXF/SVG onde a unidade pode não estar disponível.
+- Você vê a mesma tela de prévia da importação de DXF/SVG (quantas paredes foram detectadas, escala confirmada) antes de importar — só que sem cômodos: a leitura de PDF por enquanto só reconhece linhas e retângulos soltos, não fecha automaticamente em polígonos de cômodo como o DXF faz.
+- Curvas do desenho (arcos, círculos) são ignoradas nesta versão — só elementos retos entram.
+- Se o PDF não tiver esse conteúdo vetorial reconhecível (a grande maioria na prática, por ser escaneamento), cai automaticamente no fallback de imagem descrito acima, sem erro.
+
+*(Esse é o refinamento opcional da spec — cobre menos casos que o fallback de imagem, mas quando funciona, entrega geometria pronta sem precisar calibrar nada na mão.)*
+
+**Exemplo prático:** o arquiteto exporta a planta em PDF direto do AutoCAD — você importa, a prévia mostra "24 paredes detectadas, escala confirmada automaticamente", confirma a importação e as paredes já aparecem no editor com a medida certa, sem precisar calibrar.
 
 ---
 
