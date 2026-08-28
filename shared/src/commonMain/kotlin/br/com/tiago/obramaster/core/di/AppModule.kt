@@ -29,6 +29,7 @@ import br.com.tiago.obramaster.ui.features.cadastros.UnidadesMedidaViewModel
 import br.com.tiago.obramaster.ui.features.onboarding.OnboardingViewModel
 import br.com.tiago.obramaster.ui.features.orcamentos.OrcamentosViewModel
 import br.com.tiago.obramaster.ui.features.pessoas.PessoasViewModel
+import br.com.tiago.obramaster.ui.features.vendas.VendasViewModel
 import br.com.tiago.obramaster.ui.features.plantabaixa.PlantaBaixaViewModel
 import br.com.tiago.obramaster.ui.features.projetos.ProjetoDetalheViewModel
 import br.com.tiago.obramaster.ui.features.projetos.ProjetosViewModel
@@ -77,4 +78,5 @@ val appModule = module {
     factory { PedidosCompraViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     factory { ConfigBdiViewModel(get()) }
     factory { OrcamentosViewModel(get(), get(), get(), get(), get(), get(), get()) }
+    factory { VendasViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
 }

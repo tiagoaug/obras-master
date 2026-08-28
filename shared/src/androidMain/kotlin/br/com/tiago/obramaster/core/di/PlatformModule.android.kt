@@ -62,7 +62,9 @@ import br.com.tiago.obramaster.data.repository.SqlDelightRateioLancamentoReposit
 import br.com.tiago.obramaster.data.repository.SqlDelightRegistroTrabalhoRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightRetencaoLancamentoRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightUnidadeMedidaRepository
+import br.com.tiago.obramaster.data.repository.SqlDelightVendaRepository
 import br.com.tiago.obramaster.data.repository.UnidadeMedidaRepository
+import br.com.tiago.obramaster.data.repository.VendaRepository
 import br.com.tiago.obramaster.platform.AppSettingsFactory
 import br.com.tiago.obramaster.platform.ContactsProvider
 import br.com.tiago.obramaster.platform.FilePicker
@@ -113,4 +115,5 @@ fun platformModule(context: Context) = module {
     single<PedidoCompraRepository> { SqlDelightPedidoCompraRepository(get()) }
     single<ConfigBDIRepository> { SqlDelightConfigBDIRepository(get()) }
     single<OrcamentoRepository> { SqlDelightOrcamentoRepository(get()) }
+    single<VendaRepository> { SqlDelightVendaRepository(get()) }
 }

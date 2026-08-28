@@ -4,6 +4,7 @@ import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import br.com.tiago.obramaster.data.db.ObraMasterDatabase
 import br.com.tiago.obramaster.domain.CATEGORIAS_PADRAO_NOMES
+import br.com.tiago.obramaster.domain.CATEGORIA_PADRAO_RECEITA_VENDAS
 import br.com.tiago.obramaster.domain.CategoriaFinanceira
 import br.com.tiago.obramaster.domain.NaturezaLancamento
 import br.com.tiago.obramaster.domain.TipoLancamento
@@ -86,6 +87,17 @@ class SqlDelightCategoriaFinanceiraRepository(
                     ativo = true,
                 )
             }
+            queries.insert(
+                id = Uuid.random().toString(),
+                nome = CATEGORIA_PADRAO_RECEITA_VENDAS,
+                tipo = TipoLancamento.RECEITA.name,
+                naturezaPadrao = NaturezaLancamento.CONTABIL.name,
+                categoriaPaiId = null,
+                cor = "#66BB6A",
+                icone = null,
+                padraoDoSistema = true,
+                ativo = true,
+            )
         }
     }
 

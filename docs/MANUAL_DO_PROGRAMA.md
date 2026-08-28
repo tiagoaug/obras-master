@@ -232,9 +232,13 @@ Orçamento com status **Aprovado** ganha o botão **"Converter em Projeto"**: cr
 
 ## 8. Vendas `#vendas`
 
-Registre a venda fechada com o cliente, parcelada ou à vista. Cada parcela recebida gera o recebimento no Financeiro, creditando a conta escolhida.
+Cadastre uma venda com cliente, descrição, projeto (opcional), forma de pagamento e uma ou mais parcelas (valor e vencimento de cada uma). O funil é simples: **Negociação** → **Fechada** (ou **Cancelada**, se a negociação não avançar).
 
-Se o projeto usa **medição por etapa** (comum em obra formal), cada medição aprovada já gera a cobrança correspondente.
+Ao **fechar a venda**, o sistema gera automaticamente um lançamento de receita no Financeiro para cada parcela — ainda não recebido, só programado pra aquela data de vencimento. Quando o dinheiro realmente entra, você abre a venda, encontra a parcela e clica em **Receber**, escolhendo a conta que recebeu — isso credita a conta e marca a parcela como recebida.
+
+Vendas com status **Negociação** podem ser excluídas normalmente; depois de **Fechada**, a venda já gerou lançamentos financeiros reais e só pode ser cancelada, não excluída.
+
+**Exemplo prático:** uma venda de R$ 30.000 em 3 parcelas de R$ 10.000 é fechada — o Financeiro já mostra as 3 receitas futuras, uma por mês. Quando a primeira parcela cai na conta, você clica em "Receber", escolhe a conta corrente da empresa, e o saldo da conta sobe na hora.
 
 ---
 

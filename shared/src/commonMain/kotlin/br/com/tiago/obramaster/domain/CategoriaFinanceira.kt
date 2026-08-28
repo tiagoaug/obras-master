@@ -18,3 +18,8 @@ val CATEGORIAS_PADRAO_NOMES = listOf(
     "Materiais", "Mão de Obra", "Equipamentos", "Administrativo",
     "Impostos", "Transporte", "Alimentação de equipe", "Combustível",
 )
+
+/** Adição técnica sinalizada (Fase 6.3): a spec não define nenhuma categoria RECEITA padrão, mas
+ * "Venda fechada → gera LancamentoFinanceiro (RECEITA)" (SPEC_OBRA_MASTER.md §4.6) exige uma —
+ * mesmo padrão de busca-por-nome já usado em Compras com "Materiais". */
+const val CATEGORIA_PADRAO_RECEITA_VENDAS = "Venda de Obra"

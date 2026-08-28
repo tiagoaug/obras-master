@@ -8,6 +8,7 @@ import br.com.tiago.obramaster.domain.CategoriaFinanceira
 import br.com.tiago.obramaster.domain.CentroDeCusto
 import br.com.tiago.obramaster.domain.Colaborador
 import br.com.tiago.obramaster.domain.Comodo
+import br.com.tiago.obramaster.domain.CATEGORIA_PADRAO_RECEITA_VENDAS
 import br.com.tiago.obramaster.domain.ConfigBDI
 import br.com.tiago.obramaster.domain.Conta
 import br.com.tiago.obramaster.domain.Cor
@@ -24,6 +25,7 @@ import br.com.tiago.obramaster.domain.MovimentoConta
 import br.com.tiago.obramaster.domain.NaturezaLancamento
 import br.com.tiago.obramaster.domain.Orcamento
 import br.com.tiago.obramaster.domain.Pagamento
+import br.com.tiago.obramaster.domain.ParcelaVenda
 import br.com.tiago.obramaster.domain.Parede
 import br.com.tiago.obramaster.domain.PedidoCompra
 import br.com.tiago.obramaster.domain.RateioLancamento
@@ -31,7 +33,9 @@ import br.com.tiago.obramaster.domain.RegistroTrabalho
 import br.com.tiago.obramaster.domain.RetencaoLancamento
 import br.com.tiago.obramaster.domain.StatusOrcamento
 import br.com.tiago.obramaster.domain.StatusPedidoCompra
+import br.com.tiago.obramaster.domain.StatusVenda
 import br.com.tiago.obramaster.domain.TipoLancamento
+import br.com.tiago.obramaster.domain.Venda
 import br.com.tiago.obramaster.domain.Permissao
 import br.com.tiago.obramaster.domain.Pessoa
 import br.com.tiago.obramaster.domain.PlantaBaixa
@@ -331,7 +335,14 @@ class InMemoryCategoriaFinanceiraRepository : CategoriaFinanceiraRepository {
                 cor = "#90A4AE",
                 padraoDoSistema = true,
             )
-        }
+        } + CategoriaFinanceira(
+            id = Uuid.random().toString(),
+            nome = CATEGORIA_PADRAO_RECEITA_VENDAS,
+            tipo = TipoLancamento.RECEITA,
+            naturezaPadrao = NaturezaLancamento.CONTABIL,
+            cor = "#66BB6A",
+            padraoDoSistema = true,
+        )
     }
 
     override fun observarAtivas(): Flow<List<CategoriaFinanceira>> = state.map { lista -> lista.filter { it.ativo } }
@@ -599,4 +610,33 @@ class InMemoryOrcamentoRepository : OrcamentoRepository {
 
     override suspend fun itensDoOrcamento(orcamentoId: String): List<ItemOrcamento> = itens.value.filter { it.orcamentoId == orcamentoId }
     override fun observarTodos(): Flow<List<Orcamento>> = orcamentos.map { lista -> lista.filter { it.ativo }.sortedByDescending { it.data } }
+}
+
+class InMemoryVendaRepository : VendaRepository {
+    private val vendas = MutableStateFlow<List<Venda>>(emptyList())
+    private val parcelas = MutableStateFlow<List<ParcelaVenda>>(emptyList())
+
+    override suspend fun listarTodos(): List<Venda> = vendas.value.filter { it.ativo }.sortedByDescending { it.data }
+
+    override suspend fun salvar(venda: Venda, parcelas: List<ParcelaVenda>) {
+        vendas.value = vendas.value.filterNot { it.id == venda.id } + venda
+        this.parcelas.value = this.parcelas.value.filterNot { it.vendaId == venda.id } + parcelas
+    }
+
+    override suspend fun atualizarStatus(id: String, status: StatusVenda) {
+        vendas.value = vendas.value.map { if (it.id == id) it.copy(status = status) else it }
+    }
+
+    override suspend fun desativar(id: String) {
+        vendas.value = vendas.value.map { if (it.id == id) it.copy(ativo = false) else it }
+    }
+
+    override suspend fun parcelasDaVenda(vendaId: String): List<ParcelaVenda> =
+        parcelas.value.filter { it.vendaId == vendaId }.sortedBy { it.numero }
+
+    override suspend fun atualizarParcela(parcela: ParcelaVenda) {
+        parcelas.value = parcelas.value.map { if (it.id == parcela.id) parcela else it }
+    }
+
+    override fun observarTodos(): Flow<List<Venda>> = vendas.map { lista -> lista.filter { it.ativo }.sortedByDescending { it.data } }
 }

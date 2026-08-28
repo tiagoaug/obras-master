@@ -1,0 +1,49 @@
+CREATE TABLE Venda (
+    id TEXT NOT NULL PRIMARY KEY,
+    projetoId TEXT,
+    clientePessoaId TEXT NOT NULL,
+    descricao TEXT NOT NULL,
+    valorTotal INTEGER NOT NULL,
+    data INTEGER NOT NULL,
+    formaPagamento TEXT NOT NULL,
+    status TEXT NOT NULL,
+    ativo INTEGER AS kotlin.Boolean NOT NULL DEFAULT 1,
+    FOREIGN KEY (projetoId) REFERENCES Projeto(id)
+);
+
+CREATE TABLE ParcelaVenda (
+    id TEXT NOT NULL PRIMARY KEY,
+    vendaId TEXT NOT NULL,
+    numero INTEGER NOT NULL,
+    valor INTEGER NOT NULL,
+    vencimento INTEGER NOT NULL,
+    pago INTEGER AS kotlin.Boolean NOT NULL DEFAULT 0,
+    lancamentoFinanceiroId TEXT,
+    FOREIGN KEY (vendaId) REFERENCES Venda(id)
+);
+
+selectTodosAtivos:
+SELECT * FROM Venda WHERE ativo = 1 ORDER BY data DESC;
+
+insertVenda:
+INSERT INTO Venda(id, projetoId, clientePessoaId, descricao, valorTotal, data, formaPagamento, status, ativo)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+updateStatus:
+UPDATE Venda SET status = ? WHERE id = ?;
+
+softDeleteVenda:
+UPDATE Venda SET ativo = 0 WHERE id = ?;
+
+selectParcelasDaVenda:
+SELECT * FROM ParcelaVenda WHERE vendaId = ? ORDER BY numero;
+
+insertParcela:
+INSERT INTO ParcelaVenda(id, vendaId, numero, valor, vencimento, pago, lancamentoFinanceiroId)
+VALUES (?, ?, ?, ?, ?, ?, ?);
+
+deleteParcelasDaVenda:
+DELETE FROM ParcelaVenda WHERE vendaId = ?;
+
+updateParcela:
+UPDATE ParcelaVenda SET pago = ?, lancamentoFinanceiroId = ? WHERE id = ?;
