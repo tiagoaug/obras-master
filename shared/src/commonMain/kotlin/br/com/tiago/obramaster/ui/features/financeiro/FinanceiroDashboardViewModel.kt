@@ -5,9 +5,12 @@ import androidx.lifecycle.viewModelScope
 import br.com.tiago.obramaster.core.financeiro.FiltroFinanceiro
 import br.com.tiago.obramaster.core.financeiro.FinanceEngine
 import br.com.tiago.obramaster.core.financeiro.MesAno
+import br.com.tiago.obramaster.core.financeiro.SaldoContaEngine
 import br.com.tiago.obramaster.data.repository.CategoriaFinanceiraRepository
 import br.com.tiago.obramaster.data.repository.CentroDeCustoRepository
+import br.com.tiago.obramaster.data.repository.ContaRepository
 import br.com.tiago.obramaster.data.repository.LancamentoFinanceiroRepository
+import br.com.tiago.obramaster.data.repository.MovimentoContaRepository
 import br.com.tiago.obramaster.data.repository.ProjetoRepository
 import br.com.tiago.obramaster.domain.CategoriaFinanceira
 import br.com.tiago.obramaster.domain.CentroDeCusto
@@ -28,6 +31,7 @@ data class FinanceiroDashboardUiState(
     val evolucaoLucro: List<Pair<MesAno, Long>> = emptyList(),
     val resultadoPorCentro: Map<CentroDeCusto, Long> = emptyMap(),
     val projetos: List<Projeto> = emptyList(),
+    val saldoConsolidado: Long = 0L,
 )
 
 class FinanceiroDashboardViewModel(
@@ -35,11 +39,13 @@ class FinanceiroDashboardViewModel(
     private val categoriaRepository: CategoriaFinanceiraRepository,
     private val centroRepository: CentroDeCustoRepository,
     private val projetoRepository: ProjetoRepository,
+    private val contaRepository: ContaRepository,
+    private val movimentoContaRepository: MovimentoContaRepository,
 ) : ViewModel() {
 
     private val _filtro = MutableStateFlow(FiltroFinanceiro())
 
-    val uiState: StateFlow<FinanceiroDashboardUiState> = combine(
+    private val financeiroFlow = combine(
         lancamentoRepository.observarAtivos(),
         categoriaRepository.observarAtivas(),
         centroRepository.observarAtivos(),
@@ -62,6 +68,15 @@ class FinanceiroDashboardViewModel(
                 .mapNotNull { (id, valor) -> centrosPorId[id]?.let { it to valor } }.toMap(),
             projetos = projetos,
         )
+    }
+
+    private val saldoConsolidadoFlow = combine(
+        contaRepository.observarAtivas(),
+        movimentoContaRepository.observarTodos(),
+    ) { contas, movimentos -> contas.sumOf { conta -> SaldoContaEngine.calcular(conta, movimentos) } }
+
+    val uiState: StateFlow<FinanceiroDashboardUiState> = combine(financeiroFlow, saldoConsolidadoFlow) { estado, saldo ->
+        estado.copy(saldoConsolidado = saldo)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), FinanceiroDashboardUiState())
 
     fun atualizarFiltro(filtro: FiltroFinanceiro) {

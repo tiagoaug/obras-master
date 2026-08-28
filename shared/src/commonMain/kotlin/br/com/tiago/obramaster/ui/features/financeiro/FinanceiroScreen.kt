@@ -11,6 +11,8 @@ private sealed interface DestinoFinanceiro {
     data object Lancamentos : DestinoFinanceiro
     data object Categorias : DestinoFinanceiro
     data object CentrosDeCusto : DestinoFinanceiro
+    data object Contas : DestinoFinanceiro
+    data class Extrato(val contaId: String) : DestinoFinanceiro
 }
 
 /** Ponto de entrada do módulo Financeiro — Dashboard é a "home", com atalhos pros cadastros. */
@@ -18,16 +20,22 @@ private sealed interface DestinoFinanceiro {
 fun FinanceiroScreen(onVoltar: () -> Unit) {
     var destino by remember { mutableStateOf<DestinoFinanceiro>(DestinoFinanceiro.Dashboard) }
 
-    when (destino) {
+    when (val destinoAtual = destino) {
         DestinoFinanceiro.Dashboard -> FinanceiroDashboardScreen(
             onVoltar = onVoltar,
             onAbrirLancamentos = { destino = DestinoFinanceiro.Lancamentos },
             onAbrirCategorias = { destino = DestinoFinanceiro.Categorias },
             onAbrirCentrosDeCusto = { destino = DestinoFinanceiro.CentrosDeCusto },
+            onAbrirContas = { destino = DestinoFinanceiro.Contas },
         )
 
         DestinoFinanceiro.Lancamentos -> LancamentosScreen(onVoltar = { destino = DestinoFinanceiro.Dashboard })
         DestinoFinanceiro.Categorias -> CategoriasFinanceirasScreen(onVoltar = { destino = DestinoFinanceiro.Dashboard })
         DestinoFinanceiro.CentrosDeCusto -> CentrosDeCustoScreen(onVoltar = { destino = DestinoFinanceiro.Dashboard })
+        DestinoFinanceiro.Contas -> ContasScreen(
+            onVoltar = { destino = DestinoFinanceiro.Dashboard },
+            onAbrirExtrato = { contaId -> destino = DestinoFinanceiro.Extrato(contaId) },
+        )
+        is DestinoFinanceiro.Extrato -> ExtratoContaScreen(contaId = destinoAtual.contaId, onVoltar = { destino = DestinoFinanceiro.Contas })
     }
 }

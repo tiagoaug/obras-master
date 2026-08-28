@@ -1,0 +1,38 @@
+CREATE TABLE MovimentoConta (
+    id TEXT NOT NULL PRIMARY KEY,
+    contaId TEXT NOT NULL,
+    tipo TEXT NOT NULL,
+    valor INTEGER NOT NULL,
+    data INTEGER NOT NULL,
+    descricao TEXT NOT NULL,
+    lancamentoFinanceiroId TEXT,
+    transferenciaVinculoId TEXT,
+    conciliado INTEGER AS kotlin.Boolean NOT NULL DEFAULT 0,
+    FOREIGN KEY (contaId) REFERENCES Conta(id),
+    FOREIGN KEY (lancamentoFinanceiroId) REFERENCES LancamentoFinanceiro(id)
+);
+
+selectDaConta:
+SELECT * FROM MovimentoConta WHERE contaId = ? ORDER BY data DESC;
+
+selectDaContaAteData:
+SELECT * FROM MovimentoConta WHERE contaId = ? AND data <= ?;
+
+selectTodos:
+SELECT * FROM MovimentoConta;
+
+selectPorLancamentoId:
+SELECT * FROM MovimentoConta WHERE lancamentoFinanceiroId = ?;
+
+insert:
+INSERT INTO MovimentoConta(id, contaId, tipo, valor, data, descricao, lancamentoFinanceiroId, transferenciaVinculoId, conciliado)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+marcarConciliado:
+UPDATE MovimentoConta SET conciliado = ? WHERE id = ?;
+
+deletePorLancamentoId:
+DELETE FROM MovimentoConta WHERE lancamentoFinanceiroId = ?;
+
+delete:
+DELETE FROM MovimentoConta WHERE id = ?;

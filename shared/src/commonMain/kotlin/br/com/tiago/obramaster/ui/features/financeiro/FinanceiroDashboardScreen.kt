@@ -18,6 +18,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material.icons.filled.AccountTree
 import androidx.compose.material.icons.filled.Receipt
 import androidx.compose.material.icons.filled.Sell
@@ -61,6 +62,7 @@ fun FinanceiroDashboardScreen(
     onAbrirLancamentos: () -> Unit,
     onAbrirCategorias: () -> Unit,
     onAbrirCentrosDeCusto: () -> Unit,
+    onAbrirContas: () -> Unit,
     viewModel: FinanceiroDashboardViewModel = koinInject(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -73,6 +75,7 @@ fun FinanceiroDashboardScreen(
                     IconButton(onClick = onVoltar) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar") }
                 },
                 actions = {
+                    IconButton(onClick = onAbrirContas) { Icon(Icons.Filled.AccountBalance, contentDescription = "Contas") }
                     IconButton(onClick = onAbrirLancamentos) { Icon(Icons.Filled.Receipt, contentDescription = "Lançamentos") }
                     IconButton(onClick = onAbrirCategorias) { Icon(Icons.Filled.Sell, contentDescription = "Categorias") }
                     IconButton(onClick = onAbrirCentrosDeCusto) { Icon(Icons.Filled.AccountTree, contentDescription = "Centros de Custo") }
@@ -102,6 +105,8 @@ fun FinanceiroDashboardScreen(
                     )
                 }
             }
+
+            CartaoResumo("Saldo consolidado (todas as contas)", uiState.saldoConsolidado, Color(0xFF1565C0), Modifier.fillMaxWidth().padding(bottom = 8.dp))
 
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 CartaoResumo("Receitas", uiState.totalReceitas, Color(0xFF2E7D32), Modifier.weight(1f))

@@ -14,6 +14,7 @@ import br.com.tiago.obramaster.data.repository.EmpresaRepository
 import br.com.tiago.obramaster.data.repository.EtapaRepository
 import br.com.tiago.obramaster.data.repository.LancamentoFinanceiroRepository
 import br.com.tiago.obramaster.data.repository.MaterialRepository
+import br.com.tiago.obramaster.data.repository.MovimentoContaRepository
 import br.com.tiago.obramaster.data.repository.ModuleConfigRepository
 import br.com.tiago.obramaster.data.repository.ParedeRepository
 import br.com.tiago.obramaster.data.repository.PermissaoRepository
@@ -33,6 +34,7 @@ import br.com.tiago.obramaster.data.repository.SqlDelightEmpresaRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightEtapaRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightLancamentoFinanceiroRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightMaterialRepository
+import br.com.tiago.obramaster.data.repository.SqlDelightMovimentoContaRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightModuleConfigRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightParedeRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightPermissaoRepository
@@ -82,4 +84,5 @@ val platformModule = module {
     single<CentroDeCustoRepository> { SqlDelightCentroDeCustoRepository(get()) }
     single<LancamentoFinanceiroRepository> { SqlDelightLancamentoFinanceiroRepository(get()) }
     single<RateioLancamentoRepository> { SqlDelightRateioLancamentoRepository(get()) }
+    single<MovimentoContaRepository> { SqlDelightMovimentoContaRepository(get()) }
 }

@@ -22,6 +22,7 @@ import br.com.tiago.obramaster.data.repository.InMemoryEmpresaRepository
 import br.com.tiago.obramaster.data.repository.InMemoryEtapaRepository
 import br.com.tiago.obramaster.data.repository.InMemoryLancamentoFinanceiroRepository
 import br.com.tiago.obramaster.data.repository.InMemoryMaterialRepository
+import br.com.tiago.obramaster.data.repository.InMemoryMovimentoContaRepository
 import br.com.tiago.obramaster.data.repository.InMemoryModuleConfigRepository
 import br.com.tiago.obramaster.data.repository.InMemoryParedeRepository
 import br.com.tiago.obramaster.data.repository.InMemoryPermissaoRepository
@@ -32,6 +33,7 @@ import br.com.tiago.obramaster.data.repository.InMemoryRateioLancamentoRepositor
 import br.com.tiago.obramaster.data.repository.InMemoryUnidadeMedidaRepository
 import br.com.tiago.obramaster.data.repository.LancamentoFinanceiroRepository
 import br.com.tiago.obramaster.data.repository.MaterialRepository
+import br.com.tiago.obramaster.data.repository.MovimentoContaRepository
 import br.com.tiago.obramaster.data.repository.ModuleConfigRepository
 import br.com.tiago.obramaster.data.repository.ParedeRepository
 import br.com.tiago.obramaster.data.repository.PermissaoRepository
@@ -78,4 +80,5 @@ val platformModule = module {
     single<CentroDeCustoRepository> { InMemoryCentroDeCustoRepository() }
     single<LancamentoFinanceiroRepository> { InMemoryLancamentoFinanceiroRepository() }
     single<RateioLancamentoRepository> { InMemoryRateioLancamentoRepository() }
+    single<MovimentoContaRepository> { InMemoryMovimentoContaRepository() }
 }

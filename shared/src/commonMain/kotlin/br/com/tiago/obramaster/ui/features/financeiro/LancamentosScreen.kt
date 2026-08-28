@@ -61,8 +61,8 @@ fun LancamentosScreen(onVoltar: () -> Unit, viewModel: LancamentosViewModel = ko
             existente = editando,
             uiState = uiState,
             onVoltar = { mostrarForm = false },
-            onSalvar = { tipo, categoriaId, centroId, natureza, projetoId, descricao, valor, data, formaPagamento, pago, rateios ->
-                viewModel.salvar(editando, tipo, categoriaId, centroId, natureza, projetoId, null, descricao, valor, data, formaPagamento, pago, rateios)
+            onSalvar = { tipo, categoriaId, centroId, natureza, projetoId, descricao, valor, data, formaPagamento, pago, contaId, rateios ->
+                viewModel.salvar(editando, tipo, categoriaId, centroId, natureza, projetoId, null, descricao, valor, data, formaPagamento, pago, contaId, rateios)
                 mostrarForm = false
             },
             carregarRateios = { id -> viewModel.rateiosDoLancamento(id) },
@@ -157,7 +157,7 @@ private fun LancamentoFormScreen(
     existente: LancamentoFinanceiro?,
     uiState: LancamentosUiState,
     onVoltar: () -> Unit,
-    onSalvar: (TipoLancamento, String, String, NaturezaLancamento, String?, String, Long, Long, String, Boolean, List<Pair<String, Double>>) -> Unit,
+    onSalvar: (TipoLancamento, String, String, NaturezaLancamento, String?, String, Long, Long, String, Boolean, String?, List<Pair<String, Double>>) -> Unit,
     carregarRateios: suspend (String) -> List<RateioLancamento>,
 ) {
     var tipo by remember { mutableStateOf(existente?.tipo ?: TipoLancamento.DESPESA) }
@@ -168,6 +168,7 @@ private fun LancamentoFormScreen(
     var dataTexto by remember { mutableStateOf(DataFormatter.formatar(existente?.data ?: Clock.System.now().toEpochMilliseconds())) }
     var formaPagamento by remember { mutableStateOf(existente?.formaPagamento ?: "") }
     var pago by remember { mutableStateOf(existente?.pago ?: false) }
+    var contaId by remember { mutableStateOf(existente?.contaId) }
     var natureza by remember { mutableStateOf(existente?.natureza ?: NaturezaLancamento.CONTABIL) }
     var centroManualId by remember { mutableStateOf(existente?.centroDeCustoId) }
     var rateioAtivo by remember { mutableStateOf(false) }
@@ -193,7 +194,7 @@ private fun LancamentoFormScreen(
     LcrudFormScaffold(
         titulo = if (existente == null) "Novo lançamento" else "Editar lançamento",
         onVoltar = onVoltar,
-        podeSalvar = descricao.isNotBlank() && categoriaId != null && centroDeCustoId != null && valor > 0 && rateioValido,
+        podeSalvar = descricao.isNotBlank() && categoriaId != null && centroDeCustoId != null && valor > 0 && rateioValido && (!pago || contaId != null),
         onSalvar = {
             val data = DataFormatter.parseOuNulo(dataTexto) ?: Clock.System.now().toEpochMilliseconds()
             val rateiosFinal = if (rateioAtivo) {
@@ -201,7 +202,7 @@ private fun LancamentoFormScreen(
             } else {
                 emptyList()
             }
-            onSalvar(tipo, categoriaId!!, centroDeCustoId!!, natureza, projetoId, descricao, valor, data, formaPagamento, pago, rateiosFinal)
+            onSalvar(tipo, categoriaId!!, centroDeCustoId!!, natureza, projetoId, descricao, valor, data, formaPagamento, pago, contaId, rateiosFinal)
         },
     ) {
         Text("Tipo", style = MaterialTheme.typography.labelLarge)
@@ -230,6 +231,17 @@ private fun LancamentoFormScreen(
         Row(Modifier.fillMaxWidth().padding(top = 12.dp), horizontalArrangement = Arrangement.SpaceBetween) {
             Text(if (tipo == TipoLancamento.RECEITA) "Recebido" else "Pago")
             Switch(checked = pago, onCheckedChange = { pago = it })
+        }
+        if (pago) {
+            Text("Conta (obrigatório)", style = MaterialTheme.typography.labelLarge, modifier = Modifier.padding(top = 8.dp))
+            Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                uiState.contas.forEach { conta ->
+                    FilterChip(selected = contaId == conta.id, onClick = { contaId = conta.id }, label = { Text(conta.nome) })
+                }
+            }
+            if (uiState.contas.isEmpty()) {
+                Text("Cadastre uma conta em Financeiro → Contas antes de marcar como pago.", style = MaterialTheme.typography.labelSmall)
+            }
         }
 
         Text("Natureza", style = MaterialTheme.typography.labelLarge, modifier = Modifier.padding(top = 12.dp))

@@ -14,6 +14,7 @@ import br.com.tiago.obramaster.domain.DadosEmpresa
 import br.com.tiago.obramaster.domain.Etapa
 import br.com.tiago.obramaster.domain.LancamentoFinanceiro
 import br.com.tiago.obramaster.domain.Material
+import br.com.tiago.obramaster.domain.MovimentoConta
 import br.com.tiago.obramaster.domain.NaturezaLancamento
 import br.com.tiago.obramaster.domain.Parede
 import br.com.tiago.obramaster.domain.RateioLancamento
@@ -108,9 +109,17 @@ class InMemoryContaRepository : ContaRepository {
     private val state = MutableStateFlow<List<Conta>>(emptyList())
 
     override suspend fun listarAtivas(): List<Conta> = state.value.filter { it.ativo }
+    override suspend fun buscarPorId(id: String): Conta? = state.value.firstOrNull { it.id == id }
     override suspend fun salvar(conta: Conta) {
         state.value = state.value + conta
     }
+    override suspend fun atualizar(conta: Conta) {
+        state.value = state.value.map { if (it.id == conta.id) conta else it }
+    }
+    override suspend fun desativar(id: String) {
+        state.value = state.value.map { if (it.id == id) it.copy(ativo = false) else it }
+    }
+    override fun observarAtivas(): Flow<List<Conta>> = state.map { lista -> lista.filter { it.ativo } }
 }
 
 class InMemoryPessoaRepository : PessoaRepository {
@@ -388,4 +397,27 @@ class InMemoryAberturaRepository : AberturaRepository {
         state.value = state.value.map { if (it.id == id) it.copy(ativo = false) else it }
     }
     override fun observarTodas(): Flow<List<Abertura>> = state.map { lista -> lista.filter { it.ativo } }
+}
+
+class InMemoryMovimentoContaRepository : MovimentoContaRepository {
+    private val state = MutableStateFlow<List<MovimentoConta>>(emptyList())
+
+    override suspend fun listarDaConta(contaId: String): List<MovimentoConta> =
+        state.value.filter { it.contaId == contaId }.sortedByDescending { it.data }
+    override suspend fun listarTodos(): List<MovimentoConta> = state.value
+    override suspend fun salvar(movimento: MovimentoConta) {
+        state.value = state.value + movimento
+    }
+    override suspend fun marcarConciliado(id: String, conciliado: Boolean) {
+        state.value = state.value.map { if (it.id == id) it.copy(conciliado = conciliado) else it }
+    }
+    override suspend fun excluir(id: String) {
+        state.value = state.value.filterNot { it.id == id }
+    }
+    override suspend fun excluirPorLancamentoId(lancamentoId: String) {
+        state.value = state.value.filterNot { it.lancamentoFinanceiroId == lancamentoId }
+    }
+    override fun observarDaConta(contaId: String): Flow<List<MovimentoConta>> =
+        state.map { lista -> lista.filter { it.contaId == contaId }.sortedByDescending { it.data } }
+    override fun observarTodos(): Flow<List<MovimentoConta>> = state
 }
