@@ -142,6 +142,18 @@ O mesmo botão "Importar arquivo" também lê **SVG** — útil quando a planta 
 
 **Exemplo prático:** você desenhou a planta num programa de vetor qualquer e exportou como SVG — importa pelo mesmo botão, a prévia mostra os cômodos detectados sem escala automática, confirma a importação, e o editor já entra direto na ferramenta de calibrar: dois toques numa medida conhecida do próprio desenho e a planta fica com a escala certa.
 
+#### Importar arquivo PDF `#planta-baixa-importar-pdf`
+
+O mesmo botão "Importar arquivo" também aceita **PDF** — útil quando você só tem a planta em PDF (escaneada ou exportada de outro programa):
+
+- A primeira página do PDF é convertida em imagem e entra direto como imagem de fundo do editor — o mesmo fluxo de "Importar Foto" da seção acima, com toggle de visibilidade, opacidade e a ferramenta Calibrar disponíveis normalmente.
+- Como PDF não traz geometria pronta pra ler (é tratado sempre como uma foto da planta, não como desenho vetorial), a escala **nunca** é detectada automaticamente — você sempre calibra manualmente depois de importar, com dois toques numa medida conhecida.
+- Não tem tela de prévia com contagem de paredes/cômodos (não faz sentido pra uma imagem) — a importação já entra direto como imagem de fundo.
+
+*(Essa é a versão "página vira imagem" da importação de PDF — cobre o caso mais comum na prática, que é PDF escaneado de uma planta impressa. Uma versão futura pode tentar ler a geometria vetorial de PDFs exportados direto de um CAD, quando o PDF tiver esse conteúdo, mas isso ainda não está implementado.)*
+
+**Exemplo prático:** o cliente manda a planta só em PDF — você importa pelo botão "Importar arquivo", a primeira página já aparece como imagem de fundo do editor, você toca em "Calibrar", marca duas pontas de uma medida conhecida (por exemplo, o vão de uma porta), digita a medida real e a partir daí desenha os cômodos por cima com a escala certa.
+
 ---
 
 ## 5. Financeiro `#financeiro`

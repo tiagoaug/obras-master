@@ -3,6 +3,13 @@
 <head>
     <meta charset="UTF-8" />
     <title>ObraMaster</title>
+    <!-- SPEC_PLANTA_BAIXA_ADENDO_IMPORTACAO.md §4.2 — importação de PDF (Fase 3.67).
+         Versão fixa 3.11.174: última a expor o global clássico `pdfjsLib` via <script> comum,
+         sem exigir <script type="module">. -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+    </script>
 </head>
 <body>
     <script src="obraMasterShared.js"></script>

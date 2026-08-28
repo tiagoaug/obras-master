@@ -15,6 +15,7 @@ import br.com.tiago.obramaster.domain.Abertura
 import br.com.tiago.obramaster.domain.ArquivoImportado
 import br.com.tiago.obramaster.domain.Comodo
 import br.com.tiago.obramaster.domain.FormatoImportacao
+import br.com.tiago.obramaster.domain.ImageRef
 import br.com.tiago.obramaster.domain.Parede
 import br.com.tiago.obramaster.domain.PlantaBaixa
 import br.com.tiago.obramaster.domain.PontoXY
@@ -22,6 +23,7 @@ import br.com.tiago.obramaster.domain.TipoAbertura
 import br.com.tiago.obramaster.platform.FilePicker
 import br.com.tiago.obramaster.platform.ImagePicker
 import br.com.tiago.obramaster.platform.ImageStore
+import br.com.tiago.obramaster.platform.PdfImageRenderer
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -80,6 +82,7 @@ class PlantaBaixaViewModel(
     private val imageStore: ImageStore,
     private val filePicker: FilePicker,
     private val arquivoImportadoRepository: ArquivoImportadoRepository,
+    private val pdfImageRenderer: PdfImageRenderer,
 ) : ViewModel() {
 
     private var conteudoArquivoImportadoAtual: String? = null
@@ -307,18 +310,21 @@ class PlantaBaixaViewModel(
             _uiState.value = _uiState.value.copy(importandoImagem = true)
             val imagem = imagePicker.pickFromGallery().firstOrNull()
             if (imagem != null) {
-                val chave = imageStore.save(imagem)
-                plantaBaixaRepository.atualizarImagemFundo(plantaId, chave, agora())
-                _uiState.value = _uiState.value.copy(
-                    planta = _uiState.value.planta?.copy(imagemFundoKey = chave),
-                    imagemFundoBytes = imagem.bytes,
-                    importandoImagem = false,
-                    mostrarImagemFundo = true,
-                )
+                salvarComoImagemDeFundo(imagem)
+                _uiState.value = _uiState.value.copy(importandoImagem = false, mostrarImagemFundo = true)
             } else {
                 _uiState.value = _uiState.value.copy(importandoImagem = false)
             }
         }
+    }
+
+    private suspend fun salvarComoImagemDeFundo(imagem: ImageRef) {
+        val chave = imageStore.save(imagem)
+        plantaBaixaRepository.atualizarImagemFundo(plantaId, chave, agora())
+        _uiState.value = _uiState.value.copy(
+            planta = _uiState.value.planta?.copy(imagemFundoKey = chave),
+            imagemFundoBytes = imagem.bytes,
+        )
     }
 
     fun alternarVisibilidadeImagemFundo() {
@@ -396,15 +402,47 @@ class PlantaBaixaViewModel(
         unidadeDetectadaTexto = if (escalaDetectadaAutomaticamente) "detectada no viewBox" else null,
     )
 
+    @OptIn(ExperimentalUuidApi::class)
     fun importarArquivo() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(importandoArquivo = true, erroImportacaoArquivo = null)
-            val arquivo = filePicker.escolherArquivo(extensoesAceitas = listOf("dxf", "svg"))
+            val arquivo = filePicker.escolherArquivo(extensoesAceitas = listOf("dxf", "svg", "pdf"))
             if (arquivo == null) {
                 _uiState.value = _uiState.value.copy(importandoArquivo = false)
                 return@launch
             }
             val nomeMinusculo = arquivo.nomeArquivo.lowercase()
+
+            // PDF (Tentativa 2, §4.2) não tem geometria pra prévia — é renderizado como imagem e
+            // entra direto no mesmo fluxo de foto + calibração manual do Caminho B (Fase 3.6).
+            if (nomeMinusculo.endsWith(".pdf")) {
+                val imagem = pdfImageRenderer.renderizarPrimeiraPagina(arquivo.bytes)
+                if (imagem == null) {
+                    _uiState.value = _uiState.value.copy(
+                        importandoArquivo = false,
+                        erroImportacaoArquivo = "Não foi possível ler esse PDF (arquivo vazio, corrompido ou sem páginas).",
+                    )
+                    return@launch
+                }
+                salvarComoImagemDeFundo(imagem)
+                val registroOrigem = ArquivoImportado(
+                    id = Uuid.random().toString(),
+                    plantaId = plantaId,
+                    formatoOrigem = FormatoImportacao.PDF,
+                    nomeArquivoOriginal = arquivo.nomeArquivo,
+                    escalaDetectadaAutomaticamente = false,
+                    unidadeOrigem = null,
+                    importadoEm = agora(),
+                )
+                arquivoImportadoRepository.salvar(registroOrigem)
+                _uiState.value = _uiState.value.copy(
+                    importandoArquivo = false,
+                    mostrarImagemFundo = true,
+                    arquivoOrigemMaisRecente = registroOrigem,
+                )
+                return@launch
+            }
+
             val conteudo = arquivo.bytes.decodeToString()
             val previa = when {
                 nomeMinusculo.endsWith(".dxf") -> DxfImporter.importar(conteudo).paraPrevia()
@@ -414,7 +452,7 @@ class PlantaBaixaViewModel(
             if (previa == null) {
                 _uiState.value = _uiState.value.copy(
                     importandoArquivo = false,
-                    erroImportacaoArquivo = "Formato ainda não suportado nesta fase — só .dxf e .svg por enquanto.",
+                    erroImportacaoArquivo = "Formato ainda não suportado nesta fase — só .dxf, .svg e .pdf por enquanto.",
                 )
                 return@launch
             }

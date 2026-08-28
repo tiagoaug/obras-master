@@ -46,5 +46,5 @@ val appModule = module {
     factory { UnidadesMedidaViewModel(get()) }
     factory { ProjetosViewModel(get(), get(), get()) }
     factory { (projetoId: String) -> ProjetoDetalheViewModel(projetoId, get(), get(), get(), get()) }
-    factory { (plantaId: String) -> PlantaBaixaViewModel(plantaId, get(), get(), get(), get(), get(), get(), get(), get()) }
+    factory { (plantaId: String) -> PlantaBaixaViewModel(plantaId, get(), get(), get(), get(), get(), get(), get(), get(), get()) }
 }

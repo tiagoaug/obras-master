@@ -96,7 +96,7 @@ fun EditorPlantaScreen(
                 },
                 actions = {
                     IconButton(onClick = { viewModel.importarArquivo() }) {
-                        Icon(Icons.Filled.FileUpload, contentDescription = "Importar arquivo (DXF/SVG)")
+                        Icon(Icons.Filled.FileUpload, contentDescription = "Importar arquivo (DXF/SVG/PDF)")
                     }
                     IconButton(onClick = { mostrarImagemSheet = true }) {
                         Icon(Icons.Filled.Image, contentDescription = "Imagem de fundo")
