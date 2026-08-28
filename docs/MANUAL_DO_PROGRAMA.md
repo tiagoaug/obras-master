@@ -277,7 +277,15 @@ Cada etapa tem um checklist de **tarefas**: descrição, responsável (escolhido
 
 **Exemplo prático:** a etapa "Fundação" tinha fim previsto pra 10/03 mas passou 15/03 sem terminar — ela aparece em vermelho na lista e na barra do Gantt, avisando que o cronograma está atrasado, mesmo antes de qualquer relatório formal.
 
-*(Diário de obra com fotos e observações, e exportação do diário em PDF, ainda não implementados — ver Execução, próxima sub-fase.)*
+### Execução — Diário de Obra
+
+O botão **Diário de Obra** (também no detalhe do projeto) abre o registro dia a dia da obra: cada entrada tem data, etapa relacionada (opcional), clima, observações e fotos. As fotos podem vir da câmera do aparelho ou da galeria — o app já comprime e guarda no armazenamento interno, sem depender de internet.
+
+A atualização de **progresso (%) por etapa** (slider no detalhe do projeto) já existe desde a Fase 3 — não é uma tela nova, é o mesmo campo usado pra alimentar a barra de progresso do projeto.
+
+**Exemplo prático:** no fim do dia, o mestre de obras abre o Diário, escolhe a etapa "Alvenaria", escreve "Levantamos a parede da sala e da cozinha", marca "Ensolarado" e tira 3 fotos direto da câmera — tudo fica salvo no histórico do projeto, sem precisar de papel ou WhatsApp.
+
+*(Exportação do diário em PDF com fotos fica pra Fase 9, junto da exportação dos outros módulos.)*
 
 ---
 

@@ -30,6 +30,7 @@ import br.com.tiago.obramaster.ui.features.onboarding.OnboardingViewModel
 import br.com.tiago.obramaster.ui.features.orcamentos.OrcamentosViewModel
 import br.com.tiago.obramaster.ui.features.pessoas.PessoasViewModel
 import br.com.tiago.obramaster.ui.features.projetos.CronogramaViewModel
+import br.com.tiago.obramaster.ui.features.projetos.DiarioObraViewModel
 import br.com.tiago.obramaster.ui.features.vendas.VendasViewModel
 import br.com.tiago.obramaster.ui.features.plantabaixa.PlantaBaixaViewModel
 import br.com.tiago.obramaster.ui.features.projetos.ProjetoDetalheViewModel
@@ -65,6 +66,7 @@ val appModule = module {
     factory { (projetoId: String) -> ProjetoDetalheViewModel(projetoId, get(), get(), get(), get()) }
     factory { (plantaId: String) -> PlantaBaixaViewModel(plantaId, get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     factory { (projetoId: String) -> CronogramaViewModel(projetoId, get(), get(), get()) }
+    factory { (projetoId: String) -> DiarioObraViewModel(projetoId, get(), get(), get(), get()) }
     factory { CategoriasFinanceirasViewModel(get()) }
     factory { CentrosDeCustoViewModel(get()) }
     factory { LancamentosViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }

@@ -1,0 +1,42 @@
+CREATE TABLE DiarioObra (
+    id TEXT NOT NULL PRIMARY KEY,
+    projetoId TEXT NOT NULL,
+    etapaId TEXT,
+    data INTEGER NOT NULL,
+    texto TEXT NOT NULL,
+    clima TEXT,
+    ativo INTEGER AS kotlin.Boolean NOT NULL DEFAULT 1,
+    FOREIGN KEY (projetoId) REFERENCES Projeto(id),
+    FOREIGN KEY (etapaId) REFERENCES Etapa(id)
+);
+
+CREATE TABLE DiarioObraFoto (
+    diarioObraId TEXT NOT NULL,
+    fotoKey TEXT NOT NULL,
+    ordem INTEGER NOT NULL,
+    PRIMARY KEY (diarioObraId, fotoKey),
+    FOREIGN KEY (diarioObraId) REFERENCES DiarioObra(id)
+);
+
+selectAtivosDoProjeto:
+SELECT * FROM DiarioObra WHERE projetoId = ? AND ativo = 1 ORDER BY data DESC;
+
+selectTodasFotos:
+SELECT * FROM DiarioObraFoto ORDER BY ordem;
+
+insert:
+INSERT INTO DiarioObra(id, projetoId, etapaId, data, texto, clima, ativo)
+VALUES (?, ?, ?, ?, ?, ?, ?);
+
+update:
+UPDATE DiarioObra SET etapaId = ?, data = ?, texto = ?, clima = ?
+WHERE id = ?;
+
+softDelete:
+UPDATE DiarioObra SET ativo = 0 WHERE id = ?;
+
+insertFoto:
+INSERT INTO DiarioObraFoto(diarioObraId, fotoKey, ordem) VALUES (?, ?, ?);
+
+deleteFotosDoRegistro:
+DELETE FROM DiarioObraFoto WHERE diarioObraId = ?;

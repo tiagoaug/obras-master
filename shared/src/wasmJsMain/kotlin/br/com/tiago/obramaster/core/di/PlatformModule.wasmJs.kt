@@ -9,6 +9,7 @@ import br.com.tiago.obramaster.data.repository.ComodoRepository
 import br.com.tiago.obramaster.data.repository.ConfigBDIRepository
 import br.com.tiago.obramaster.data.repository.ContaRepository
 import br.com.tiago.obramaster.data.repository.CorRepository
+import br.com.tiago.obramaster.data.repository.DiarioObraRepository
 import br.com.tiago.obramaster.data.repository.EmpresaRepository
 import br.com.tiago.obramaster.data.repository.EquipeRepository
 import br.com.tiago.obramaster.data.repository.EtapaRepository
@@ -23,6 +24,7 @@ import br.com.tiago.obramaster.data.repository.InMemoryComodoRepository
 import br.com.tiago.obramaster.data.repository.InMemoryConfigBDIRepository
 import br.com.tiago.obramaster.data.repository.InMemoryContaRepository
 import br.com.tiago.obramaster.data.repository.InMemoryCorRepository
+import br.com.tiago.obramaster.data.repository.InMemoryDiarioObraRepository
 import br.com.tiago.obramaster.data.repository.InMemoryEmpresaRepository
 import br.com.tiago.obramaster.data.repository.InMemoryEquipeRepository
 import br.com.tiago.obramaster.data.repository.InMemoryEtapaRepository
@@ -114,4 +116,5 @@ val platformModule = module {
     single<OrcamentoRepository> { InMemoryOrcamentoRepository() }
     single<VendaRepository> { InMemoryVendaRepository() }
     single<TarefaRepository> { InMemoryTarefaRepository() }
+    single<DiarioObraRepository> { InMemoryDiarioObraRepository() }
 }

@@ -12,6 +12,7 @@ import br.com.tiago.obramaster.data.repository.ComodoRepository
 import br.com.tiago.obramaster.data.repository.ConfigBDIRepository
 import br.com.tiago.obramaster.data.repository.ContaRepository
 import br.com.tiago.obramaster.data.repository.CorRepository
+import br.com.tiago.obramaster.data.repository.DiarioObraRepository
 import br.com.tiago.obramaster.data.repository.EmpresaRepository
 import br.com.tiago.obramaster.data.repository.EquipeRepository
 import br.com.tiago.obramaster.data.repository.EtapaRepository
@@ -41,6 +42,7 @@ import br.com.tiago.obramaster.data.repository.SqlDelightComodoRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightConfigBDIRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightContaRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightCorRepository
+import br.com.tiago.obramaster.data.repository.SqlDelightDiarioObraRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightEmpresaRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightEquipeRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightEtapaRepository
@@ -119,4 +121,5 @@ fun platformModule(context: Context) = module {
     single<OrcamentoRepository> { SqlDelightOrcamentoRepository(get()) }
     single<VendaRepository> { SqlDelightVendaRepository(get()) }
     single<TarefaRepository> { SqlDelightTarefaRepository(get()) }
+    single<DiarioObraRepository> { SqlDelightDiarioObraRepository(get()) }
 }

@@ -57,6 +57,7 @@ fun ProjetoDetalheScreen(
     onVoltar: () -> Unit,
     onAbrirPlanta: (String) -> Unit,
     onAbrirCronograma: (String) -> Unit,
+    onAbrirDiarioObra: (String) -> Unit,
     viewModel: ProjetoDetalheViewModel = koinInject { parametersOf(projetoId) },
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -129,8 +130,11 @@ fun ProjetoDetalheScreen(
 
             Row(Modifier.fillMaxWidth().padding(top = 20.dp, bottom = 8.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                 Text("Etapas", style = MaterialTheme.typography.titleMedium)
-                if (uiState.etapas.isNotEmpty()) {
-                    Button(onClick = { onAbrirCronograma(projetoId) }) { Text("Cronograma") }
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    if (uiState.etapas.isNotEmpty()) {
+                        Button(onClick = { onAbrirCronograma(projetoId) }) { Text("Cronograma") }
+                    }
+                    Button(onClick = { onAbrirDiarioObra(projetoId) }) { Text("Diário de Obra") }
                 }
             }
 

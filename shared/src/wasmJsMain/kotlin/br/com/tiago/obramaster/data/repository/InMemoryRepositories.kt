@@ -13,6 +13,7 @@ import br.com.tiago.obramaster.domain.ConfigBDI
 import br.com.tiago.obramaster.domain.Conta
 import br.com.tiago.obramaster.domain.Cor
 import br.com.tiago.obramaster.domain.DadosEmpresa
+import br.com.tiago.obramaster.domain.DiarioObra
 import br.com.tiago.obramaster.domain.Equipe
 import br.com.tiago.obramaster.domain.Etapa
 import br.com.tiago.obramaster.domain.Fornecedor
@@ -656,4 +657,22 @@ class InMemoryTarefaRepository : TarefaRepository {
         state.value = state.value.filterNot { it.id == id }
     }
     override fun observarDaEtapa(etapaId: String): Flow<List<Tarefa>> = state.map { lista -> lista.filter { it.etapaId == etapaId } }
+}
+
+class InMemoryDiarioObraRepository : DiarioObraRepository {
+    private val state = MutableStateFlow<List<DiarioObra>>(emptyList())
+
+    override suspend fun listarDoProjeto(projetoId: String): List<DiarioObra> =
+        state.value.filter { it.projetoId == projetoId && it.ativo }.sortedByDescending { it.data }
+    override suspend fun salvar(diario: DiarioObra) {
+        state.value = state.value + diario
+    }
+    override suspend fun atualizar(diario: DiarioObra) {
+        state.value = state.value.map { if (it.id == diario.id) diario else it }
+    }
+    override suspend fun desativar(id: String) {
+        state.value = state.value.map { if (it.id == id) it.copy(ativo = false) else it }
+    }
+    override fun observarDoProjeto(projetoId: String): Flow<List<DiarioObra>> =
+        state.map { lista -> lista.filter { it.projetoId == projetoId && it.ativo }.sortedByDescending { it.data } }
 }
