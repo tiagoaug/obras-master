@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.tiago.obramaster.core.plantabaixa.DxfImporter
 import br.com.tiago.obramaster.core.plantabaixa.PlantaBaixaEngine
+import br.com.tiago.obramaster.core.plantabaixa.SvgImporter
 import br.com.tiago.obramaster.core.plantabaixa.UnidadeDxf
 import br.com.tiago.obramaster.data.repository.AberturaRepository
 import br.com.tiago.obramaster.data.repository.ArquivoImportadoRepository
@@ -29,6 +30,21 @@ import kotlin.math.hypot
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
+/**
+ * Envelope de UI que normaliza o resultado de qualquer importador (DxfImporter, SvgImporter —
+ * cada um com seu próprio data class de resultado, exatamente como a spec define) numa única
+ * forma que a tela de prévia consegue mostrar, sem misturar os motores em si.
+ */
+data class PreviaImportacao(
+    val formato: FormatoImportacao,
+    val paredes: List<Parede>,
+    val comodos: List<Comodo>,
+    val escalaAutomaticaPxPorMetro: Double?,
+    val unidadeDetectadaTexto: String?,
+    val camadasEncontradas: List<String> = emptyList(),
+    val elementosIgnorados: Int = 0,
+)
+
 data class EditorPlantaUiState(
     val planta: PlantaBaixa? = null,
     val comodos: List<Comodo> = emptyList(),
@@ -49,7 +65,7 @@ data class EditorPlantaUiState(
     val importandoArquivo: Boolean = false,
     val erroImportacaoArquivo: String? = null,
     val nomeArquivoImportado: String? = null,
-    val resultadoImportacaoDxf: DxfImporter.ResultadoImportacaoDxf? = null,
+    val previaImportacao: PreviaImportacao? = null,
     val camadasSelecionadas: Set<String>? = null,
     val arquivoOrigemMaisRecente: ArquivoImportado? = null,
 )
@@ -358,53 +374,77 @@ class PlantaBaixaViewModel(
         }
     }
 
-    // --- SPEC_PLANTA_BAIXA_ADENDO_IMPORTACAO.md §2, §5 — importar DXF ---
+    // --- SPEC_PLANTA_BAIXA_ADENDO_IMPORTACAO.md §2, §3, §5 — importar DXF/SVG ---
 
     suspend fun arquivoDisponivel(): Boolean = filePicker.isAvailable()
+
+    private fun DxfImporter.ResultadoImportacaoDxf.paraPrevia() = PreviaImportacao(
+        formato = FormatoImportacao.DXF,
+        paredes = paredes,
+        comodos = comodos,
+        escalaAutomaticaPxPorMetro = escalaAutomaticaPxPorMetro,
+        unidadeDetectadaTexto = if (unidadeDetectada != UnidadeDxf.DESCONHECIDA) unidadeDetectada.name.lowercase() else null,
+        camadasEncontradas = camadasEncontradas,
+        elementosIgnorados = elementosIgnorados,
+    )
+
+    private fun SvgImporter.ResultadoImportacaoSvg.paraPrevia() = PreviaImportacao(
+        formato = FormatoImportacao.SVG,
+        paredes = paredes,
+        comodos = comodos,
+        escalaAutomaticaPxPorMetro = escalaAutomaticaPxPorMetro,
+        unidadeDetectadaTexto = if (escalaDetectadaAutomaticamente) "detectada no viewBox" else null,
+    )
 
     fun importarArquivo() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(importandoArquivo = true, erroImportacaoArquivo = null)
-            val arquivo = filePicker.escolherArquivo(extensoesAceitas = listOf("dxf"))
+            val arquivo = filePicker.escolherArquivo(extensoesAceitas = listOf("dxf", "svg"))
             if (arquivo == null) {
                 _uiState.value = _uiState.value.copy(importandoArquivo = false)
                 return@launch
             }
-            if (!arquivo.nomeArquivo.lowercase().endsWith(".dxf")) {
+            val nomeMinusculo = arquivo.nomeArquivo.lowercase()
+            val conteudo = arquivo.bytes.decodeToString()
+            val previa = when {
+                nomeMinusculo.endsWith(".dxf") -> DxfImporter.importar(conteudo).paraPrevia()
+                nomeMinusculo.endsWith(".svg") -> SvgImporter.importar(conteudo).paraPrevia()
+                else -> null
+            }
+            if (previa == null) {
                 _uiState.value = _uiState.value.copy(
                     importandoArquivo = false,
-                    erroImportacaoArquivo = "Formato ainda não suportado nesta fase — só .dxf por enquanto.",
+                    erroImportacaoArquivo = "Formato ainda não suportado nesta fase — só .dxf e .svg por enquanto.",
                 )
                 return@launch
             }
-            val conteudo = arquivo.bytes.decodeToString()
             conteudoArquivoImportadoAtual = conteudo
-            val resultado = DxfImporter.importar(conteudo)
             _uiState.value = _uiState.value.copy(
                 importandoArquivo = false,
                 nomeArquivoImportado = arquivo.nomeArquivo,
-                resultadoImportacaoDxf = resultado,
+                previaImportacao = previa,
                 camadasSelecionadas = null,
             )
         }
     }
 
-    /** Reprocessa o DXF já lido, excluindo/incluindo uma camada — sem reabrir o seletor de arquivo. */
+    /** Reprocessa o DXF já lido, excluindo/incluindo uma camada — sem reabrir o seletor de arquivo (SVG não tem esse conceito). */
     fun alternarCamadaSelecionada(camada: String) {
         val conteudo = conteudoArquivoImportadoAtual ?: return
-        val resultado = _uiState.value.resultadoImportacaoDxf ?: return
-        val atuais = _uiState.value.camadasSelecionadas ?: resultado.camadasEncontradas.toSet()
+        val previa = _uiState.value.previaImportacao ?: return
+        if (previa.formato != FormatoImportacao.DXF) return
+        val atuais = _uiState.value.camadasSelecionadas ?: previa.camadasEncontradas.toSet()
         val novasSelecionadas = if (camada in atuais) atuais - camada else atuais + camada
         _uiState.value = _uiState.value.copy(
             camadasSelecionadas = novasSelecionadas,
-            resultadoImportacaoDxf = DxfImporter.importar(conteudo, novasSelecionadas),
+            previaImportacao = DxfImporter.importar(conteudo, novasSelecionadas).paraPrevia(),
         )
     }
 
     fun cancelarImportacaoArquivo() {
         conteudoArquivoImportadoAtual = null
         _uiState.value = _uiState.value.copy(
-            resultadoImportacaoDxf = null,
+            previaImportacao = null,
             nomeArquivoImportado = null,
             erroImportacaoArquivo = null,
             camadasSelecionadas = null,
@@ -413,37 +453,37 @@ class PlantaBaixaViewModel(
 
     @OptIn(ExperimentalUuidApi::class)
     fun confirmarImportacaoArquivo() {
-        val resultado = _uiState.value.resultadoImportacaoDxf ?: return
+        val previa = _uiState.value.previaImportacao ?: return
         val nomeArquivo = _uiState.value.nomeArquivoImportado ?: return
         val planta = _uiState.value.planta ?: return
 
         viewModelScope.launch {
-            if (resultado.escalaAutomaticaPxPorMetro != null) {
-                plantaBaixaRepository.atualizarEscala(plantaId, resultado.escalaAutomaticaPxPorMetro, agora())
-                _uiState.value = _uiState.value.copy(planta = planta.copy(escalaPxPorMetro = resultado.escalaAutomaticaPxPorMetro))
+            if (previa.escalaAutomaticaPxPorMetro != null) {
+                plantaBaixaRepository.atualizarEscala(plantaId, previa.escalaAutomaticaPxPorMetro, agora())
+                _uiState.value = _uiState.value.copy(planta = planta.copy(escalaPxPorMetro = previa.escalaAutomaticaPxPorMetro))
             }
-            resultado.paredes.forEach { paredeRepository.salvar(it.copy(plantaId = plantaId)) }
-            resultado.comodos.forEach { comodoRepository.salvar(it.copy(plantaId = plantaId)) }
+            previa.paredes.forEach { paredeRepository.salvar(it.copy(plantaId = plantaId)) }
+            previa.comodos.forEach { comodoRepository.salvar(it.copy(plantaId = plantaId)) }
 
             val registroOrigem = ArquivoImportado(
                 id = Uuid.random().toString(),
                 plantaId = plantaId,
-                formatoOrigem = FormatoImportacao.DXF,
+                formatoOrigem = previa.formato,
                 nomeArquivoOriginal = nomeArquivo,
-                escalaDetectadaAutomaticamente = resultado.escalaAutomaticaPxPorMetro != null,
-                unidadeOrigem = if (resultado.unidadeDetectada != UnidadeDxf.DESCONHECIDA) resultado.unidadeDetectada.name else null,
-                camadasImportadas = _uiState.value.camadasSelecionadas?.toList() ?: resultado.camadasEncontradas,
+                escalaDetectadaAutomaticamente = previa.escalaAutomaticaPxPorMetro != null,
+                unidadeOrigem = previa.unidadeDetectadaTexto,
+                camadasImportadas = _uiState.value.camadasSelecionadas?.toList() ?: previa.camadasEncontradas,
                 importadoEm = agora(),
             )
             arquivoImportadoRepository.salvar(registroOrigem)
 
             conteudoArquivoImportadoAtual = null
             _uiState.value = _uiState.value.copy(
-                resultadoImportacaoDxf = null,
+                previaImportacao = null,
                 nomeArquivoImportado = null,
                 camadasSelecionadas = null,
                 arquivoOrigemMaisRecente = registroOrigem,
-                ferramentaAtual = if (resultado.escalaAutomaticaPxPorMetro == null) FerramentaDesenho.CALIBRAR else _uiState.value.ferramentaAtual,
+                ferramentaAtual = if (previa.escalaAutomaticaPxPorMetro == null) FerramentaDesenho.CALIBRAR else _uiState.value.ferramentaAtual,
             )
         }
     }

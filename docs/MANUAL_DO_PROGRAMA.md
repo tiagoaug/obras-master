@@ -126,9 +126,21 @@ O ícone de upload na barra superior do editor ("Importar arquivo") abre o selet
 - Nada é importado sem você confirmar em "Importar para a Planta"; o botão "Cancelar" descarta a leitura sem mexer na planta atual.
 - Um aviso abaixo do título do editor mostra "Importado de [nome do arquivo]" depois que uma importação é confirmada, pra você lembrar a origem da planta depois.
 
-*(Importação de SVG e PDF ainda não estão disponíveis — chegam nas próximas fases. Elementos redondos (círculos) do DXF são ignorados por enquanto, fora do escopo desta primeira versão do importador.)*
+*(Importação de PDF ainda não está disponível — chega numa próxima fase. Elementos redondos (círculos) do DXF são ignorados por enquanto, fora do escopo desta primeira versão do importador.)*
 
 **Exemplo prático:** o arquiteto manda o DXF da planta com `$INSUNITS` gravado em metros — você importa, a tela de prévia mostra "18 paredes e 5 cômodos detectados, escala detectada automaticamente (unidade: metros)", você confere as camadas, toca em "Importar para a Planta" e os cômodos já aparecem no editor com nome e área corretos, prontos pra ajustar se precisar.
+
+#### Importar arquivo SVG `#planta-baixa-importar-svg`
+
+O mesmo botão "Importar arquivo" também lê **SVG** — útil quando a planta veio de uma ferramenta de desenho vetorial em vez de um software de CAD:
+
+- Formas básicas do SVG (retângulo, linha, polígono, polilinha e a maioria dos traçados `<path>` simples — linhas retas e curvas, essas últimas aproximadas por segmentos de reta) viram paredes e cômodos, do mesmo jeito que no DXF.
+- A escala só é detectada automaticamente no caso raro do SVG trazer `viewBox` junto com largura/altura numa unidade real (milímetros, centímetros ou polegadas) — a grande maioria dos SVGs exportados de ferramentas de design usa pixels sem significado físico, então **o normal é cair na calibração manual** depois de importar, igual à foto.
+- SVG não tem o conceito de "camadas" do DXF, então essa etapa da prévia não aparece nesse caso — o resto do fluxo (prévia, confirmar, cancelar) é idêntico.
+
+*(SVG não tem uma convenção padrão de nomear cômodos por texto próximo, como o DXF tem — cômodos importados de SVG entram como "Cômodo importado" e você renomeia normalmente no editor.)*
+
+**Exemplo prático:** você desenhou a planta num programa de vetor qualquer e exportou como SVG — importa pelo mesmo botão, a prévia mostra os cômodos detectados sem escala automática, confirma a importação, e o editor já entra direto na ferramenta de calibrar: dois toques numa medida conhecida do próprio desenho e a planta fica com a escala certa.
 
 ---
 

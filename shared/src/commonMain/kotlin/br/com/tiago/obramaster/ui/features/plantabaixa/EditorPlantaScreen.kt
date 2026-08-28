@@ -62,8 +62,6 @@ import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import br.com.tiago.obramaster.core.plantabaixa.DxfImporter
-import br.com.tiago.obramaster.core.plantabaixa.UnidadeDxf
 import br.com.tiago.obramaster.core.util.DecimalFormatter
 import br.com.tiago.obramaster.domain.Comodo
 import br.com.tiago.obramaster.domain.PontoXY
@@ -98,7 +96,7 @@ fun EditorPlantaScreen(
                 },
                 actions = {
                     IconButton(onClick = { viewModel.importarArquivo() }) {
-                        Icon(Icons.Filled.FileUpload, contentDescription = "Importar arquivo (DXF)")
+                        Icon(Icons.Filled.FileUpload, contentDescription = "Importar arquivo (DXF/SVG)")
                     }
                     IconButton(onClick = { mostrarImagemSheet = true }) {
                         Icon(Icons.Filled.Image, contentDescription = "Imagem de fundo")
@@ -373,11 +371,11 @@ fun EditorPlantaScreen(
         )
     }
 
-    uiState.resultadoImportacaoDxf?.let { resultado ->
-        ImportacaoDxfDialog(
+    uiState.previaImportacao?.let { previa ->
+        ImportacaoArquivoDialog(
             nomeArquivo = uiState.nomeArquivoImportado.orEmpty(),
-            resultado = resultado,
-            camadasSelecionadas = uiState.camadasSelecionadas ?: resultado.camadasEncontradas.toSet(),
+            previa = previa,
+            camadasSelecionadas = uiState.camadasSelecionadas ?: previa.camadasEncontradas.toSet(),
             onAlternarCamada = { viewModel.alternarCamadaSelecionada(it) },
             onCancelar = { viewModel.cancelarImportacaoArquivo() },
             onConfirmar = { viewModel.confirmarImportacaoArquivo() },
@@ -449,11 +447,11 @@ private fun ImagemFundoSheet(
     }
 }
 
-/** SPEC_PLANTA_BAIXA_ADENDO_IMPORTACAO.md §5 — pré-visualização do resultado do parser de DXF antes de confirmar. */
+/** SPEC_PLANTA_BAIXA_ADENDO_IMPORTACAO.md §5 — pré-visualização do resultado de qualquer importador (DXF/SVG) antes de confirmar. */
 @Composable
-private fun ImportacaoDxfDialog(
+private fun ImportacaoArquivoDialog(
     nomeArquivo: String,
-    resultado: DxfImporter.ResultadoImportacaoDxf,
+    previa: PreviaImportacao,
     camadasSelecionadas: Set<String>,
     onAlternarCamada: (String) -> Unit,
     onCancelar: () -> Unit,
@@ -464,24 +462,25 @@ private fun ImportacaoDxfDialog(
         title = { Text(nomeArquivo) },
         text = {
             Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("${resultado.paredes.size} parede(s) e ${resultado.comodos.size} cômodo(s) detectados")
+                Text("${previa.paredes.size} parede(s) e ${previa.comodos.size} cômodo(s) detectados")
                 Text(
-                    when (resultado.unidadeDetectada) {
-                        UnidadeDxf.DESCONHECIDA -> "Escala não detectada no arquivo — você vai calibrar manualmente depois de importar."
-                        else -> "Escala detectada automaticamente (unidade: ${resultado.unidadeDetectada.name.lowercase()})."
+                    if (previa.unidadeDetectadaTexto == null) {
+                        "Escala não detectada no arquivo — você vai calibrar manualmente depois de importar."
+                    } else {
+                        "Escala detectada automaticamente (unidade: ${previa.unidadeDetectadaTexto})."
                     },
                     style = MaterialTheme.typography.bodyMedium,
                 )
-                if (resultado.elementosIgnorados > 0) {
+                if (previa.elementosIgnorados > 0) {
                     Text(
-                        "${resultado.elementosIgnorados} elemento(s) ignorado(s) (círculos, camadas excluídas ou tipos não suportados).",
+                        "${previa.elementosIgnorados} elemento(s) ignorado(s) (círculos, camadas excluídas ou tipos não suportados).",
                         style = MaterialTheme.typography.labelSmall,
                     )
                 }
-                if (resultado.camadasEncontradas.isNotEmpty()) {
+                if (previa.camadasEncontradas.isNotEmpty()) {
                     Text("Camadas encontradas — toque para incluir/excluir:", style = MaterialTheme.typography.labelLarge)
                     Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                        resultado.camadasEncontradas.forEach { camada ->
+                        previa.camadasEncontradas.forEach { camada ->
                             FilterChip(
                                 selected = camada in camadasSelecionadas,
                                 onClick = { onAlternarCamada(camada) },
