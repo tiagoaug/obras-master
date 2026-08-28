@@ -29,7 +29,7 @@ INSERT INTO LancamentoFinanceiro(id, tipo, categoriaId, centroDeCustoId, naturez
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 update:
-UPDATE LancamentoFinanceiro SET tipo = ?, categoriaId = ?, centroDeCustoId = ?, natureza = ?, projetoId = ?, etapaId = ?, descricao = ?, valor = ?, data = ?, formaPagamento = ?, pago = ?, pessoaId = ?, anexoUri = ?
+UPDATE LancamentoFinanceiro SET tipo = ?, categoriaId = ?, centroDeCustoId = ?, natureza = ?, projetoId = ?, etapaId = ?, descricao = ?, valor = ?, data = ?, formaPagamento = ?, pago = ?, pessoaId = ?, anexoUri = ?, contaId = ?
 WHERE id = ?;
 
 marcarPago:

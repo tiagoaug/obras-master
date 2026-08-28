@@ -68,6 +68,7 @@ class SqlDelightLancamentoFinanceiroRepository(
                 pago = lancamento.pago,
                 pessoaId = lancamento.pessoaId,
                 anexoUri = lancamento.anexoUri,
+                contaId = lancamento.contaId,
                 id = lancamento.id,
             )
         }
