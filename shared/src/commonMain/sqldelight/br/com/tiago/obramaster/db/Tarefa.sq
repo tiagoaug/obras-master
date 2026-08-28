@@ -1,0 +1,23 @@
+CREATE TABLE Tarefa (
+    id TEXT NOT NULL PRIMARY KEY,
+    etapaId TEXT NOT NULL,
+    descricao TEXT NOT NULL,
+    responsavelPessoaId TEXT,
+    prazo INTEGER,
+    concluida INTEGER AS kotlin.Boolean NOT NULL DEFAULT 0,
+    FOREIGN KEY (etapaId) REFERENCES Etapa(id)
+);
+
+selectDaEtapa:
+SELECT * FROM Tarefa WHERE etapaId = ?;
+
+insert:
+INSERT INTO Tarefa(id, etapaId, descricao, responsavelPessoaId, prazo, concluida)
+VALUES (?, ?, ?, ?, ?, ?);
+
+update:
+UPDATE Tarefa SET descricao = ?, responsavelPessoaId = ?, prazo = ?, concluida = ?
+WHERE id = ?;
+
+excluir:
+DELETE FROM Tarefa WHERE id = ?;

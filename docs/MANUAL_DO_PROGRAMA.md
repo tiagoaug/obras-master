@@ -269,7 +269,15 @@ Veja, por funcionário e por equipe, quantas diárias foram trabalhadas, quanto 
 
 ## 10. Planejamento e Execução `#planejamento-execucao`
 
-Cronograma por etapa com data prevista x realizada, checklist de tarefas, e o Diário de Obra (fotos + observações). Atrasos aparecem destacados em vermelho.
+No detalhe do projeto, o botão **Cronograma** abre a visão de planejamento de cada etapa: datas **previstas** (planejadas no início da obra) e datas **reais** (quando a etapa de fato começou/terminou), lado a lado. Uma barra horizontal simples (Gantt) mostra a posição de cada etapa dentro da janela do projeto — verde quando concluída, azul quando em andamento, cinza quando ainda não começou.
+
+Se a data prevista de fim já passou e a etapa não está concluída, ela aparece marcada como **Atrasada** (em vermelho), tanto no rótulo quanto na barra do Gantt.
+
+Cada etapa tem um checklist de **tarefas**: descrição, responsável (escolhido entre os Funcionários cadastrados) e prazo opcional. Marcar/desmarcar o checkbox alterna a tarefa entre concluída e pendente.
+
+**Exemplo prático:** a etapa "Fundação" tinha fim previsto pra 10/03 mas passou 15/03 sem terminar — ela aparece em vermelho na lista e na barra do Gantt, avisando que o cronograma está atrasado, mesmo antes de qualquer relatório formal.
+
+*(Diário de obra com fotos e observações, e exportação do diário em PDF, ainda não implementados — ver Execução, próxima sub-fase.)*
 
 ---
 

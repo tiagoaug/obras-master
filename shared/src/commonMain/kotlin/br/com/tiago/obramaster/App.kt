@@ -29,6 +29,7 @@ import br.com.tiago.obramaster.ui.features.orcamentos.OrcamentosScreen
 import br.com.tiago.obramaster.ui.features.pessoas.PessoasScreen
 import br.com.tiago.obramaster.ui.features.vendas.VendasScreen
 import br.com.tiago.obramaster.ui.features.plantabaixa.EditorPlantaScreen
+import br.com.tiago.obramaster.ui.features.projetos.CronogramaScreen
 import br.com.tiago.obramaster.ui.features.projetos.ProjetoDetalheScreen
 import br.com.tiago.obramaster.ui.features.projetos.ProjetosScreen
 import br.com.tiago.obramaster.ui.theme.ObraMasterTheme
@@ -46,6 +47,7 @@ private sealed interface TelaRaiz {
     data class Projetos(val colaborador: Colaborador) : TelaRaiz
     data class ProjetoDetalhe(val colaborador: Colaborador, val projetoId: String) : TelaRaiz
     data class EditorPlanta(val colaborador: Colaborador, val projetoId: String, val plantaId: String) : TelaRaiz
+    data class Cronograma(val colaborador: Colaborador, val projetoId: String) : TelaRaiz
     data class Financeiro(val colaborador: Colaborador) : TelaRaiz
     data class Equipes(val colaborador: Colaborador) : TelaRaiz
     data class Compras(val colaborador: Colaborador) : TelaRaiz
@@ -120,10 +122,16 @@ fun App() {
                     onAbrirPlanta = { plantaId ->
                         tela = TelaRaiz.EditorPlanta(telaAtual.colaborador, telaAtual.projetoId, plantaId)
                     },
+                    onAbrirCronograma = { projetoId -> tela = TelaRaiz.Cronograma(telaAtual.colaborador, projetoId) },
                 )
 
                 is TelaRaiz.EditorPlanta -> EditorPlantaScreen(
                     plantaId = telaAtual.plantaId,
+                    onVoltar = { tela = TelaRaiz.ProjetoDetalhe(telaAtual.colaborador, telaAtual.projetoId) },
+                )
+
+                is TelaRaiz.Cronograma -> CronogramaScreen(
+                    projetoId = telaAtual.projetoId,
                     onVoltar = { tela = TelaRaiz.ProjetoDetalhe(telaAtual.colaborador, telaAtual.projetoId) },
                 )
 

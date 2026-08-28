@@ -34,6 +34,7 @@ import br.com.tiago.obramaster.domain.RetencaoLancamento
 import br.com.tiago.obramaster.domain.StatusOrcamento
 import br.com.tiago.obramaster.domain.StatusPedidoCompra
 import br.com.tiago.obramaster.domain.StatusVenda
+import br.com.tiago.obramaster.domain.Tarefa
 import br.com.tiago.obramaster.domain.TipoLancamento
 import br.com.tiago.obramaster.domain.Venda
 import br.com.tiago.obramaster.domain.Permissao
@@ -639,4 +640,20 @@ class InMemoryVendaRepository : VendaRepository {
     }
 
     override fun observarTodos(): Flow<List<Venda>> = vendas.map { lista -> lista.filter { it.ativo }.sortedByDescending { it.data } }
+}
+
+class InMemoryTarefaRepository : TarefaRepository {
+    private val state = MutableStateFlow<List<Tarefa>>(emptyList())
+
+    override suspend fun listarDaEtapa(etapaId: String): List<Tarefa> = state.value.filter { it.etapaId == etapaId }
+    override suspend fun salvar(tarefa: Tarefa) {
+        state.value = state.value + tarefa
+    }
+    override suspend fun atualizar(tarefa: Tarefa) {
+        state.value = state.value.map { if (it.id == tarefa.id) tarefa else it }
+    }
+    override suspend fun excluir(id: String) {
+        state.value = state.value.filterNot { it.id == id }
+    }
+    override fun observarDaEtapa(etapaId: String): Flow<List<Tarefa>> = state.map { lista -> lista.filter { it.etapaId == etapaId } }
 }

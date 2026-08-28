@@ -56,6 +56,7 @@ fun ProjetoDetalheScreen(
     projetoId: String,
     onVoltar: () -> Unit,
     onAbrirPlanta: (String) -> Unit,
+    onAbrirCronograma: (String) -> Unit,
     viewModel: ProjetoDetalheViewModel = koinInject { parametersOf(projetoId) },
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -126,7 +127,12 @@ fun ProjetoDetalheScreen(
                 }
             }
 
-            Text("Etapas", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 20.dp, bottom = 8.dp))
+            Row(Modifier.fillMaxWidth().padding(top = 20.dp, bottom = 8.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                Text("Etapas", style = MaterialTheme.typography.titleMedium)
+                if (uiState.etapas.isNotEmpty()) {
+                    Button(onClick = { onAbrirCronograma(projetoId) }) { Text("Cronograma") }
+                }
+            }
 
             if (uiState.etapas.isEmpty()) {
                 Button(onClick = { viewModel.aplicarTemplatePadrao() }) { Text("Aplicar template padrão de etapas") }

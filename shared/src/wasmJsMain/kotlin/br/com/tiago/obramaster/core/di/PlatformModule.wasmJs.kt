@@ -43,6 +43,7 @@ import br.com.tiago.obramaster.data.repository.InMemoryProjetoRepository
 import br.com.tiago.obramaster.data.repository.InMemoryRateioLancamentoRepository
 import br.com.tiago.obramaster.data.repository.InMemoryRegistroTrabalhoRepository
 import br.com.tiago.obramaster.data.repository.InMemoryRetencaoLancamentoRepository
+import br.com.tiago.obramaster.data.repository.InMemoryTarefaRepository
 import br.com.tiago.obramaster.data.repository.InMemoryUnidadeMedidaRepository
 import br.com.tiago.obramaster.data.repository.InMemoryVendaRepository
 import br.com.tiago.obramaster.data.repository.LancamentoFinanceiroRepository
@@ -60,6 +61,7 @@ import br.com.tiago.obramaster.data.repository.PessoaRepository
 import br.com.tiago.obramaster.data.repository.PlantaBaixaRepository
 import br.com.tiago.obramaster.data.repository.ProjetoRepository
 import br.com.tiago.obramaster.data.repository.RateioLancamentoRepository
+import br.com.tiago.obramaster.data.repository.TarefaRepository
 import br.com.tiago.obramaster.data.repository.UnidadeMedidaRepository
 import br.com.tiago.obramaster.data.repository.VendaRepository
 import br.com.tiago.obramaster.platform.AppSettingsFactory
@@ -111,4 +113,5 @@ val platformModule = module {
     single<ConfigBDIRepository> { InMemoryConfigBDIRepository() }
     single<OrcamentoRepository> { InMemoryOrcamentoRepository() }
     single<VendaRepository> { InMemoryVendaRepository() }
+    single<TarefaRepository> { InMemoryTarefaRepository() }
 }

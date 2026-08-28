@@ -6,6 +6,8 @@ CREATE TABLE Etapa (
     orcamentoEtapa INTEGER NOT NULL,
     dataInicio INTEGER,
     dataFim INTEGER,
+    dataInicioReal INTEGER,
+    dataFimReal INTEGER,
     progressoPercent INTEGER NOT NULL DEFAULT 0,
     status TEXT NOT NULL,
     ativo INTEGER AS kotlin.Boolean NOT NULL DEFAULT 1,
@@ -16,11 +18,11 @@ selectAtivasDoProjeto:
 SELECT * FROM Etapa WHERE projetoId = ? AND ativo = 1 ORDER BY ordem;
 
 insert:
-INSERT INTO Etapa(id, projetoId, nome, ordem, orcamentoEtapa, dataInicio, dataFim, progressoPercent, status, ativo)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+INSERT INTO Etapa(id, projetoId, nome, ordem, orcamentoEtapa, dataInicio, dataFim, dataInicioReal, dataFimReal, progressoPercent, status, ativo)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 update:
-UPDATE Etapa SET nome = ?, orcamentoEtapa = ?, dataInicio = ?, dataFim = ?, progressoPercent = ?, status = ?
+UPDATE Etapa SET nome = ?, orcamentoEtapa = ?, dataInicio = ?, dataFim = ?, dataInicioReal = ?, dataFimReal = ?, progressoPercent = ?, status = ?
 WHERE id = ?;
 
 updateOrdem:
