@@ -3,6 +3,7 @@ package br.com.tiago.obramaster.core.di
 import br.com.tiago.obramaster.data.db.DatabaseDriverFactory
 import br.com.tiago.obramaster.data.db.createDatabase
 import br.com.tiago.obramaster.data.repository.AberturaRepository
+import br.com.tiago.obramaster.data.repository.ArquivoImportadoRepository
 import br.com.tiago.obramaster.data.repository.ColaboradorRepository
 import br.com.tiago.obramaster.data.repository.ComodoRepository
 import br.com.tiago.obramaster.data.repository.ContaRepository
@@ -17,6 +18,7 @@ import br.com.tiago.obramaster.data.repository.PessoaRepository
 import br.com.tiago.obramaster.data.repository.PlantaBaixaRepository
 import br.com.tiago.obramaster.data.repository.ProjetoRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightAberturaRepository
+import br.com.tiago.obramaster.data.repository.SqlDelightArquivoImportadoRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightColaboradorRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightComodoRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightContaRepository
@@ -34,6 +36,7 @@ import br.com.tiago.obramaster.data.repository.SqlDelightUnidadeMedidaRepository
 import br.com.tiago.obramaster.data.repository.UnidadeMedidaRepository
 import br.com.tiago.obramaster.platform.AppSettingsFactory
 import br.com.tiago.obramaster.platform.ContactsProvider
+import br.com.tiago.obramaster.platform.FilePicker
 import br.com.tiago.obramaster.platform.ImagePicker
 import br.com.tiago.obramaster.platform.ImageStore
 import org.koin.dsl.module
@@ -45,6 +48,7 @@ val platformModule = module {
     single { ContactsProvider() }
     single { ImagePicker() }
     single { ImageStore() }
+    single { FilePicker() }
 
     single<ColaboradorRepository> { SqlDelightColaboradorRepository(get()) }
     single<PermissaoRepository> { SqlDelightPermissaoRepository(get()) }
@@ -61,4 +65,5 @@ val platformModule = module {
     single<ComodoRepository> { SqlDelightComodoRepository(get()) }
     single<ParedeRepository> { SqlDelightParedeRepository(get()) }
     single<AberturaRepository> { SqlDelightAberturaRepository(get()) }
+    single<ArquivoImportadoRepository> { SqlDelightArquivoImportadoRepository(get()) }
 }

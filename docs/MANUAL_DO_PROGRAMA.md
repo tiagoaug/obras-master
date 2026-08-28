@@ -115,6 +115,21 @@ O ícone de imagem na barra superior do editor abre o painel "Imagem de fundo":
 
 **Exemplo prático:** você fotografa uma planta impressa do projeto, importa a foto, toca nas duas pontas de uma porta que mede 0,80m na realidade e digita "0,8" quando o app pergunta a distância — a partir daí, cada quadrado da grade passa a refletir a escala real da foto, e os cômodos que você desenhar por cima já saem com a área certa.
 
+#### Importar arquivo DXF `#planta-baixa-importar-dxf`
+
+O ícone de upload na barra superior do editor ("Importar arquivo") abre o seletor de arquivo e lê um **DXF** direto — paredes e cômodos do desenho técnico entram prontos, sem precisar redesenhar:
+
+- Se o arquivo DXF traz a unidade de medida gravada nele (metros, centímetros, milímetros ou polegadas), a escala é **calibrada automaticamente** — você não precisa fazer nada, os cômodos já aparecem com a área certa.
+- Se o arquivo não tem essa informação, a planta é importada mesmo assim (geometria correta, só a escala que falta) e o editor já entra na ferramenta de calibração — dois toques numa medida conhecida do próprio desenho importado e pronto, igual à calibração por foto.
+- Nomes de cômodo escritos no próprio DXF (texto perto do desenho da sala, ex.: "Sala", "Quarto 1") viram o nome do cômodo automaticamente, quando o programa consegue casar um com o outro.
+- Antes de confirmar, uma tela de prévia mostra quantas paredes e cômodos foram encontrados, se a escala foi detectada ou não, e a lista de **camadas** (layers) do DXF — toque numa camada pra excluí-la da importação (útil pra pular camadas de cota/anotação que não fazem parte do desenho em si).
+- Nada é importado sem você confirmar em "Importar para a Planta"; o botão "Cancelar" descarta a leitura sem mexer na planta atual.
+- Um aviso abaixo do título do editor mostra "Importado de [nome do arquivo]" depois que uma importação é confirmada, pra você lembrar a origem da planta depois.
+
+*(Importação de SVG e PDF ainda não estão disponíveis — chegam nas próximas fases. Elementos redondos (círculos) do DXF são ignorados por enquanto, fora do escopo desta primeira versão do importador.)*
+
+**Exemplo prático:** o arquiteto manda o DXF da planta com `$INSUNITS` gravado em metros — você importa, a tela de prévia mostra "18 paredes e 5 cômodos detectados, escala detectada automaticamente (unidade: metros)", você confere as camadas, toca em "Importar para a Planta" e os cômodos já aparecem no editor com nome e área corretos, prontos pra ajustar se precisar.
+
 ---
 
 ## 5. Financeiro `#financeiro`

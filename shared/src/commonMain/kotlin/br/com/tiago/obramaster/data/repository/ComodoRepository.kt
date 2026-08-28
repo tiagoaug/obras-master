@@ -16,6 +16,7 @@ interface ComodoRepository {
     suspend fun listarDaPlanta(plantaId: String): List<Comodo>
     suspend fun salvar(comodo: Comodo)
     suspend fun renomear(id: String, nome: String)
+    suspend fun atualizarAreaPerimetro(id: String, areaM2: Double, perimetroM: Double)
     suspend fun desativar(id: String)
     fun observarDaPlanta(plantaId: String): Flow<List<Comodo>>
 }
@@ -47,6 +48,10 @@ class SqlDelightComodoRepository(
 
     override suspend fun renomear(id: String, nome: String) {
         withContext(Dispatchers.Default) { queries.renomear(nome, id) }
+    }
+
+    override suspend fun atualizarAreaPerimetro(id: String, areaM2: Double, perimetroM: Double) {
+        withContext(Dispatchers.Default) { queries.atualizarAreaPerimetro(areaM2, perimetroM, id) }
     }
 
     override suspend fun desativar(id: String) {

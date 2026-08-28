@@ -1,0 +1,18 @@
+CREATE TABLE ArquivoImportado (
+    id TEXT NOT NULL PRIMARY KEY,
+    plantaId TEXT NOT NULL,
+    formatoOrigem TEXT NOT NULL,
+    nomeArquivoOriginal TEXT NOT NULL,
+    escalaDetectadaAutomaticamente INTEGER AS kotlin.Boolean NOT NULL,
+    unidadeOrigem TEXT,
+    camadasImportadasJson TEXT NOT NULL,
+    importadoEm INTEGER NOT NULL,
+    FOREIGN KEY (plantaId) REFERENCES PlantaBaixa(id)
+);
+
+selectDaPlanta:
+SELECT * FROM ArquivoImportado WHERE plantaId = ? ORDER BY importadoEm DESC;
+
+insert:
+INSERT INTO ArquivoImportado(id, plantaId, formatoOrigem, nomeArquivoOriginal, escalaDetectadaAutomaticamente, unidadeOrigem, camadasImportadasJson, importadoEm)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?);

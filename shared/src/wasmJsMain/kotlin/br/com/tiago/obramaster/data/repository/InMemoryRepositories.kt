@@ -2,6 +2,7 @@ package br.com.tiago.obramaster.data.repository
 
 import br.com.tiago.obramaster.core.auth.NivelPermissao
 import br.com.tiago.obramaster.domain.Abertura
+import br.com.tiago.obramaster.domain.ArquivoImportado
 import br.com.tiago.obramaster.domain.Colaborador
 import br.com.tiago.obramaster.domain.Comodo
 import br.com.tiago.obramaster.domain.Conta
@@ -252,11 +253,25 @@ class InMemoryComodoRepository : ComodoRepository {
     override suspend fun renomear(id: String, nome: String) {
         state.value = state.value.map { if (it.id == id) it.copy(nome = nome) else it }
     }
+    override suspend fun atualizarAreaPerimetro(id: String, areaM2: Double, perimetroM: Double) {
+        state.value = state.value.map { if (it.id == id) it.copy(areaM2 = areaM2, perimetroM = perimetroM) else it }
+    }
     override suspend fun desativar(id: String) {
         state.value = state.value.map { if (it.id == id) it.copy(ativo = false) else it }
     }
     override fun observarDaPlanta(plantaId: String): Flow<List<Comodo>> =
         state.map { lista -> lista.filter { it.plantaId == plantaId && it.ativo } }
+}
+
+class InMemoryArquivoImportadoRepository : ArquivoImportadoRepository {
+    private val state = MutableStateFlow<List<ArquivoImportado>>(emptyList())
+
+    override suspend fun listarDaPlanta(plantaId: String): List<ArquivoImportado> =
+        state.value.filter { it.plantaId == plantaId }.sortedByDescending { it.importadoEm }
+
+    override suspend fun salvar(arquivo: ArquivoImportado) {
+        state.value = state.value + arquivo
+    }
 }
 
 class InMemoryParedeRepository : ParedeRepository {

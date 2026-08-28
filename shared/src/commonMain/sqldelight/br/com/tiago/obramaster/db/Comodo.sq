@@ -20,5 +20,8 @@ VALUES (?, ?, ?, ?, ?, ?, ?, ?);
 renomear:
 UPDATE Comodo SET nome = ? WHERE id = ?;
 
+atualizarAreaPerimetro:
+UPDATE Comodo SET areaM2 = ?, perimetroM = ? WHERE id = ?;
+
 softDelete:
 UPDATE Comodo SET ativo = 0 WHERE id = ?;

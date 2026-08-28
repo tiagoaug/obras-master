@@ -13,11 +13,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.DoorFront
+import androidx.compose.material.icons.filled.FileUpload
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.NearMe
 import androidx.compose.material.icons.filled.Straighten
@@ -29,11 +31,13 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
@@ -58,6 +62,8 @@ import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import br.com.tiago.obramaster.core.plantabaixa.DxfImporter
+import br.com.tiago.obramaster.core.plantabaixa.UnidadeDxf
 import br.com.tiago.obramaster.core.util.DecimalFormatter
 import br.com.tiago.obramaster.domain.Comodo
 import br.com.tiago.obramaster.domain.PontoXY
@@ -91,6 +97,9 @@ fun EditorPlantaScreen(
                     IconButton(onClick = onVoltar) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar") }
                 },
                 actions = {
+                    IconButton(onClick = { viewModel.importarArquivo() }) {
+                        Icon(Icons.Filled.FileUpload, contentDescription = "Importar arquivo (DXF)")
+                    }
                     IconButton(onClick = { mostrarImagemSheet = true }) {
                         Icon(Icons.Filled.Image, contentDescription = "Imagem de fundo")
                     }
@@ -115,9 +124,17 @@ fun EditorPlantaScreen(
                 FerramentaIcone(FerramentaDesenho.PORTA, Icons.Filled.DoorFront, uiState.ferramentaAtual, viewModel::selecionarFerramenta)
                 FerramentaIcone(FerramentaDesenho.JANELA, Icons.Filled.Window, uiState.ferramentaAtual, viewModel::selecionarFerramenta)
                 FerramentaIcone(FerramentaDesenho.MEDIR, Icons.Filled.Straighten, uiState.ferramentaAtual, viewModel::selecionarFerramenta)
-                if (imagemBitmap != null) {
+                if (imagemBitmap != null || uiState.paredes.isNotEmpty() || uiState.comodos.isNotEmpty()) {
                     FerramentaIcone(FerramentaDesenho.CALIBRAR, Icons.Filled.Image, uiState.ferramentaAtual, viewModel::selecionarFerramenta)
                 }
+            }
+
+            uiState.arquivoOrigemMaisRecente?.let { origem ->
+                Text(
+                    "Importado de ${origem.nomeArquivoOriginal}",
+                    style = MaterialTheme.typography.labelSmall,
+                    modifier = Modifier.padding(horizontal = 12.dp),
+                )
             }
 
             if (uiState.ferramentaAtual == FerramentaDesenho.POLIGONO && uiState.pontosPoligonoEmDesenho.isNotEmpty()) {
@@ -137,7 +154,7 @@ fun EditorPlantaScreen(
             if (uiState.ferramentaAtual == FerramentaDesenho.CALIBRAR) {
                 Text(
                     if (uiState.pontoCalibracaoA == null) {
-                        "Toque no início de uma medida conhecida na foto"
+                        "Toque no início de uma medida conhecida no desenho"
                     } else {
                         "Toque no fim dessa medida"
                     },
@@ -336,6 +353,37 @@ fun EditorPlantaScreen(
         )
     }
 
+    if (uiState.importandoArquivo) {
+        AlertDialog(
+            onDismissRequest = {},
+            title = { Text("Importando arquivo...") },
+            text = { CircularProgressIndicator() },
+            confirmButton = {},
+        )
+    }
+
+    uiState.erroImportacaoArquivo?.let { erro ->
+        AlertDialog(
+            onDismissRequest = { viewModel.cancelarImportacaoArquivo() },
+            title = { Text("Não foi possível importar") },
+            text = { Text(erro) },
+            confirmButton = {
+                Button(onClick = { viewModel.cancelarImportacaoArquivo() }) { Text("Ok") }
+            },
+        )
+    }
+
+    uiState.resultadoImportacaoDxf?.let { resultado ->
+        ImportacaoDxfDialog(
+            nomeArquivo = uiState.nomeArquivoImportado.orEmpty(),
+            resultado = resultado,
+            camadasSelecionadas = uiState.camadasSelecionadas ?: resultado.camadasEncontradas.toSet(),
+            onAlternarCamada = { viewModel.alternarCamadaSelecionada(it) },
+            onCancelar = { viewModel.cancelarImportacaoArquivo() },
+            onConfirmar = { viewModel.confirmarImportacaoArquivo() },
+        )
+    }
+
     uiState.linhaCalibracaoPendente?.let {
         AlertDialog(
             onDismissRequest = { viewModel.cancelarCalibracao() },
@@ -399,6 +447,58 @@ private fun ImagemFundoSheet(
             }
         }
     }
+}
+
+/** SPEC_PLANTA_BAIXA_ADENDO_IMPORTACAO.md §5 — pré-visualização do resultado do parser de DXF antes de confirmar. */
+@Composable
+private fun ImportacaoDxfDialog(
+    nomeArquivo: String,
+    resultado: DxfImporter.ResultadoImportacaoDxf,
+    camadasSelecionadas: Set<String>,
+    onAlternarCamada: (String) -> Unit,
+    onCancelar: () -> Unit,
+    onConfirmar: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onCancelar,
+        title = { Text(nomeArquivo) },
+        text = {
+            Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text("${resultado.paredes.size} parede(s) e ${resultado.comodos.size} cômodo(s) detectados")
+                Text(
+                    when (resultado.unidadeDetectada) {
+                        UnidadeDxf.DESCONHECIDA -> "Escala não detectada no arquivo — você vai calibrar manualmente depois de importar."
+                        else -> "Escala detectada automaticamente (unidade: ${resultado.unidadeDetectada.name.lowercase()})."
+                    },
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                if (resultado.elementosIgnorados > 0) {
+                    Text(
+                        "${resultado.elementosIgnorados} elemento(s) ignorado(s) (círculos, camadas excluídas ou tipos não suportados).",
+                        style = MaterialTheme.typography.labelSmall,
+                    )
+                }
+                if (resultado.camadasEncontradas.isNotEmpty()) {
+                    Text("Camadas encontradas — toque para incluir/excluir:", style = MaterialTheme.typography.labelLarge)
+                    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        resultado.camadasEncontradas.forEach { camada ->
+                            FilterChip(
+                                selected = camada in camadasSelecionadas,
+                                onClick = { onAlternarCamada(camada) },
+                                label = { Text(camada) },
+                            )
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            Button(onClick = onConfirmar) { Text("Importar para a Planta") }
+        },
+        dismissButton = {
+            OutlinedButton(onClick = onCancelar) { Text("Cancelar") }
+        },
+    )
 }
 
 @Composable

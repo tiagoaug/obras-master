@@ -2,17 +2,23 @@ package br.com.tiago.obramaster.ui.features.plantabaixa
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import br.com.tiago.obramaster.core.plantabaixa.DxfImporter
 import br.com.tiago.obramaster.core.plantabaixa.PlantaBaixaEngine
+import br.com.tiago.obramaster.core.plantabaixa.UnidadeDxf
 import br.com.tiago.obramaster.data.repository.AberturaRepository
+import br.com.tiago.obramaster.data.repository.ArquivoImportadoRepository
 import br.com.tiago.obramaster.data.repository.ComodoRepository
 import br.com.tiago.obramaster.data.repository.ParedeRepository
 import br.com.tiago.obramaster.data.repository.PlantaBaixaRepository
 import br.com.tiago.obramaster.domain.Abertura
+import br.com.tiago.obramaster.domain.ArquivoImportado
 import br.com.tiago.obramaster.domain.Comodo
+import br.com.tiago.obramaster.domain.FormatoImportacao
 import br.com.tiago.obramaster.domain.Parede
 import br.com.tiago.obramaster.domain.PlantaBaixa
 import br.com.tiago.obramaster.domain.PontoXY
 import br.com.tiago.obramaster.domain.TipoAbertura
+import br.com.tiago.obramaster.platform.FilePicker
 import br.com.tiago.obramaster.platform.ImagePicker
 import br.com.tiago.obramaster.platform.ImageStore
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,6 +46,12 @@ data class EditorPlantaUiState(
     val pontoCalibracaoA: PontoXY? = null,
     val linhaCalibracaoPendente: Pair<PontoXY, PontoXY>? = null,
     val importandoImagem: Boolean = false,
+    val importandoArquivo: Boolean = false,
+    val erroImportacaoArquivo: String? = null,
+    val nomeArquivoImportado: String? = null,
+    val resultadoImportacaoDxf: DxfImporter.ResultadoImportacaoDxf? = null,
+    val camadasSelecionadas: Set<String>? = null,
+    val arquivoOrigemMaisRecente: ArquivoImportado? = null,
 )
 
 class PlantaBaixaViewModel(
@@ -50,7 +62,11 @@ class PlantaBaixaViewModel(
     private val aberturaRepository: AberturaRepository,
     private val imagePicker: ImagePicker,
     private val imageStore: ImageStore,
+    private val filePicker: FilePicker,
+    private val arquivoImportadoRepository: ArquivoImportadoRepository,
 ) : ViewModel() {
+
+    private var conteudoArquivoImportadoAtual: String? = null
 
     private val _uiState = MutableStateFlow(EditorPlantaUiState())
     val uiState: StateFlow<EditorPlantaUiState> = _uiState.asStateFlow()
@@ -62,6 +78,9 @@ class PlantaBaixaViewModel(
             planta?.imagemFundoKey?.let { chave ->
                 _uiState.value = _uiState.value.copy(imagemFundoBytes = imageStore.load(chave))
             }
+            _uiState.value = _uiState.value.copy(
+                arquivoOrigemMaisRecente = arquivoImportadoRepository.listarDaPlanta(plantaId).firstOrNull(),
+            )
         }
         viewModelScope.launch {
             comodoRepository.observarDaPlanta(plantaId).collect { comodos ->
@@ -321,9 +340,110 @@ class PlantaBaixaViewModel(
         val planta = _uiState.value.planta ?: return
         viewModelScope.launch {
             plantaBaixaRepository.atualizarEscala(plantaId, novaEscala, agora())
+            // Recalcula área/perímetro dos cômodos já existentes (pontos continuam os mesmos px,
+            // só a escala mudou) — sem isso, recalibrar depois de já ter desenhado deixava as
+            // áreas erradas (bug pré-existente, exposto agora pela importação de DXF sem escala).
+            val comodosAtualizados = _uiState.value.comodos.map { comodo ->
+                comodo.copy(
+                    areaM2 = PlantaBaixaEngine.calcularAreaM2(comodo.pontos, novaEscala),
+                    perimetroM = PlantaBaixaEngine.calcularPerimetroM(comodo.pontos, novaEscala),
+                )
+            }
+            comodosAtualizados.forEach { comodoRepository.atualizarAreaPerimetro(it.id, it.areaM2, it.perimetroM) }
             _uiState.value = _uiState.value.copy(
                 planta = planta.copy(escalaPxPorMetro = novaEscala),
+                comodos = comodosAtualizados,
                 linhaCalibracaoPendente = null,
+            )
+        }
+    }
+
+    // --- SPEC_PLANTA_BAIXA_ADENDO_IMPORTACAO.md §2, §5 — importar DXF ---
+
+    suspend fun arquivoDisponivel(): Boolean = filePicker.isAvailable()
+
+    fun importarArquivo() {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(importandoArquivo = true, erroImportacaoArquivo = null)
+            val arquivo = filePicker.escolherArquivo(extensoesAceitas = listOf("dxf"))
+            if (arquivo == null) {
+                _uiState.value = _uiState.value.copy(importandoArquivo = false)
+                return@launch
+            }
+            if (!arquivo.nomeArquivo.lowercase().endsWith(".dxf")) {
+                _uiState.value = _uiState.value.copy(
+                    importandoArquivo = false,
+                    erroImportacaoArquivo = "Formato ainda não suportado nesta fase — só .dxf por enquanto.",
+                )
+                return@launch
+            }
+            val conteudo = arquivo.bytes.decodeToString()
+            conteudoArquivoImportadoAtual = conteudo
+            val resultado = DxfImporter.importar(conteudo)
+            _uiState.value = _uiState.value.copy(
+                importandoArquivo = false,
+                nomeArquivoImportado = arquivo.nomeArquivo,
+                resultadoImportacaoDxf = resultado,
+                camadasSelecionadas = null,
+            )
+        }
+    }
+
+    /** Reprocessa o DXF já lido, excluindo/incluindo uma camada — sem reabrir o seletor de arquivo. */
+    fun alternarCamadaSelecionada(camada: String) {
+        val conteudo = conteudoArquivoImportadoAtual ?: return
+        val resultado = _uiState.value.resultadoImportacaoDxf ?: return
+        val atuais = _uiState.value.camadasSelecionadas ?: resultado.camadasEncontradas.toSet()
+        val novasSelecionadas = if (camada in atuais) atuais - camada else atuais + camada
+        _uiState.value = _uiState.value.copy(
+            camadasSelecionadas = novasSelecionadas,
+            resultadoImportacaoDxf = DxfImporter.importar(conteudo, novasSelecionadas),
+        )
+    }
+
+    fun cancelarImportacaoArquivo() {
+        conteudoArquivoImportadoAtual = null
+        _uiState.value = _uiState.value.copy(
+            resultadoImportacaoDxf = null,
+            nomeArquivoImportado = null,
+            erroImportacaoArquivo = null,
+            camadasSelecionadas = null,
+        )
+    }
+
+    @OptIn(ExperimentalUuidApi::class)
+    fun confirmarImportacaoArquivo() {
+        val resultado = _uiState.value.resultadoImportacaoDxf ?: return
+        val nomeArquivo = _uiState.value.nomeArquivoImportado ?: return
+        val planta = _uiState.value.planta ?: return
+
+        viewModelScope.launch {
+            if (resultado.escalaAutomaticaPxPorMetro != null) {
+                plantaBaixaRepository.atualizarEscala(plantaId, resultado.escalaAutomaticaPxPorMetro, agora())
+                _uiState.value = _uiState.value.copy(planta = planta.copy(escalaPxPorMetro = resultado.escalaAutomaticaPxPorMetro))
+            }
+            resultado.paredes.forEach { paredeRepository.salvar(it.copy(plantaId = plantaId)) }
+            resultado.comodos.forEach { comodoRepository.salvar(it.copy(plantaId = plantaId)) }
+
+            val registroOrigem = ArquivoImportado(
+                id = Uuid.random().toString(),
+                plantaId = plantaId,
+                formatoOrigem = FormatoImportacao.DXF,
+                nomeArquivoOriginal = nomeArquivo,
+                escalaDetectadaAutomaticamente = resultado.escalaAutomaticaPxPorMetro != null,
+                unidadeOrigem = if (resultado.unidadeDetectada != UnidadeDxf.DESCONHECIDA) resultado.unidadeDetectada.name else null,
+                camadasImportadas = _uiState.value.camadasSelecionadas?.toList() ?: resultado.camadasEncontradas,
+                importadoEm = agora(),
+            )
+            arquivoImportadoRepository.salvar(registroOrigem)
+
+            conteudoArquivoImportadoAtual = null
+            _uiState.value = _uiState.value.copy(
+                resultadoImportacaoDxf = null,
+                nomeArquivoImportado = null,
+                camadasSelecionadas = null,
+                arquivoOrigemMaisRecente = registroOrigem,
+                ferramentaAtual = if (resultado.escalaAutomaticaPxPorMetro == null) FerramentaDesenho.CALIBRAR else _uiState.value.ferramentaAtual,
             )
         }
     }
