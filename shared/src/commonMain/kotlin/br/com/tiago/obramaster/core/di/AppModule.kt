@@ -5,6 +5,8 @@ import br.com.tiago.obramaster.core.modules.ModuleRegistry
 import br.com.tiago.obramaster.core.onboarding.OnboardingDraftStore
 import br.com.tiago.obramaster.core.prefs.AccessibilityPrefsStore
 import br.com.tiago.obramaster.domain.Colaborador
+import br.com.tiago.obramaster.ui.features.compras.FornecedoresViewModel
+import br.com.tiago.obramaster.ui.features.compras.PedidosCompraViewModel
 import br.com.tiago.obramaster.ui.features.configuracoes.ConfiguracoesViewModel
 import br.com.tiago.obramaster.ui.features.equipes.EquipesViewModel
 import br.com.tiago.obramaster.ui.features.equipes.FuncionariosViewModel
@@ -69,4 +71,6 @@ val appModule = module {
     factory { RegistroTrabalhoViewModel(get(), get(), get(), get(), get()) }
     factory { GerarPagamentoViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     factory { RelatorioEquipesViewModel(get(), get(), get()) }
+    factory { FornecedoresViewModel(get(), get()) }
+    factory { PedidosCompraViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
 }

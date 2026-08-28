@@ -1,0 +1,53 @@
+CREATE TABLE PedidoCompra (
+    id TEXT NOT NULL PRIMARY KEY,
+    projetoId TEXT NOT NULL,
+    etapaId TEXT,
+    fornecedorId TEXT,
+    data INTEGER NOT NULL,
+    status TEXT NOT NULL,
+    valorTotal INTEGER NOT NULL,
+    lancamentoFinanceiroId TEXT,
+    ativo INTEGER AS kotlin.Boolean NOT NULL DEFAULT 1,
+    FOREIGN KEY (projetoId) REFERENCES Projeto(id)
+);
+
+CREATE TABLE ItemCompra (
+    id TEXT NOT NULL PRIMARY KEY,
+    pedidoId TEXT NOT NULL,
+    materialId TEXT NOT NULL,
+    quantidade REAL NOT NULL,
+    unidade TEXT NOT NULL,
+    valorUnitario INTEGER NOT NULL,
+    valorTotal INTEGER NOT NULL,
+    FOREIGN KEY (pedidoId) REFERENCES PedidoCompra(id),
+    FOREIGN KEY (materialId) REFERENCES Material(id)
+);
+
+selectAtivosDoProjeto:
+SELECT * FROM PedidoCompra WHERE projetoId = ? AND ativo = 1 ORDER BY data DESC;
+
+selectTodosAtivos:
+SELECT * FROM PedidoCompra WHERE ativo = 1 ORDER BY data DESC;
+
+insertPedido:
+INSERT INTO PedidoCompra(id, projetoId, etapaId, fornecedorId, data, status, valorTotal, lancamentoFinanceiroId, ativo)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+updateStatus:
+UPDATE PedidoCompra SET status = ?, lancamentoFinanceiroId = ? WHERE id = ?;
+
+softDeletePedido:
+UPDATE PedidoCompra SET ativo = 0 WHERE id = ?;
+
+selectItensDoPedido:
+SELECT * FROM ItemCompra WHERE pedidoId = ?;
+
+selectTodosItens:
+SELECT * FROM ItemCompra;
+
+insertItem:
+INSERT INTO ItemCompra(id, pedidoId, materialId, quantidade, unidade, valorUnitario, valorTotal)
+VALUES (?, ?, ?, ?, ?, ?, ?);
+
+deleteItensDoPedido:
+DELETE FROM ItemCompra WHERE pedidoId = ?;

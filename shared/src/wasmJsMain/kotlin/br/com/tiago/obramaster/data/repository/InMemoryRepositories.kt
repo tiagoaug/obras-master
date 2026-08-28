@@ -13,16 +13,20 @@ import br.com.tiago.obramaster.domain.Cor
 import br.com.tiago.obramaster.domain.DadosEmpresa
 import br.com.tiago.obramaster.domain.Equipe
 import br.com.tiago.obramaster.domain.Etapa
+import br.com.tiago.obramaster.domain.Fornecedor
 import br.com.tiago.obramaster.domain.Funcionario
+import br.com.tiago.obramaster.domain.ItemCompra
 import br.com.tiago.obramaster.domain.LancamentoFinanceiro
 import br.com.tiago.obramaster.domain.Material
 import br.com.tiago.obramaster.domain.MovimentoConta
 import br.com.tiago.obramaster.domain.NaturezaLancamento
 import br.com.tiago.obramaster.domain.Pagamento
 import br.com.tiago.obramaster.domain.Parede
+import br.com.tiago.obramaster.domain.PedidoCompra
 import br.com.tiago.obramaster.domain.RateioLancamento
 import br.com.tiago.obramaster.domain.RegistroTrabalho
 import br.com.tiago.obramaster.domain.RetencaoLancamento
+import br.com.tiago.obramaster.domain.StatusPedidoCompra
 import br.com.tiago.obramaster.domain.TipoLancamento
 import br.com.tiago.obramaster.domain.Permissao
 import br.com.tiago.obramaster.domain.Pessoa
@@ -500,4 +504,46 @@ class InMemoryPagamentoRepository : PagamentoRepository {
         state.value = state.value + pagamento
     }
     override fun observarTodos(): Flow<List<Pagamento>> = state.map { lista -> lista.sortedByDescending { it.dataPagamento } }
+}
+
+class InMemoryFornecedorRepository : FornecedorRepository {
+    private val state = MutableStateFlow<List<Fornecedor>>(emptyList())
+
+    override suspend fun listarAtivos(): List<Fornecedor> = state.value.filter { it.ativo }
+    override suspend fun salvar(fornecedor: Fornecedor) {
+        state.value = state.value + fornecedor
+    }
+    override suspend fun atualizar(fornecedor: Fornecedor) {
+        state.value = state.value.map { if (it.pessoaId == fornecedor.pessoaId) fornecedor else it }
+    }
+    override suspend fun desativar(pessoaId: String) {
+        state.value = state.value.map { if (it.pessoaId == pessoaId) it.copy(ativo = false) else it }
+    }
+    override fun observarAtivos(): Flow<List<Fornecedor>> = state.map { lista -> lista.filter { it.ativo } }
+}
+
+class InMemoryPedidoCompraRepository : PedidoCompraRepository {
+    private val pedidos = MutableStateFlow<List<PedidoCompra>>(emptyList())
+    private val itens = MutableStateFlow<List<ItemCompra>>(emptyList())
+
+    override suspend fun listarDoProjeto(projetoId: String): List<PedidoCompra> =
+        pedidos.value.filter { it.projetoId == projetoId && it.ativo }.sortedByDescending { it.data }
+    override suspend fun listarTodos(): List<PedidoCompra> = pedidos.value.filter { it.ativo }.sortedByDescending { it.data }
+
+    override suspend fun salvar(pedido: PedidoCompra, itens: List<ItemCompra>) {
+        pedidos.value = pedidos.value.filterNot { it.id == pedido.id } + pedido
+        this.itens.value = this.itens.value.filterNot { it.pedidoId == pedido.id } + itens
+    }
+
+    override suspend fun atualizarStatus(id: String, status: StatusPedidoCompra, lancamentoFinanceiroId: String?) {
+        pedidos.value = pedidos.value.map { if (it.id == id) it.copy(status = status, lancamentoFinanceiroId = lancamentoFinanceiroId) else it }
+    }
+
+    override suspend fun desativar(id: String) {
+        pedidos.value = pedidos.value.map { if (it.id == id) it.copy(ativo = false) else it }
+    }
+
+    override suspend fun itensDoPedido(pedidoId: String): List<ItemCompra> = itens.value.filter { it.pedidoId == pedidoId }
+    override suspend fun itensDeTodos(): List<ItemCompra> = itens.value
+    override fun observarTodos(): Flow<List<PedidoCompra>> = pedidos.map { lista -> lista.filter { it.ativo }.sortedByDescending { it.data } }
 }

@@ -14,6 +14,7 @@ import br.com.tiago.obramaster.data.repository.CorRepository
 import br.com.tiago.obramaster.data.repository.EmpresaRepository
 import br.com.tiago.obramaster.data.repository.EquipeRepository
 import br.com.tiago.obramaster.data.repository.EtapaRepository
+import br.com.tiago.obramaster.data.repository.FornecedorRepository
 import br.com.tiago.obramaster.data.repository.FuncionarioRepository
 import br.com.tiago.obramaster.data.repository.LancamentoFinanceiroRepository
 import br.com.tiago.obramaster.data.repository.MaterialRepository
@@ -21,6 +22,7 @@ import br.com.tiago.obramaster.data.repository.MovimentoContaRepository
 import br.com.tiago.obramaster.data.repository.ModuleConfigRepository
 import br.com.tiago.obramaster.data.repository.PagamentoRepository
 import br.com.tiago.obramaster.data.repository.ParedeRepository
+import br.com.tiago.obramaster.data.repository.PedidoCompraRepository
 import br.com.tiago.obramaster.data.repository.PermissaoRepository
 import br.com.tiago.obramaster.data.repository.PessoaRepository
 import br.com.tiago.obramaster.data.repository.PlantaBaixaRepository
@@ -39,6 +41,7 @@ import br.com.tiago.obramaster.data.repository.SqlDelightCorRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightEmpresaRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightEquipeRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightEtapaRepository
+import br.com.tiago.obramaster.data.repository.SqlDelightFornecedorRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightFuncionarioRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightLancamentoFinanceiroRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightMaterialRepository
@@ -46,6 +49,7 @@ import br.com.tiago.obramaster.data.repository.SqlDelightMovimentoContaRepositor
 import br.com.tiago.obramaster.data.repository.SqlDelightModuleConfigRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightPagamentoRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightParedeRepository
+import br.com.tiago.obramaster.data.repository.SqlDelightPedidoCompraRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightPermissaoRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightPessoaRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightPlantaBaixaRepository
@@ -101,4 +105,6 @@ fun platformModule(context: Context) = module {
     single<RegistroTrabalhoRepository> { SqlDelightRegistroTrabalhoRepository(get()) }
     single<RetencaoLancamentoRepository> { SqlDelightRetencaoLancamentoRepository(get()) }
     single<PagamentoRepository> { SqlDelightPagamentoRepository(get()) }
+    single<FornecedorRepository> { SqlDelightFornecedorRepository(get()) }
+    single<PedidoCompraRepository> { SqlDelightPedidoCompraRepository(get()) }
 }

@@ -1,0 +1,20 @@
+CREATE TABLE Fornecedor (
+    pessoaId TEXT NOT NULL PRIMARY KEY,
+    cnpjCpf TEXT,
+    observacoes TEXT,
+    ativo INTEGER AS kotlin.Boolean NOT NULL DEFAULT 1,
+    FOREIGN KEY (pessoaId) REFERENCES Pessoa(id)
+);
+
+selectAtivos:
+SELECT * FROM Fornecedor WHERE ativo = 1;
+
+insert:
+INSERT INTO Fornecedor(pessoaId, cnpjCpf, observacoes, ativo)
+VALUES (?, ?, ?, ?);
+
+update:
+UPDATE Fornecedor SET cnpjCpf = ?, observacoes = ? WHERE pessoaId = ?;
+
+softDelete:
+UPDATE Fornecedor SET ativo = 0 WHERE pessoaId = ?;

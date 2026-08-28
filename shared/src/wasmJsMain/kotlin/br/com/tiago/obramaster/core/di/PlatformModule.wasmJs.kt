@@ -11,6 +11,7 @@ import br.com.tiago.obramaster.data.repository.CorRepository
 import br.com.tiago.obramaster.data.repository.EmpresaRepository
 import br.com.tiago.obramaster.data.repository.EquipeRepository
 import br.com.tiago.obramaster.data.repository.EtapaRepository
+import br.com.tiago.obramaster.data.repository.FornecedorRepository
 import br.com.tiago.obramaster.data.repository.FuncionarioRepository
 import br.com.tiago.obramaster.data.repository.InMemoryAberturaRepository
 import br.com.tiago.obramaster.data.repository.InMemoryArquivoImportadoRepository
@@ -23,6 +24,7 @@ import br.com.tiago.obramaster.data.repository.InMemoryCorRepository
 import br.com.tiago.obramaster.data.repository.InMemoryEmpresaRepository
 import br.com.tiago.obramaster.data.repository.InMemoryEquipeRepository
 import br.com.tiago.obramaster.data.repository.InMemoryEtapaRepository
+import br.com.tiago.obramaster.data.repository.InMemoryFornecedorRepository
 import br.com.tiago.obramaster.data.repository.InMemoryFuncionarioRepository
 import br.com.tiago.obramaster.data.repository.InMemoryLancamentoFinanceiroRepository
 import br.com.tiago.obramaster.data.repository.InMemoryMaterialRepository
@@ -30,6 +32,7 @@ import br.com.tiago.obramaster.data.repository.InMemoryMovimentoContaRepository
 import br.com.tiago.obramaster.data.repository.InMemoryModuleConfigRepository
 import br.com.tiago.obramaster.data.repository.InMemoryPagamentoRepository
 import br.com.tiago.obramaster.data.repository.InMemoryParedeRepository
+import br.com.tiago.obramaster.data.repository.InMemoryPedidoCompraRepository
 import br.com.tiago.obramaster.data.repository.InMemoryPermissaoRepository
 import br.com.tiago.obramaster.data.repository.InMemoryPessoaRepository
 import br.com.tiago.obramaster.data.repository.InMemoryPlantaBaixaRepository
@@ -46,6 +49,7 @@ import br.com.tiago.obramaster.data.repository.MovimentoContaRepository
 import br.com.tiago.obramaster.data.repository.ModuleConfigRepository
 import br.com.tiago.obramaster.data.repository.PagamentoRepository
 import br.com.tiago.obramaster.data.repository.ParedeRepository
+import br.com.tiago.obramaster.data.repository.PedidoCompraRepository
 import br.com.tiago.obramaster.data.repository.PermissaoRepository
 import br.com.tiago.obramaster.data.repository.PessoaRepository
 import br.com.tiago.obramaster.data.repository.PlantaBaixaRepository
@@ -96,4 +100,6 @@ val platformModule = module {
     single<RegistroTrabalhoRepository> { InMemoryRegistroTrabalhoRepository() }
     single<RetencaoLancamentoRepository> { InMemoryRetencaoLancamentoRepository() }
     single<PagamentoRepository> { InMemoryPagamentoRepository() }
+    single<FornecedorRepository> { InMemoryFornecedorRepository() }
+    single<PedidoCompraRepository> { InMemoryPedidoCompraRepository() }
 }

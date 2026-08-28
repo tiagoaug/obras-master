@@ -201,9 +201,16 @@ Cada lançamento é marcado como **Contábil** (formal, com nota, vai para o con
 
 ## 6. Compras `#compras`
 
-Cadastre pedidos de compra vinculados a um projeto/etapa e um fornecedor. Ao marcar um pedido como "Comprado", o sistema já gera automaticamente a despesa correspondente no Financeiro — você não lança duas vezes.
+### 6.1 Fornecedores `#compras-fornecedores`
+Transforma uma Pessoa já cadastrada em fornecedor: CNPJ/CPF e observações. A pessoa ganha a tag "Fornecedor" automaticamente, mesmo que já tivesse outras.
 
-**Exemplo prático:** você fecha compra de cimento com o fornecedor X. Ao marcar "Comprado", o gasto já aparece na etapa "Estrutura" do projeto, sem retrabalho.
+### 6.2 Pedidos de Compra `#compras-pedidos`
+Cadastre um pedido vinculado a um projeto (e opcionalmente uma etapa) e um fornecedor, com os itens (material, quantidade, unidade, valor unitário) — o total é somado automaticamente. O pedido passa por status: Cotação → Aprovado → Comprado → Entregue. Ao marcar como **Comprado**, o sistema já gera automaticamente a despesa correspondente no Financeiro (categoria "Materiais", vinculada ao projeto/etapa) — você não lança duas vezes. A despesa entra como pendente de pagamento; você marca como paga normalmente pela tela de Lançamentos quando o dinheiro sair de fato.
+
+### 6.3 Comparativo de Cotações `#compras-comparativo`
+Quando o mesmo material aparece em mais de um pedido em Cotação (fornecedores diferentes cotando a mesma coisa), a tela mostra lado a lado o valor de cada fornecedor, ordenado do mais barato pro mais caro.
+
+**Exemplo prático:** você pede cotação de cimento a três fornecedores. Cada um vira um pedido em status Cotação. O Comparativo já mostra os três preços lado a lado. Você fecha com o mais barato, muda o status dele pra Comprado — o gasto já aparece na etapa "Estrutura" do projeto, sem retrabalho.
 
 ---
 
