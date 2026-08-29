@@ -1,8 +1,14 @@
 rules_version = '2';
 
-// Fase 10 (pivô Firebase) — modelo de dados: ver server/README.md (histórico) e o resumo da
-// migração na sessão. `colaboradores/{uid}` e `convites/{id}` são coleções de nível raiz;
-// todo recurso de negócio vive em `empresas/{empresaId}/{colecao}/{id}`.
+// modelo de dados: ver server/README.md (histórico) e docs/CHECKLIST_TESTES.md. `colaboradores/{uid}`
+// é coleção de nível raiz; todo recurso de negócio vive em `empresas/{empresaId}/{colecao}/{id}`.
+//
+// Um uid pode pertencer a VÁRIAS empresas (`empresaIds: List<String>` no doc do colaborador) —
+// suporta um Gestor administrando mais de uma empresa (ver "Minhas Empresas" em Configurações).
+// Colaborador comum tem sempre uma lista de 1 item só. Não existe mais fluxo de convite por
+// e-mail: o Gestor cria a conta do colaborador direto (via app Firebase secundário, ver
+// ColaboradorProvisioner em mobileMain), então `colaboradores/{uid}.create` também aceita um
+// Gestor criando o doc de outro uid, não só autocadastro.
 //
 // Isolamento multi-tenant é a garantia principal aqui: ninguém lê/escreve dado de uma empresa
 // que não é a sua. Permissão fina por módulo (quem pode ver Financeiro vs. só Projetos) continua
@@ -22,45 +28,49 @@ service cloud.firestore {
     function pertenceAEmpresa(empresaId) {
       return autenticado()
         && exists(/databases/$(database)/documents/colaboradores/$(request.auth.uid))
-        && colaboradorDoUsuario().empresaId == empresaId;
+        && empresaId in colaboradorDoUsuario().empresaIds;
     }
 
     function ehGestorDaEmpresa(empresaId) {
       return pertenceAEmpresa(empresaId) && colaboradorDoUsuario().ehGestor == true;
     }
 
-    // colaboradores/{uid} — raiz, pra descobrir a empresa de um uid com 1 leitura (ver
-    // FirestoreColaboradorRepository.kt). Criar é sempre auto-cadastro (uid == o próprio doc):
-    // cobre tanto o Gestor criando a empresa quanto alguém aceitando um convite.
+    // Verdadeiro se o uid autenticado é Gestor de pelo menos uma das empresas em `empresaIds`
+    // (usado quando o alvo é o doc de OUTRO colaborador, que pode listar mais de uma empresa).
+    function ehGestorDeAlgumaEmpresaEm(empresaIds) {
+      return autenticado()
+        && exists(/databases/$(database)/documents/colaboradores/$(request.auth.uid))
+        && colaboradorDoUsuario().ehGestor == true
+        && colaboradorDoUsuario().empresaIds.hasAny(empresaIds);
+    }
+
+    // colaboradores/{uid} — raiz, pra descobrir as empresas de um uid com 1 leitura (ver
+    // FirestoreColaboradorRepository.kt). Criar acontece de dois jeitos: autocadastro (uid == o
+    // próprio doc, usado pelo Gestor se cadastrando) ou um Gestor criando a conta de um
+    // colaborador novo direto — nesse segundo caso o doc criado só pode declarar UMA empresa, e
+    // tem que ser uma que esse Gestor já administra.
     match /colaboradores/{uid} {
       allow read: if autenticado() && (
         request.auth.uid == uid ||
         (exists(/databases/$(database)/documents/colaboradores/$(request.auth.uid))
-          && colaboradorDoUsuario().empresaId == resource.data.empresaId)
+          && colaboradorDoUsuario().empresaIds.hasAny(resource.data.empresaIds))
       );
-      allow create: if autenticado() && request.auth.uid == uid;
+      allow create: if autenticado() && (
+        request.auth.uid == uid ||
+        (request.resource.data.empresaIds.size() == 1
+          && ehGestorDaEmpresa(request.resource.data.empresaIds[0]))
+      );
       allow update: if autenticado() && (
-        request.auth.uid == uid || ehGestorDaEmpresa(resource.data.empresaId)
+        request.auth.uid == uid || ehGestorDeAlgumaEmpresaEm(resource.data.empresaIds)
       );
       allow delete: if false; // desativação é sempre soft-delete (campo ativo)
     }
 
-    // convites/{id} — raiz, sem uid ainda (pessoa convidada não tem conta). Só o Gestor cria/apaga;
-    // a leitura também é liberada pra quem tem o e-mail do convite, pra ele conseguir aceitar.
-    match /convites/{id} {
-      allow read: if autenticado() && (
-        request.auth.token.email == resource.data.email || ehGestorDaEmpresa(resource.data.empresaId)
-      );
-      allow create: if ehGestorDaEmpresa(request.resource.data.empresaId);
-      allow delete: if autenticado() && (
-        request.auth.token.email == resource.data.email || ehGestorDaEmpresa(resource.data.empresaId)
-      );
-      allow update: if false;
-    }
-
     // empresas/{empresaId} — documento raiz do tenant (perfil da empresa). Criar exige já
-    // pertencer a essa empresa: só acontece depois que cadastrarGestor() já criou o
-    // colaboradores/{uid} correspondente (ver OnboardingEngine.commitar — Gestor primeiro).
+    // pertencer a essa empresa: tanto no primeiro cadastro (cadastrarGestor() já criou o
+    // colaboradores/{uid} com essa empresa antes de gravar o doc da empresa) quanto ao criar uma
+    // empresa adicional (o arrayUnion no colaboradores/{uid} do Gestor acontece antes também) —
+    // ver OnboardingEngine.commitar() e MinhasEmpresasViewModel.criarNovaEmpresa().
     match /empresas/{empresaId} {
       allow read: if pertenceAEmpresa(empresaId);
       allow write: if ehGestorDaEmpresa(empresaId);
