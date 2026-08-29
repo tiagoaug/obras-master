@@ -72,6 +72,8 @@ import br.com.tiago.obramaster.data.repository.UnidadeMedidaRepository
 import br.com.tiago.obramaster.data.repository.VendaRepository
 import br.com.tiago.obramaster.data.repository.DocumentoTecnicoRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightDocumentoTecnicoRepository
+import br.com.tiago.obramaster.core.auth.ColaboradorProvisioner
+import br.com.tiago.obramaster.core.auth.IosColaboradorProvisioner
 import br.com.tiago.obramaster.platform.AppSettingsFactory
 import br.com.tiago.obramaster.platform.ContactsProvider
 import br.com.tiago.obramaster.platform.DocumentStore
@@ -99,6 +101,7 @@ val platformModule = module {
     single { PdfOpener() }
     single { PdfTextExtractor() }
     single { FileExporter() }
+    single<ColaboradorProvisioner> { IosColaboradorProvisioner() }
 
     single<ColaboradorRepository> { SqlDelightColaboradorRepository(get()) }
     single<PermissaoRepository> { SqlDelightPermissaoRepository(get()) }

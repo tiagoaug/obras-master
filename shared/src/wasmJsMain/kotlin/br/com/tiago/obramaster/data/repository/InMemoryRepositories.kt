@@ -95,20 +95,6 @@ class InMemoryPermissaoRepository : PermissaoRepository {
     override fun observarTodas(): Flow<List<Permissao>> = state
 }
 
-class InMemoryConviteColaboradorRepository : ConviteColaboradorRepository {
-    private val state = MutableStateFlow<List<br.com.tiago.obramaster.domain.ConviteColaborador>>(emptyList())
-
-    override suspend fun criar(convite: br.com.tiago.obramaster.domain.ConviteColaborador) {
-        state.value = state.value + convite
-    }
-
-    override suspend fun listarPendentesDaEmpresa(): List<br.com.tiago.obramaster.domain.ConviteColaborador> = state.value
-    override suspend fun buscarPorEmail(email: String) = state.value.firstOrNull { it.email == email }
-    override suspend fun remover(id: String) {
-        state.value = state.value.filterNot { it.id == id }
-    }
-}
-
 class InMemoryModuleConfigRepository : ModuleConfigRepository {
     private val state = MutableStateFlow<Map<String, Boolean>>(emptyMap())
 

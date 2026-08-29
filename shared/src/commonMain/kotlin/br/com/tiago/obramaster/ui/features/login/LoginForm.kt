@@ -14,7 +14,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,10 +31,7 @@ fun LoginForm(
     autenticando: Boolean,
     onEntrar: (email: String, senha: String) -> Unit,
     onEntrarComGoogle: () -> Unit,
-    onCriarContaComConvite: (nome: String, email: String, senha: String) -> Unit,
 ) {
-    var modoCriarConta by remember { mutableStateOf(false) }
-    var nome by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var senha by remember { mutableStateOf("") }
 
@@ -50,14 +46,6 @@ fun LoginForm(
             modifier = Modifier.widthIn(max = 420.dp).padding(top = 24.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            if (modoCriarConta) {
-                Text(
-                    "Recebeu um convite de alguém da equipe? Preencha com o mesmo e-mail do convite.",
-                    style = MaterialTheme.typography.bodySmall,
-                )
-                OutlinedTextField(nome, { nome = it }, label = { Text("Nome") }, modifier = Modifier.fillMaxWidth())
-            }
-
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
@@ -78,22 +66,12 @@ fun LoginForm(
                 Text(erro, color = MaterialTheme.colorScheme.error)
             }
 
-            if (modoCriarConta) {
-                Button(
-                    onClick = { onCriarContaComConvite(nome, email, senha) },
-                    enabled = nome.isNotBlank() && email.isNotBlank() && senha.isNotBlank() && !autenticando,
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    if (autenticando) CircularProgressIndicator(modifier = Modifier.padding(2.dp)) else Text("Aceitar convite e entrar")
-                }
-            } else {
-                Button(
-                    onClick = { onEntrar(email, senha) },
-                    enabled = email.isNotBlank() && senha.isNotBlank() && !autenticando,
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    if (autenticando) CircularProgressIndicator(modifier = Modifier.padding(2.dp)) else Text("Entrar")
-                }
+            Button(
+                onClick = { onEntrar(email, senha) },
+                enabled = email.isNotBlank() && senha.isNotBlank() && !autenticando,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                if (autenticando) CircularProgressIndicator(modifier = Modifier.padding(2.dp)) else Text("Entrar")
             }
 
             HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
@@ -104,10 +82,6 @@ fun LoginForm(
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text("Entrar com Google")
-            }
-
-            TextButton(onClick = { modoCriarConta = !modoCriarConta }, modifier = Modifier.fillMaxWidth()) {
-                Text(if (modoCriarConta) "Já tenho conta" else "Recebi um convite, criar minha conta")
             }
         }
     }

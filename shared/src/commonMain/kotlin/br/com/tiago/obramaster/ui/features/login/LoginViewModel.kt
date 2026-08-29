@@ -20,8 +20,8 @@ sealed interface LoginUiState {
  * (Firebase Auth) já é persistida automaticamente pelo SDK entre reinícios do app — não existe
  * mais opção "manter conectado", é sempre assim.
  *
- * "Criar conta" aqui é só pra quem recebeu um convite (ver ConviteColaborador) — não confundir
- * com o cadastro do Gestor, que passa pelo onboarding.
+ * Não existe mais "criar conta" aqui — colaboradores são criados direto pelo Gestor
+ * (Configurações → Colaboradores), com credenciais já prontas pra entrar.
  */
 class LoginViewModel(
     private val sessionManager: SessionManager,
@@ -41,13 +41,6 @@ class LoginViewModel(
         viewModelScope.launch {
             _uiState.value = LoginUiState.TelaLogin(autenticando = true)
             aplicarResultado(sessionManager.entrarComGoogle(idToken))
-        }
-    }
-
-    fun criarContaEAceitarConvite(nome: String, email: String, senha: String) {
-        viewModelScope.launch {
-            _uiState.value = LoginUiState.TelaLogin(autenticando = true)
-            aplicarResultado(sessionManager.criarContaEAceitarConvite(nome, email, senha))
         }
     }
 

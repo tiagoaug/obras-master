@@ -43,7 +43,8 @@ import br.com.tiago.obramaster.domain.Permissao
 fun ColaboradoresScreen(
     uiState: ConfiguracoesUiState,
     onVoltar: () -> Unit,
-    onConvidarColaborador: (nome: String, email: String) -> Unit,
+    onCriarColaborador: (nome: String, email: String, senha: String) -> Unit,
+    onErroCriarColaboradorConsumido: () -> Unit,
     onDefinirPermissao: (colaboradorId: String, modulo: AppModule, nivel: NivelPermissao) -> Unit,
     onDesativarColaborador: (String) -> Unit,
 ) {
@@ -67,25 +68,40 @@ fun ColaboradoresScreen(
             }
         },
     ) { padding ->
-        LazyColumn(Modifier.fillMaxSize().padding(padding)) {
-            items(uiState.colaboradores) { colaborador ->
+        Column(Modifier.fillMaxSize().padding(padding)) {
+            uiState.erroCriarColaborador?.let { erro ->
                 Card(
-                    onClick = { if (!colaborador.ehGestor) colaboradorSelecionado = colaborador },
+                    onClick = onErroCriarColaboradorConsumido,
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp),
+                    colors = androidx.compose.material3.CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
                 ) {
-                    ListItem(
-                        headlineContent = { Text(colaborador.nome) },
-                        supportingContent = {
-                            Text(if (colaborador.ehGestor) "Gestor (acesso total)" else colaborador.email)
-                        },
-                        trailingContent = if (!colaborador.ehGestor) {
-                            {
-                                IconButton(onClick = { onDesativarColaborador(colaborador.id) }) {
-                                    Icon(Icons.Filled.Delete, contentDescription = "Desativar")
-                                }
-                            }
-                        } else null,
+                    Text(
+                        "Falha ao criar colaborador: $erro (toque pra fechar)",
+                        modifier = Modifier.padding(12.dp),
+                        color = MaterialTheme.colorScheme.onErrorContainer,
                     )
+                }
+            }
+            LazyColumn(Modifier.fillMaxSize()) {
+                items(uiState.colaboradores) { colaborador ->
+                    Card(
+                        onClick = { if (!colaborador.ehGestor) colaboradorSelecionado = colaborador },
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp),
+                    ) {
+                        ListItem(
+                            headlineContent = { Text(colaborador.nome) },
+                            supportingContent = {
+                                Text(if (colaborador.ehGestor) "Gestor (acesso total)" else colaborador.email)
+                            },
+                            trailingContent = if (!colaborador.ehGestor) {
+                                {
+                                    IconButton(onClick = { onDesativarColaborador(colaborador.id) }) {
+                                        Icon(Icons.Filled.Delete, contentDescription = "Desativar")
+                                    }
+                                }
+                            } else null,
+                        )
+                    }
                 }
             }
         }
@@ -93,11 +109,12 @@ fun ColaboradoresScreen(
 
     if (mostrarFormNovo) {
         NovoColaboradorSheet(
-            onDismiss = { mostrarFormNovo = false },
-            onConvidar = { nome, email ->
-                onConvidarColaborador(nome, email)
+            erro = uiState.erroCriarColaborador,
+            onDismiss = {
                 mostrarFormNovo = false
+                onErroCriarColaboradorConsumido()
             },
+            onCriar = { nome, email, senha -> onCriarColaborador(nome, email, senha) },
         )
     }
 
@@ -114,29 +131,44 @@ fun ColaboradoresScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun NovoColaboradorSheet(
+    erro: String?,
     onDismiss: () -> Unit,
-    onConvidar: (nome: String, email: String) -> Unit,
+    onCriar: (nome: String, email: String, senha: String) -> Unit,
 ) {
     var nome by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
+    var senha by remember { mutableStateOf("") }
 
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = rememberModalBottomSheetState()) {
         Column(
             Modifier.fillMaxWidth().padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Text("Convidar colaborador", style = MaterialTheme.typography.titleMedium)
+            Text("Criar colaborador", style = MaterialTheme.typography.titleMedium)
             Text(
-                "A pessoa recebe acesso ao entrar com o próprio Google ou definir a própria senha — nenhuma senha passa por aqui.",
+                "Essas credenciais já ficam prontas pra pessoa entrar — não é preciso e-mail real, só um identificador único.",
                 style = MaterialTheme.typography.bodySmall,
             )
             OutlinedTextField(nome, { nome = it }, label = { Text("Nome") }, modifier = Modifier.fillMaxWidth())
             OutlinedTextField(email, { email = it }, label = { Text("E-mail") }, modifier = Modifier.fillMaxWidth())
-            androidx.compose.material3.Button(
-                onClick = { onConvidar(nome, email) },
-                enabled = nome.isNotBlank() && email.isNotBlank(),
+            OutlinedTextField(
+                senha,
+                { senha = it },
+                label = { Text("Senha") },
+                visualTransformation = androidx.compose.ui.text.input.PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth(),
-            ) { Text("Enviar convite") }
+            )
+            if (erro != null) {
+                Text(erro, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+            }
+            androidx.compose.material3.Button(
+                onClick = {
+                    onCriar(nome, email, senha)
+                    onDismiss()
+                },
+                enabled = nome.isNotBlank() && email.isNotBlank() && senha.length >= 6,
+                modifier = Modifier.fillMaxWidth(),
+            ) { Text("Criar colaborador") }
         }
     }
 }

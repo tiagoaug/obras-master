@@ -31,12 +31,13 @@ data class ContaDraft(
     val saldoInicialCentavos: Long,
 )
 
-// Fase 10 (pivô Firebase) — sem senha: o colaborador é convidado por e-mail, não cadastrado com
-// senha pelo Gestor (ver ConviteColaborador em :core e a nota em FirebaseAuthGateway).
+// O Gestor cria a conta do colaborador direto (ver SessionManager.criarColaborador) — sem convite
+// por e-mail, então a senha é definida aqui mesmo, no wizard.
 @Serializable
 data class ColaboradorDraft(
     val nome: String,
     val email: String,
+    val senha: String,
     val permissoes: Map<String, NivelPermissao> = emptyMap(), // moduleId -> nivel
 )
 

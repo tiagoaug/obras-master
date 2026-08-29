@@ -214,10 +214,11 @@ fun ColaboradoresStep(
 ) {
     var nome by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
+    var senha by remember { mutableStateOf("") }
 
     Column {
         Text("Colaboradores", style = MaterialTheme.typography.titleLarge)
-        DicaContextual("Opcional — pode pular e convidar depois em Configurações, com permissão módulo a módulo (aqui entram sem nenhuma permissão, ajustável depois). O colaborador entra com o próprio Google ou define a própria senha ao aceitar o convite.")
+        DicaContextual("Opcional — pode pular e cadastrar depois em Configurações, com permissão módulo a módulo (aqui entram sem nenhuma permissão, ajustável depois). Essas credenciais já ficam prontas pra pessoa entrar — não é preciso e-mail real, só um identificador único.")
 
         colaboradores.forEachIndexed { indice, colaborador ->
             ListItem(
@@ -233,16 +234,17 @@ fun ColaboradoresStep(
 
         Campo("Nome", nome) { nome = it }
         Campo("E-mail", email) { email = it }
+        CampoSenha("Senha", senha) { senha = it }
         Button(
             onClick = {
-                if (nome.isNotBlank() && email.isNotBlank()) {
-                    onAdicionar(ColaboradorDraft(nome, email))
-                    nome = ""; email = ""
+                if (nome.isNotBlank() && email.isNotBlank() && senha.length >= 6) {
+                    onAdicionar(ColaboradorDraft(nome, email, senha))
+                    nome = ""; email = ""; senha = ""
                 }
             },
-            enabled = nome.isNotBlank() && email.isNotBlank(),
+            enabled = nome.isNotBlank() && email.isNotBlank() && senha.length >= 6,
             modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-        ) { Text("Convidar colaborador") }
+        ) { Text("Adicionar colaborador") }
     }
 }
 

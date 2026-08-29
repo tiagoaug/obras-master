@@ -4,11 +4,10 @@ import br.com.tiago.obramaster.core.auth.SessionManager
 import br.com.tiago.obramaster.core.modules.AppModule
 import br.com.tiago.obramaster.core.prefs.AccessibilityPrefsStore
 import br.com.tiago.obramaster.data.repository.ContaRepository
-import br.com.tiago.obramaster.data.repository.ConviteColaboradorRepository
 import br.com.tiago.obramaster.data.repository.EmpresaRepository
 import br.com.tiago.obramaster.data.repository.ModuleConfigRepository
+import br.com.tiago.obramaster.data.repository.PermissaoRepository
 import br.com.tiago.obramaster.domain.Conta
-import br.com.tiago.obramaster.domain.ConviteColaborador
 import br.com.tiago.obramaster.domain.DadosEmpresa
 import kotlinx.datetime.Clock
 import kotlin.uuid.ExperimentalUuidApi
@@ -72,23 +71,21 @@ object OnboardingEngine {
      * Firestore vs. em-memória na Web) — `OnboardingConcluidoStore.marcarConcluido()` só é chamado
      * quando TUDO deu certo, então uma interrupção no meio faz o app voltar a mostrar o onboarding.
      *
-     * Fase 10 (pivô Firebase) — o Gestor é criado **primeiro** agora (não por último como antes):
-     * os repositórios Firestore de negócio (empresa, contas, convites, módulos) escrevem em
-     * `empresas/{empresaId}/...`, e isso só é possível depois que o `EmpresaContexto` sabe qual é
-     * a empresa — o que só acontece dentro de `cadastrarGestor`, junto com a conta do Firebase Auth
-     * (ver SessionManager/FirebaseSessionManager). Sem isso, as escritas seguintes falhariam.
+     * O Gestor é criado **primeiro**: os repositórios Firestore de negócio (empresa, contas,
+     * colaboradores, módulos) escrevem em `empresas/{empresaId}/...`, e isso só é possível depois
+     * que o `EmpresaContexto` sabe qual é a empresa — o que só acontece dentro de `cadastrarGestor`,
+     * junto com a conta do Firebase Auth (ver SessionManager/FirebaseSessionManager). Sem isso, as
+     * escritas seguintes falhariam.
      *
-     * Colaboradores pré-adicionados no wizard não ganham conta na hora (o Firebase Auth do lado do
-     * cliente não permite criar a conta de outra pessoa sem deslogar quem está criando, ver
-     * FirebaseAuthGateway): viram ConviteColaborador pendente, com as permissões escolhidas já
-     * guardadas no próprio convite — aplicadas de verdade quando a pessoa aceita (aceitarConvite,
-     * ainda não implementado nesta fase).
+     * Colaboradores pré-adicionados no wizard já ganham conta de verdade na hora (ver
+     * SessionManager.criarColaborador) — só é possível chamar isso aqui porque o Gestor (e a
+     * empresa) já existem nesse ponto.
      */
     @OptIn(ExperimentalUuidApi::class)
     suspend fun commitar(
         state: OnboardingState,
         empresaRepository: EmpresaRepository,
-        conviteColaboradorRepository: ConviteColaboradorRepository,
+        permissaoRepository: PermissaoRepository,
         sessionManager: SessionManager,
         moduleConfigRepository: ModuleConfigRepository,
         contaRepository: ContaRepository,
@@ -136,17 +133,12 @@ object OnboardingEngine {
         }
 
         state.colaboradores.forEach { colaboradorDraft ->
-            conviteColaboradorRepository.criar(
-                ConviteColaborador(
-                    id = Uuid.random().toString(),
-                    empresaId = empresaId,
-                    email = colaboradorDraft.email,
-                    nome = colaboradorDraft.nome,
-                    ehGestor = false,
-                    permissoes = colaboradorDraft.permissoes,
-                    criadoEm = agora,
-                ),
-            )
+            val resultadoColaborador = sessionManager.criarColaborador(colaboradorDraft.nome, colaboradorDraft.email, colaboradorDraft.senha)
+            if (resultadoColaborador is SessionManager.LoginResult.Sucesso) {
+                colaboradorDraft.permissoes.forEach { (moduleId, nivel) ->
+                    permissaoRepository.definir(resultadoColaborador.colaborador.id, moduleId, nivel)
+                }
+            }
         }
 
         accessibilityPrefsStore.atualizar(state.acessibilidade)

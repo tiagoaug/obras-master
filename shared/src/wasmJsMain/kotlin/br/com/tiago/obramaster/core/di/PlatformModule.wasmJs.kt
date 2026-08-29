@@ -8,8 +8,6 @@ import br.com.tiago.obramaster.data.repository.ColaboradorRepository
 import br.com.tiago.obramaster.data.repository.ComodoRepository
 import br.com.tiago.obramaster.data.repository.ConfigBDIRepository
 import br.com.tiago.obramaster.data.repository.ContaRepository
-import br.com.tiago.obramaster.data.repository.ConviteColaboradorRepository
-import br.com.tiago.obramaster.data.repository.InMemoryConviteColaboradorRepository
 import br.com.tiago.obramaster.data.repository.CorRepository
 import br.com.tiago.obramaster.data.repository.DiarioObraRepository
 import br.com.tiago.obramaster.data.repository.EmpresaRepository
@@ -103,7 +101,6 @@ val platformModule = module {
     single<SessionManager> { SessionManagerIndisponivel() }
     single<ColaboradorRepository> { InMemoryColaboradorRepository() }
     single<PermissaoRepository> { InMemoryPermissaoRepository() }
-    single<ConviteColaboradorRepository> { InMemoryConviteColaboradorRepository() }
     single<ModuleConfigRepository> { InMemoryModuleConfigRepository() }
     single<EmpresaRepository> { InMemoryEmpresaRepository() }
     single<ContaRepository> { InMemoryContaRepository() }

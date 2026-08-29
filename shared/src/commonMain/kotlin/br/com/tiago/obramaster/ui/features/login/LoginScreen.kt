@@ -34,7 +34,6 @@ fun LoginScreen(
                     if (idToken != null) viewModel.entrarComGoogle(idToken)
                 }
             },
-            onCriarContaComConvite = viewModel::criarContaEAceitarConvite,
         )
 
         is LoginUiState.Autenticado -> Unit // navegação tratada no LaunchedEffect acima

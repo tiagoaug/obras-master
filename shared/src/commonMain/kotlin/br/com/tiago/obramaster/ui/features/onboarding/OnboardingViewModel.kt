@@ -17,9 +17,9 @@ import br.com.tiago.obramaster.core.onboarding.ValidationResult
 import br.com.tiago.obramaster.core.auth.SessionManager
 import br.com.tiago.obramaster.core.prefs.AccessibilityPrefsStore
 import br.com.tiago.obramaster.data.repository.ContaRepository
-import br.com.tiago.obramaster.data.repository.ConviteColaboradorRepository
 import br.com.tiago.obramaster.data.repository.EmpresaRepository
 import br.com.tiago.obramaster.data.repository.ModuleConfigRepository
+import br.com.tiago.obramaster.data.repository.PermissaoRepository
 import br.com.tiago.obramaster.domain.Colaborador
 import br.com.tiago.obramaster.ui.theme.PrefsAcessibilidade
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,7 +34,7 @@ sealed interface OnboardingEvento {
 
 class OnboardingViewModel(
     private val empresaRepository: EmpresaRepository,
-    private val conviteColaboradorRepository: ConviteColaboradorRepository,
+    private val permissaoRepository: PermissaoRepository,
     private val sessionManager: SessionManager,
     private val moduleConfigRepository: ModuleConfigRepository,
     private val contaRepository: ContaRepository,
@@ -98,7 +98,7 @@ class OnboardingViewModel(
                 OnboardingEngine.commitar(
                     state = estadoAtual,
                     empresaRepository = empresaRepository,
-                    conviteColaboradorRepository = conviteColaboradorRepository,
+                    permissaoRepository = permissaoRepository,
                     sessionManager = sessionManager,
                     moduleConfigRepository = moduleConfigRepository,
                     contaRepository = contaRepository,

@@ -73,7 +73,7 @@ val appModule = module {
     factory { AjudaViewModel(get()) }
     factory { LoginViewModel(get()) }
     factory { (colaborador: Colaborador) -> HomeViewModel(colaborador, get(), get(), get()) }
-    factory { ConfiguracoesViewModel(get(), get(), get(), get(), get()) }
+    factory { ConfiguracoesViewModel(get(), get(), get(), get()) }
     factory { OnboardingViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
     factory { PessoasViewModel(get(), get()) }
     factory { CoresViewModel(get()) }

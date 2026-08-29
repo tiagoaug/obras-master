@@ -21,8 +21,8 @@ class SessionManagerIndisponivel : SessionManager {
     override suspend fun cadastrarGestor(nome: String, email: String, senha: String, empresaId: String): SessionManager.LoginResult =
         SessionManager.LoginResult.Erro("Onboarding ainda não está disponível na Web")
 
-    override suspend fun criarContaEAceitarConvite(nome: String, email: String, senha: String): SessionManager.LoginResult =
-        SessionManager.LoginResult.Erro("Login ainda não está disponível na Web")
+    override suspend fun criarColaborador(nome: String, email: String, senha: String): SessionManager.LoginResult =
+        SessionManager.LoginResult.Erro("Ainda não está disponível na Web")
 
     override suspend fun logout() = Unit
 }

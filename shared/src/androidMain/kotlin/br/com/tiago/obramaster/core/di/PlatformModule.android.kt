@@ -49,12 +49,12 @@ import br.com.tiago.obramaster.data.repository.UnidadeMedidaRepository
 import br.com.tiago.obramaster.data.repository.VendaRepository
 import br.com.tiago.obramaster.data.repository.DocumentoTecnicoRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightDocumentoTecnicoRepository
+import br.com.tiago.obramaster.core.auth.AndroidColaboradorProvisioner
+import br.com.tiago.obramaster.core.auth.ColaboradorProvisioner
 import br.com.tiago.obramaster.core.auth.EmpresaContexto
 import br.com.tiago.obramaster.core.auth.FirebaseSessionManager
 import br.com.tiago.obramaster.core.auth.SessionManager
-import br.com.tiago.obramaster.data.repository.ConviteColaboradorRepository
 import br.com.tiago.obramaster.data.repository.FirestoreColaboradorRepository
-import br.com.tiago.obramaster.data.repository.FirestoreConviteColaboradorRepository
 import br.com.tiago.obramaster.data.repository.FirestoreCategoriaFinanceiraRepository
 import br.com.tiago.obramaster.data.repository.FirestoreCentroDeCustoRepository
 import br.com.tiago.obramaster.data.repository.FirestoreContaRepository
@@ -110,8 +110,8 @@ fun platformModule(context: Context) = module {
     single { EmpresaContexto() }
     single { FirestoreColaboradorRepository(get()) } bind ColaboradorRepository::class
     single { FirestorePermissaoRepository(get()) } bind PermissaoRepository::class
-    single { FirestoreConviteColaboradorRepository(get()) } bind ConviteColaboradorRepository::class
-    single<SessionManager> { FirebaseSessionManager(get(), get(), get(), get()) }
+    single<ColaboradorProvisioner> { AndroidColaboradorProvisioner(context) }
+    single<SessionManager> { FirebaseSessionManager(get(), get(), get()) }
     single<ModuleConfigRepository> { FirestoreModuleConfigRepository(get()) }
     single<EmpresaRepository> { FirestoreEmpresaRepository(get()) }
     single<ContaRepository> { FirestoreContaRepository(get()) }
