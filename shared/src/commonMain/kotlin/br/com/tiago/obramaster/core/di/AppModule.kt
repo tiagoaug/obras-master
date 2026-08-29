@@ -1,7 +1,7 @@
 package br.com.tiago.obramaster.core.di
 
-import br.com.tiago.obramaster.core.auth.SessionManager
 import br.com.tiago.obramaster.core.modules.ModuleRegistry
+import br.com.tiago.obramaster.core.onboarding.OnboardingConcluidoStore
 import br.com.tiago.obramaster.core.onboarding.OnboardingDraftStore
 import br.com.tiago.obramaster.core.prefs.AccessibilityPrefsStore
 import br.com.tiago.obramaster.data.repository.NormaABNTRepository
@@ -50,20 +50,22 @@ import org.koin.dsl.module
  * EmpresaRepository, ContaRepository) e o banco (ObraMasterDatabase) NÃO entram aqui — são
  * registrados no módulo de cada plataforma, porque Android/iOS usam SQLDelight local e Web
  * (por enquanto, sem backend) usa repositórios em memória. Ver platformModule em cada source set.
+ * SessionManager também é por plataforma desde o pivô Firebase (Fase 10) — só Android/iOS têm o
+ * SDK do Firebase; ver FirebaseSessionManager em mobileMain vs. o stub em wasmJsMain.
  */
 val appModule = module {
     single { CoroutineScope(SupervisorJob() + Dispatchers.Default) }
     single { ModuleRegistry(get(), get()) }
-    single { SessionManager(get()) }
     single { AccessibilityPrefsStore(get()) }
     single { OnboardingDraftStore(get()) }
+    single { OnboardingConcluidoStore(get()) }
     single<NormaABNTRepository> { SeedNormaABNTRepository() }
 
     factory { AppRootViewModel(get(), get(), get()) }
     factory { LoginViewModel(get()) }
     factory { (colaborador: Colaborador) -> HomeViewModel(colaborador, get(), get(), get()) }
-    factory { ConfiguracoesViewModel(get(), get(), get()) }
-    factory { OnboardingViewModel(get(), get(), get(), get(), get(), get(), get()) }
+    factory { ConfiguracoesViewModel(get(), get(), get(), get(), get()) }
+    factory { OnboardingViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
     factory { PessoasViewModel(get(), get()) }
     factory { CoresViewModel(get()) }
     factory { MateriaisViewModel(get(), get()) }

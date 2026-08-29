@@ -30,11 +30,44 @@ object PdfWriter {
 
     private sealed interface Comando
     private data class Texto(val texto: String, val x: Double, val y: Double, val tamanho: Double) : Comando
-    private data class Linha(val x1: Double, val y1: Double, val x2: Double, val y2: Double) : Comando
+    private data class Linha(val x1: Double, val y1: Double, val x2: Double, val y2: Double, val largura: Double = 0.5) : Comando
+    private data class Poligono(val pontos: List<Pair<Double, Double>>, val corRgb: Triple<Double, Double, Double>) : Comando
 
     fun escrever(doc: ExportableDocument): ByteArray {
         val paginas = construirPaginas(doc)
         return serializar(paginas)
+    }
+
+    /** SPEC_PLANTA_BAIXA.md §6 (Fase 9.5) — mesma geometria transformada pelo
+     * PlantaBaixaExportModel que o JPG usa, só que desenhada com operadores PDF vetoriais
+     * (m/l/h/f pra cômodo preenchido, m/l/S pra parede) em vez de rasterizada num bitmap — sempre
+     * cabe numa página A4, sem paginação (é um desenho, não uma tabela que cresce). */
+    fun escreverPlantaBaixa(titulo: String, desenho: PlantaBaixaExportModel.PlantaBaixaDesenho): ByteArray {
+        val comandos = mutableListOf<Comando>()
+        comandos += Texto(titulo, MARGEM, ALTURA_PAGINA - MARGEM, TAMANHO_FONTE_TITULO)
+
+        desenho.comodos.forEach { comodo ->
+            if (comodo.pontos.size < 3) return@forEach
+            val corRgb = corHexParaRgb(comodo.corHex)
+            comandos += Poligono(comodo.pontos.map { it.x to it.y }, corRgb)
+            comandos += Texto(comodo.rotulo, comodo.centro.x, comodo.centro.y, TAMANHO_FONTE_CORPO)
+        }
+
+        desenho.paredes.forEach { parede ->
+            comandos += Linha(parede.inicio.x, parede.inicio.y, parede.fim.x, parede.fim.y, parede.espessuraSaida.coerceAtLeast(1.0))
+        }
+
+        return serializar(listOf(comandos))
+    }
+
+    private fun corHexParaRgb(hex: String): Triple<Double, Double, Double> {
+        val limpo = hex.removePrefix("#")
+        return runCatching {
+            val r = limpo.substring(0, 2).toInt(16) / 255.0
+            val g = limpo.substring(2, 4).toInt(16) / 255.0
+            val b = limpo.substring(4, 6).toInt(16) / 255.0
+            Triple(r, g, b)
+        }.getOrDefault(Triple(0.7, 0.7, 0.7))
     }
 
     private fun construirPaginas(doc: ExportableDocument): List<List<Comando>> {
@@ -170,7 +203,19 @@ object PdfWriter {
                     "BT /F1 ${formatarNumero(comando.tamanho)} Tf 1 0 0 1 ${formatarNumero(comando.x)} ${formatarNumero(comando.y)} Tm " +
                         "(${escaparTexto(comando.texto)}) Tj ET\n",
                 )
-                is Linha -> sb.append("${formatarNumero(comando.x1)} ${formatarNumero(comando.y1)} m ${formatarNumero(comando.x2)} ${formatarNumero(comando.y2)} l S\n")
+                is Linha -> sb.append(
+                    "${formatarNumero(comando.largura)} w ${formatarNumero(comando.x1)} ${formatarNumero(comando.y1)} m " +
+                        "${formatarNumero(comando.x2)} ${formatarNumero(comando.y2)} l S\n",
+                )
+                is Poligono -> {
+                    val (r, g, b) = comando.corRgb
+                    sb.append("${formatarNumero(r)} ${formatarNumero(g)} ${formatarNumero(b)} rg\n")
+                    comando.pontos.forEachIndexed { indice, (x, y) ->
+                        val operador = if (indice == 0) "m" else "l"
+                        sb.append("${formatarNumero(x)} ${formatarNumero(y)} $operador\n")
+                    }
+                    sb.append("h f\n")
+                }
             }
         }
         return sb.toString()

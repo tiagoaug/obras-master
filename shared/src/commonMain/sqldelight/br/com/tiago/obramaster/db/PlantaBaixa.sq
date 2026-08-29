@@ -1,3 +1,5 @@
+-- projetoId sem FK: Projeto migrou pro Firestore na Fase 10 (pivô Firebase); Planta Baixa
+-- continua local por enquanto — fora do escopo desta migração.
 CREATE TABLE PlantaBaixa (
     id TEXT NOT NULL PRIMARY KEY,
     projetoId TEXT NOT NULL,
@@ -7,8 +9,7 @@ CREATE TABLE PlantaBaixa (
     imagemFundoOpacidade REAL NOT NULL DEFAULT 0.5,
     criadaEm INTEGER NOT NULL,
     atualizadaEm INTEGER NOT NULL,
-    ativo INTEGER AS kotlin.Boolean NOT NULL DEFAULT 1,
-    FOREIGN KEY (projetoId) REFERENCES Projeto(id)
+    ativo INTEGER AS kotlin.Boolean NOT NULL DEFAULT 1
 );
 
 selectAtivasDoProjeto:

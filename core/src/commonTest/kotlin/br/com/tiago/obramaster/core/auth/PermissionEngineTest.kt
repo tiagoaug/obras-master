@@ -12,9 +12,7 @@ class PermissionEngineTest {
     private fun colaborador(ehGestor: Boolean = false) = Colaborador(
         id = "c1",
         nome = "Fulano",
-        login = "fulano",
-        senhaHash = "hash",
-        salt = "salt",
+        email = "fulano@obramaster.app",
         ativo = true,
         ehGestor = ehGestor,
     )

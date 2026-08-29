@@ -1,10 +1,11 @@
+-- lancamentoId sem FK: LancamentoFinanceiro migrou pro Firestore na Fase 10 (pivô Firebase);
+-- RetencaoLancamento continua local por enquanto — fora do escopo desta migração.
 CREATE TABLE RetencaoLancamento (
     id TEXT NOT NULL PRIMARY KEY,
     lancamentoId TEXT NOT NULL,
     tipo TEXT NOT NULL,
     percentual REAL NOT NULL,
-    valorCalculado INTEGER NOT NULL,
-    FOREIGN KEY (lancamentoId) REFERENCES LancamentoFinanceiro(id)
+    valorCalculado INTEGER NOT NULL
 );
 
 selectDoLancamento:

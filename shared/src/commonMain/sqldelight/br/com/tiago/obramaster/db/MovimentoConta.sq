@@ -1,3 +1,5 @@
+-- contaId/lancamentoFinanceiroId sem FK: Conta/LancamentoFinanceiro migraram pro Firestore na
+-- Fase 10 (pivô Firebase); MovimentoConta continua local por enquanto — fora do escopo desta migração.
 CREATE TABLE MovimentoConta (
     id TEXT NOT NULL PRIMARY KEY,
     contaId TEXT NOT NULL,
@@ -7,9 +9,7 @@ CREATE TABLE MovimentoConta (
     descricao TEXT NOT NULL,
     lancamentoFinanceiroId TEXT,
     transferenciaVinculoId TEXT,
-    conciliado INTEGER AS kotlin.Boolean NOT NULL DEFAULT 0,
-    FOREIGN KEY (contaId) REFERENCES Conta(id),
-    FOREIGN KEY (lancamentoFinanceiroId) REFERENCES LancamentoFinanceiro(id)
+    conciliado INTEGER AS kotlin.Boolean NOT NULL DEFAULT 0
 );
 
 selectDaConta:

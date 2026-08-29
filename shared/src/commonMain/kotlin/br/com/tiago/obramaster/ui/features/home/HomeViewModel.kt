@@ -43,6 +43,6 @@ class HomeViewModel(
     }
 
     fun logout() {
-        sessionManager.logout()
+        viewModelScope.launch { sessionManager.logout() }
     }
 }

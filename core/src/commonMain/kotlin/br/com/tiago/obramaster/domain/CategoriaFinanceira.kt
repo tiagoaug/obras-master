@@ -1,6 +1,9 @@
 package br.com.tiago.obramaster.domain
 
+import kotlinx.serialization.Serializable
+
 /** SPEC_OBRA_MASTER_ADENDO_FINANCEIRO.md §5 — hierárquica (categoriaPaiId), com natureza padrão pré-preenchida no lançamento. */
+@Serializable
 data class CategoriaFinanceira(
     val id: String,
     val nome: String,

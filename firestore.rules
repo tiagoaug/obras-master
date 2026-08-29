@@ -1,0 +1,83 @@
+rules_version = '2';
+
+// Fase 10 (pivô Firebase) — modelo de dados: ver server/README.md (histórico) e o resumo da
+// migração na sessão. `colaboradores/{uid}` e `convites/{id}` são coleções de nível raiz;
+// todo recurso de negócio vive em `empresas/{empresaId}/{colecao}/{id}`.
+//
+// Isolamento multi-tenant é a garantia principal aqui: ninguém lê/escreve dado de uma empresa
+// que não é a sua. Permissão fina por módulo (quem pode ver Financeiro vs. só Projetos) continua
+// sendo responsabilidade da PermissionEngine no cliente — não replicada aqui em detalhe porque
+// exigiria uma leitura extra (Permissoes) por request; é uma simplificação deliberada, documentada.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function autenticado() {
+      return request.auth != null;
+    }
+
+    function colaboradorDoUsuario() {
+      return get(/databases/$(database)/documents/colaboradores/$(request.auth.uid)).data;
+    }
+
+    function pertenceAEmpresa(empresaId) {
+      return autenticado()
+        && exists(/databases/$(database)/documents/colaboradores/$(request.auth.uid))
+        && colaboradorDoUsuario().empresaId == empresaId;
+    }
+
+    function ehGestorDaEmpresa(empresaId) {
+      return pertenceAEmpresa(empresaId) && colaboradorDoUsuario().ehGestor == true;
+    }
+
+    // colaboradores/{uid} — raiz, pra descobrir a empresa de um uid com 1 leitura (ver
+    // FirestoreColaboradorRepository.kt). Criar é sempre auto-cadastro (uid == o próprio doc):
+    // cobre tanto o Gestor criando a empresa quanto alguém aceitando um convite.
+    match /colaboradores/{uid} {
+      allow read: if autenticado() && (
+        request.auth.uid == uid ||
+        (exists(/databases/$(database)/documents/colaboradores/$(request.auth.uid))
+          && colaboradorDoUsuario().empresaId == resource.data.empresaId)
+      );
+      allow create: if autenticado() && request.auth.uid == uid;
+      allow update: if autenticado() && (
+        request.auth.uid == uid || ehGestorDaEmpresa(resource.data.empresaId)
+      );
+      allow delete: if false; // desativação é sempre soft-delete (campo ativo)
+    }
+
+    // convites/{id} — raiz, sem uid ainda (pessoa convidada não tem conta). Só o Gestor cria/apaga;
+    // a leitura também é liberada pra quem tem o e-mail do convite, pra ele conseguir aceitar.
+    match /convites/{id} {
+      allow read: if autenticado() && (
+        request.auth.token.email == resource.data.email || ehGestorDaEmpresa(resource.data.empresaId)
+      );
+      allow create: if ehGestorDaEmpresa(request.resource.data.empresaId);
+      allow delete: if autenticado() && (
+        request.auth.token.email == resource.data.email || ehGestorDaEmpresa(resource.data.empresaId)
+      );
+      allow update: if false;
+    }
+
+    // empresas/{empresaId} — documento raiz do tenant (perfil da empresa). Criar exige já
+    // pertencer a essa empresa: só acontece depois que cadastrarGestor() já criou o
+    // colaboradores/{uid} correspondente (ver OnboardingEngine.commitar — Gestor primeiro).
+    match /empresas/{empresaId} {
+      allow read: if pertenceAEmpresa(empresaId);
+      allow write: if ehGestorDaEmpresa(empresaId);
+
+      // Todo recurso de negócio (projetos, etapas, financeiro, pessoas, equipes, cadastros
+      // básicos, compras, orçamentos, vendas, metas, módulos, permissões) — mesma regra de
+      // isolamento pra todos: precisa pertencer à empresa. Escrita liberada pra qualquer
+      // colaborador da empresa (não só Gestor) — a PermissionEngine no cliente já decide quem
+      // vê o botão de editar; aqui é só a fronteira entre empresas.
+      match /{colecao}/{docId} {
+        allow read, write: if pertenceAEmpresa(empresaId);
+      }
+    }
+
+    // Nada além do que foi listado acima é acessível — padrão é negar.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

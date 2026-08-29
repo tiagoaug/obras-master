@@ -20,7 +20,7 @@ data class DadosEmpresaDraft(
 @Serializable
 data class GestorDraft(
     val nome: String = "",
-    val login: String = "",
+    val email: String = "",
     @Transient val senha: String = "",
 )
 
@@ -31,11 +31,12 @@ data class ContaDraft(
     val saldoInicialCentavos: Long,
 )
 
+// Fase 10 (pivô Firebase) — sem senha: o colaborador é convidado por e-mail, não cadastrado com
+// senha pelo Gestor (ver ConviteColaborador em :core e a nota em FirebaseAuthGateway).
 @Serializable
 data class ColaboradorDraft(
     val nome: String,
-    val login: String,
-    @Transient val senha: String = "",
+    val email: String,
     val permissoes: Map<String, NivelPermissao> = emptyMap(), // moduleId -> nivel
 )
 

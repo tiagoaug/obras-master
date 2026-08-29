@@ -1,5 +1,8 @@
 package br.com.tiago.obramaster.domain
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 enum class StatusPedidoCompra { COTACAO, APROVADO, COMPRADO, ENTREGUE }
 
 /**
@@ -7,6 +10,7 @@ enum class StatusPedidoCompra { COTACAO, APROVADO, COMPRADO, ENTREGUE }
  * dá pra rastrear qual despesa esse pedido gerou ao virar COMPRADO. Mesmo padrão de completude
  * técnica já usado em RegistroTrabalho.pagamentoId e Pagamento.lancamentoFinanceiroId.
  */
+@Serializable
 data class PedidoCompra(
     val id: String,
     val projetoId: String,
@@ -19,6 +23,7 @@ data class PedidoCompra(
     val ativo: Boolean = true,
 )
 
+@Serializable
 data class ItemCompra(
     val id: String,
     val pedidoId: String,

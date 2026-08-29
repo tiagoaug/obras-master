@@ -86,9 +86,9 @@ fun App() {
                     CircularProgressIndicator()
                 }
 
-                TelaRaiz.Onboarding -> OnboardingScreen(onConcluido = { tela = TelaRaiz.Home(it) })
+                TelaRaiz.Onboarding -> OnboardingScreen(onConcluido = { appRootViewModel.autenticado(it) })
 
-                TelaRaiz.Login -> LoginScreen(onAutenticado = { tela = TelaRaiz.Home(it) })
+                TelaRaiz.Login -> LoginScreen(onAutenticado = { appRootViewModel.autenticado(it) })
 
                 is TelaRaiz.Home -> HomeScreen(
                     colaborador = telaAtual.colaborador,

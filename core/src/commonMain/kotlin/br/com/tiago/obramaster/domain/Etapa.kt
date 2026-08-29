@@ -1,8 +1,11 @@
 package br.com.tiago.obramaster.domain
 
+import kotlinx.serialization.Serializable
+
 /** dataInicio/dataFim: datas PREVISTAS do cronograma. dataInicioReal/dataFimReal: adição técnica
  * sinalizada (Fase 7.1) — SPEC_OBRA_MASTER.md §4.7 pede "datas previstas vs reais" no cronograma,
  * mas só havia um par de datas; o par original passou a significar "previstas". */
+@Serializable
 data class Etapa(
     val id: String,
     val projetoId: String,

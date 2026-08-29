@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.DoorFront
 import androidx.compose.material.icons.filled.FileUpload
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.NearMe
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Straighten
 import androidx.compose.material.icons.automirrored.filled.Undo
 import androidx.compose.material.icons.filled.Window
@@ -67,6 +68,7 @@ import br.com.tiago.obramaster.domain.Comodo
 import br.com.tiago.obramaster.domain.PontoXY
 import br.com.tiago.obramaster.domain.TipoAbertura
 import br.com.tiago.obramaster.ui.components.decodeImageBitmap
+import br.com.tiago.obramaster.ui.components.export.ExportarPlantaBaixaBottomSheet
 import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
 
@@ -83,6 +85,7 @@ fun EditorPlantaScreen(
     var arrastoAtual by remember { mutableStateOf<Pair<Offset, Offset>?>(null) }
     var mostrarEscala by remember { mutableStateOf(false) }
     var mostrarImagemSheet by remember { mutableStateOf(false) }
+    var mostrarExportarSheet by remember { mutableStateOf(false) }
     var distanciaCalibracaoTexto by remember { mutableStateOf("") }
 
     val imagemBitmap = uiState.imagemFundoBytes?.let { bytes -> remember(bytes) { decodeImageBitmap(bytes) } }
@@ -106,6 +109,11 @@ fun EditorPlantaScreen(
                     }
                     IconButton(onClick = { viewModel.desfazerUltimaForma() }) {
                         Icon(Icons.AutoMirrored.Filled.Undo, contentDescription = "Desfazer última forma")
+                    }
+                    if (uiState.comodos.isNotEmpty() || uiState.paredes.isNotEmpty()) {
+                        IconButton(onClick = { mostrarExportarSheet = true }) {
+                            Icon(Icons.Filled.Share, contentDescription = "Exportar planta baixa")
+                        }
                     }
                 },
             )
@@ -334,6 +342,16 @@ fun EditorPlantaScreen(
                 mostrarEscala = false
             },
             onDispensar = { mostrarEscala = false },
+        )
+    }
+
+    if (mostrarExportarSheet) {
+        ExportarPlantaBaixaBottomSheet(
+            titulo = uiState.planta?.nome ?: "Planta Baixa",
+            comodos = uiState.comodos,
+            paredes = uiState.paredes,
+            escalaPxPorMetro = uiState.planta?.escalaPxPorMetro ?: 100.0,
+            onDismiss = { mostrarExportarSheet = false },
         )
     }
 

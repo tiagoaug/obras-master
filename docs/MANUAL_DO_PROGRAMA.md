@@ -112,7 +112,7 @@ O ícone de imagem na barra superior do editor abre o painel "Imagem de fundo":
 - **📐 Calibrar** (novo botão na barra de ferramentas, some quando não há foto importada): toque em dois pontos da foto que você sabe a distância real entre eles (ex.: as duas pontas de uma porta) e informe essa distância em metros — o app recalcula sozinho quanto vale cada quadrado da grade a partir daí, substituindo a escala manual.
 - **Trocar foto** troca a imagem de fundo a qualquer momento; a escala calibrada anteriormente não é alterada automaticamente — recalibre se a nova foto tiver uma proporção diferente.
 
-*(Esse fluxo não faz leitura automática de medidas na foto (OCR) — a calibração por dois toques é sempre manual, mas rápida. No iOS, importar foto ainda não está disponível nesta fase; a tela mostra a mensagem de indisponível e o restante do editor funciona normalmente. Exportar a planta em PDF/JPG chega junto da Fase 9.)*
+*(Esse fluxo não faz leitura automática de medidas na foto (OCR) — a calibração por dois toques é sempre manual, mas rápida. No iOS, importar foto ainda não está disponível nesta fase; a tela mostra a mensagem de indisponível e o restante do editor funciona normalmente.)*
 
 **Exemplo prático:** você fotografa uma planta impressa do projeto, importa a foto, toca nas duas pontas de uma porta que mede 0,80m na realidade e digita "0,8" quando o app pergunta a distância — a partir daí, cada quadrado da grade passa a refletir a escala real da foto, e os cômodos que você desenhar por cima já saem com a área certa.
 
@@ -150,6 +150,16 @@ O mesmo botão "Importar arquivo" também aceita **PDF** — útil quando você 
 - A primeira página do PDF é convertida em imagem e entra direto como imagem de fundo do editor — o mesmo fluxo de "Importar Foto" da seção acima, com toggle de visibilidade, opacidade e a ferramenta Calibrar disponíveis normalmente.
 - Como PDF não traz geometria pronta pra ler (é tratado sempre como uma foto da planta, não como desenho vetorial), a escala **nunca** é detectada automaticamente — você sempre calibra manualmente depois de importar, com dois toques numa medida conhecida.
 - Não tem tela de prévia com contagem de paredes/cômodos (não faz sentido pra uma imagem) — a importação já entra direto como imagem de fundo.
+
+#### Exportar a planta baixa `#planta-baixa-exportar`
+
+O ícone de compartilhar na barra superior do editor (aparece assim que a planta tem pelo menos um cômodo ou parede desenhado) abre um painel para exportar o desenho como **JPG** ou **PDF**:
+
+- O desenho exportado reproduz os cômodos (preenchidos com a cor escolhida, com o nome no centro) e as paredes, encaixados automaticamente dentro da página/imagem de saída — não precisa ajustar zoom nem posição antes de exportar.
+- **JPG** sai como uma imagem larga, pronta pra mandar por WhatsApp ou e-mail; **PDF** sai em página A4, pronta pra imprimir.
+- O compartilhamento usa o mesmo mecanismo do sistema (Android/Web) que os outros botões de exportar do app — no iOS essa função ainda não está disponível.
+
+**Exemplo prático:** depois de desenhar a Sala e os dois Quartos, você toca no ícone de compartilhar, escolhe "Compartilhar como PDF" e manda o arquivo pro cliente aprovar o layout, sem precisar tirar print da tela.
 
 **Exemplo prático:** o cliente manda a planta só em PDF — você importa pelo botão "Importar arquivo", a primeira página já aparece como imagem de fundo do editor, você toca em "Calibrar", marca duas pontas de uma medida conhecida (por exemplo, o vão de uma porta), digita a medida real e a partir daí desenha os cômodos por cima com a escala certa.
 
@@ -357,9 +367,9 @@ Também há um hub de calculadoras dedicado (módulo "Calculadoras" na Home), co
 
 ## 15. Exportação `#exportacao`
 
-O ícone de compartilhar no topo de qualquer tela de lista/cadastro (Pessoas, Projetos, Materiais, Lançamentos, Contas, Equipes, Fornecedores, Compras, Orçamentos, Vendas, Metas, Diário de Obra e todos os outros cadastros) abre um preview do relatório e o botão "Compartilhar como JPG" — útil pra mandar uma lista pro cliente, pro contador ou guardar um comprovante. O app monta a imagem na hora (título, colunas, linhas e um resumo quando fizer sentido) e entrega pro menu nativo de compartilhamento da plataforma (ou baixa o arquivo, no navegador). A exportação respeita o filtro de busca ativo — se você buscou antes de exportar, só o que está na tela sai no relatório.
+O ícone de compartilhar no topo de qualquer tela de lista/cadastro (Pessoas, Projetos, Materiais, Lançamentos, Contas, Equipes, Fornecedores, Compras, Orçamentos, Vendas, Metas, Diário de Obra e todos os outros cadastros) abre um preview do relatório com três opções: **JPG**, **PDF** e **Excel (XLSX)** — útil pra mandar uma lista pro cliente, pro contador ou guardar um comprovante. O app monta o arquivo na hora (título, colunas, linhas e um resumo quando fizer sentido) e entrega pro menu nativo de compartilhamento da plataforma (ou baixa o arquivo, no navegador). A exportação respeita o filtro de busca ativo — se você buscou antes de exportar, só o que está na tela sai no relatório.
 
-*(Exportação em PDF e Excel (XLSX) chegam nas próximas sub-fases.)*
+O PDF pagina automaticamente quando a lista é longa (repetindo o cabeçalho das colunas em cada página nova). O Excel sai como planilha simples — cada linha da tela vira uma linha da planilha, com o cabeçalho das colunas na primeira linha de dados; os valores já saem formatados como estão na tela (ex.: "R$ 1.234,56"), não como número puro, porque reinterpretar um texto formatado em português como número arriscaria trocar separador decimal ou símbolo de moeda.
 
 ---
 

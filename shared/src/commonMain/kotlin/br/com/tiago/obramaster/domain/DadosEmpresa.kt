@@ -1,5 +1,8 @@
 package br.com.tiago.obramaster.domain
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class DadosEmpresa(
     val id: String,
     val nome: String,

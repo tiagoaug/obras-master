@@ -1,11 +1,16 @@
 package br.com.tiago.obramaster.domain
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 enum class StatusOrcamento { RASCUNHO, ENVIADO, APROVADO, RECUSADO }
 
+@Serializable
 enum class TipoItemOrcamento { MATERIAL, MAO_DE_OBRA }
 
 /** SPEC_OBRA_MASTER.md §4.5 + SPEC_OBRA_MASTER_ADENDO_BDI.md §3 — bdiPercentualCalculado/custoDiretoTotal/precoVendaTotal
  * são congelados (snapshot) na primeira vez que o orçamento sai de RASCUNHO; ver OrcamentosViewModel. */
+@Serializable
 data class Orcamento(
     val id: String,
     val projetoId: String? = null,
@@ -24,6 +29,7 @@ data class Orcamento(
     val ativo: Boolean = true,
 )
 
+@Serializable
 data class ItemOrcamento(
     val id: String,
     val orcamentoId: String,

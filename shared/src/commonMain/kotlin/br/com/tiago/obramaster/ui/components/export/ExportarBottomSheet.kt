@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import br.com.tiago.obramaster.core.export.PdfWriter
 import br.com.tiago.obramaster.core.export.ReportCanvasRenderer
+import br.com.tiago.obramaster.core.export.XlsxWriter
 import br.com.tiago.obramaster.domain.ExportableDocument
 import br.com.tiago.obramaster.platform.FileExporter
 import br.com.tiago.obramaster.platform.paraBytesJpeg
@@ -37,14 +38,16 @@ import org.koin.compose.koinInject
 private enum class FormatoExportacao(val extensao: String, val mimeType: String, val rotulo: String) {
     JPG("jpg", "image/jpeg", "Compartilhar como JPG"),
     PDF("pdf", "application/pdf", "Compartilhar como PDF"),
+    XLSX("xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Compartilhar como Excel (XLSX)"),
 }
 
 /** SPEC_OBRA_MASTER.md §5.1 — botão de exportar padrão. Fase 9.2: JPG (via ReportCanvasRenderer).
- * Fase 9.3: PDF (via PdfWriter, escrito do zero em commonMain). XLSX chega na Fase 9.4. O preview
- * visual em tela (ReportPreview, Composable normal) e os bytes exportados (ReportCanvasRenderer/
- * PdfWriter) são desenhos independentes do mesmo ExportableDocument, não uma captura um do outro
- * — ver a nota de decisão em ReportCanvasRenderer.kt sobre por que a captura de Composable não
- * está disponível na versão de Compose deste projeto. */
+ * Fase 9.3: PDF (via PdfWriter). Fase 9.4: XLSX (via XlsxWriter). Todos escritos do zero em
+ * commonMain (ver SPEC_OBRA_MASTER_KMP.md §5.2 — decisão registrada na Fase 9). O preview visual
+ * em tela (ReportPreview, Composable normal) e os bytes exportados são desenhos independentes do
+ * mesmo ExportableDocument, não uma captura um do outro — ver a nota de decisão em
+ * ReportCanvasRenderer.kt sobre por que a captura de Composable não está disponível na versão de
+ * Compose deste projeto. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExportarBottomSheet(doc: ExportableDocument, onDismiss: () -> Unit, fileExporter: FileExporter = koinInject()) {
@@ -63,6 +66,7 @@ fun ExportarBottomSheet(doc: ExportableDocument, onDismiss: () -> Unit, fileExpo
                 when (formato) {
                     FormatoExportacao.JPG -> ReportCanvasRenderer.renderizar(doc).paraBytesJpeg()
                     FormatoExportacao.PDF -> PdfWriter.escrever(doc)
+                    FormatoExportacao.XLSX -> XlsxWriter.escrever(doc)
                 }
             }
             val nomeArquivo = "${doc.titulo.replace(Regex("[^A-Za-z0-9]+"), "_")}.${formato.extensao}"
@@ -106,6 +110,13 @@ fun ExportarBottomSheet(doc: ExportableDocument, onDismiss: () -> Unit, fileExpo
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     if (formatoExportando == FormatoExportacao.PDF) CircularProgressIndicator(modifier = Modifier.padding(end = 8.dp)) else Text("Compartilhar como PDF")
+                }
+                OutlinedButton(
+                    onClick = { exportar(FormatoExportacao.XLSX) },
+                    enabled = disponivel && formatoExportando == null,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    if (formatoExportando == FormatoExportacao.XLSX) CircularProgressIndicator(modifier = Modifier.padding(end = 8.dp)) else Text("Compartilhar como Excel (XLSX)")
                 }
             }
         }

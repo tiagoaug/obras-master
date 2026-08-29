@@ -8,6 +8,8 @@ import br.com.tiago.obramaster.data.repository.ColaboradorRepository
 import br.com.tiago.obramaster.data.repository.ComodoRepository
 import br.com.tiago.obramaster.data.repository.ConfigBDIRepository
 import br.com.tiago.obramaster.data.repository.ContaRepository
+import br.com.tiago.obramaster.data.repository.ConviteColaboradorRepository
+import br.com.tiago.obramaster.data.repository.InMemoryConviteColaboradorRepository
 import br.com.tiago.obramaster.data.repository.CorRepository
 import br.com.tiago.obramaster.data.repository.DiarioObraRepository
 import br.com.tiago.obramaster.data.repository.EmpresaRepository
@@ -70,6 +72,8 @@ import br.com.tiago.obramaster.data.repository.UnidadeMedidaRepository
 import br.com.tiago.obramaster.data.repository.VendaRepository
 import br.com.tiago.obramaster.data.repository.DocumentoTecnicoRepository
 import br.com.tiago.obramaster.data.repository.InMemoryDocumentoTecnicoRepository
+import br.com.tiago.obramaster.core.auth.SessionManager
+import br.com.tiago.obramaster.core.auth.SessionManagerIndisponivel
 import br.com.tiago.obramaster.platform.AppSettingsFactory
 import br.com.tiago.obramaster.platform.ContactsProvider
 import br.com.tiago.obramaster.platform.DocumentStore
@@ -96,8 +100,10 @@ val platformModule = module {
     single { PdfTextExtractor() }
     single { FileExporter() }
 
+    single<SessionManager> { SessionManagerIndisponivel() }
     single<ColaboradorRepository> { InMemoryColaboradorRepository() }
     single<PermissaoRepository> { InMemoryPermissaoRepository() }
+    single<ConviteColaboradorRepository> { InMemoryConviteColaboradorRepository() }
     single<ModuleConfigRepository> { InMemoryModuleConfigRepository() }
     single<EmpresaRepository> { InMemoryEmpresaRepository() }
     single<ContaRepository> { InMemoryContaRepository() }

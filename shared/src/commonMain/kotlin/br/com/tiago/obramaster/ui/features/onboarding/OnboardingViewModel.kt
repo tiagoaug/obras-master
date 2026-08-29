@@ -7,18 +7,19 @@ import br.com.tiago.obramaster.core.onboarding.ColaboradorDraft
 import br.com.tiago.obramaster.core.onboarding.ContaDraft
 import br.com.tiago.obramaster.core.onboarding.DadosEmpresaDraft
 import br.com.tiago.obramaster.core.onboarding.GestorDraft
+import br.com.tiago.obramaster.core.onboarding.OnboardingConcluidoStore
 import br.com.tiago.obramaster.core.onboarding.OnboardingDraftStore
 import br.com.tiago.obramaster.core.onboarding.OnboardingEngine
 import br.com.tiago.obramaster.core.onboarding.OnboardingState
 import br.com.tiago.obramaster.core.onboarding.OnboardingStep
 import br.com.tiago.obramaster.core.onboarding.ProjetoDraft
 import br.com.tiago.obramaster.core.onboarding.ValidationResult
+import br.com.tiago.obramaster.core.auth.SessionManager
 import br.com.tiago.obramaster.core.prefs.AccessibilityPrefsStore
-import br.com.tiago.obramaster.data.repository.ColaboradorRepository
 import br.com.tiago.obramaster.data.repository.ContaRepository
+import br.com.tiago.obramaster.data.repository.ConviteColaboradorRepository
 import br.com.tiago.obramaster.data.repository.EmpresaRepository
 import br.com.tiago.obramaster.data.repository.ModuleConfigRepository
-import br.com.tiago.obramaster.data.repository.PermissaoRepository
 import br.com.tiago.obramaster.domain.Colaborador
 import br.com.tiago.obramaster.ui.theme.PrefsAcessibilidade
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,12 +34,13 @@ sealed interface OnboardingEvento {
 
 class OnboardingViewModel(
     private val empresaRepository: EmpresaRepository,
-    private val colaboradorRepository: ColaboradorRepository,
-    private val permissaoRepository: PermissaoRepository,
+    private val conviteColaboradorRepository: ConviteColaboradorRepository,
+    private val sessionManager: SessionManager,
     private val moduleConfigRepository: ModuleConfigRepository,
     private val contaRepository: ContaRepository,
     private val accessibilityPrefsStore: AccessibilityPrefsStore,
     private val draftStore: OnboardingDraftStore,
+    private val onboardingConcluidoStore: OnboardingConcluidoStore,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(draftStore.carregarRascunho() ?: OnboardingState())
@@ -96,14 +98,15 @@ class OnboardingViewModel(
                 OnboardingEngine.commitar(
                     state = estadoAtual,
                     empresaRepository = empresaRepository,
-                    colaboradorRepository = colaboradorRepository,
-                    permissaoRepository = permissaoRepository,
+                    conviteColaboradorRepository = conviteColaboradorRepository,
+                    sessionManager = sessionManager,
                     moduleConfigRepository = moduleConfigRepository,
                     contaRepository = contaRepository,
                     accessibilityPrefsStore = accessibilityPrefsStore,
                     draftStore = draftStore,
+                    onboardingConcluidoStore = onboardingConcluidoStore,
                 )
-                val gestor = colaboradorRepository.buscarPorLogin(estadoAtual.gestor.login)
+                val gestor = sessionManager.colaboradorLogado.value
                 _evento.value = if (gestor != null) {
                     OnboardingEvento.Concluido(gestor)
                 } else {

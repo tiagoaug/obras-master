@@ -1,47 +1,42 @@
 package br.com.tiago.obramaster.core.auth
 
-import br.com.tiago.obramaster.data.repository.ColaboradorRepository
 import br.com.tiago.obramaster.domain.Colaborador
-import br.com.tiago.obramaster.platform.SecureStorage
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 
-private const val KEY_SESSION_COLABORADOR_ID = "session_colaborador_id"
-
-class SessionManager(
-    private val colaboradorRepository: ColaboradorRepository,
-) {
-    private val _colaboradorLogado = MutableStateFlow<Colaborador?>(null)
-    val colaboradorLogado: StateFlow<Colaborador?> = _colaboradorLogado.asStateFlow()
+/** Fase 10 (pivô Firebase) — identidade vem do Firebase Auth, disponível só em Android/iOS (o SDK
+ * `dev.gitlive:firebase-*` não publica alvo wasmJs, ver shared/build.gradle.kts). Por isso é uma
+ * interface com `actual`-equivalente por plataforma via Koin (`FirebaseSessionManager` em
+ * mobileMain, stub indisponível em wasmJsMain) — mesmo padrão de FileExporter/DatabaseDriverFactory,
+ * só que resolvido por binding de Koin em vez de expect/actual direto (os tipos usados no
+ * construtor de cada implementação não existem nas outras plataformas). */
+interface SessionManager {
+    val colaboradorLogado: StateFlow<Colaborador?>
 
     sealed interface LoginResult {
         data class Sucesso(val colaborador: Colaborador) : LoginResult
         data object LoginOuSenhaInvalidos : LoginResult
+        data object ContaSemEmpresaVinculada : LoginResult
+        data class Erro(val mensagem: String) : LoginResult
     }
 
-    /** Tenta restaurar a sessão salva (opção "manter conectado"). */
-    suspend fun restaurar() {
-        val id = SecureStorage.get(KEY_SESSION_COLABORADOR_ID) ?: return
-        _colaboradorLogado.value = colaboradorRepository.buscarPorId(id)
-    }
+    /** Reflete a sessão já persistida (chamado uma vez, ao abrir o app). */
+    suspend fun restaurar()
 
-    suspend fun login(login: String, senha: String, manterConectado: Boolean): LoginResult {
-        val colaborador = colaboradorRepository.buscarPorLogin(login)
-            ?: return LoginResult.LoginOuSenhaInvalidos
+    suspend fun login(email: String, senha: String): LoginResult
 
-        val senhaValida = PasswordHasher.verify(senha, colaborador.salt, colaborador.senhaHash)
-        if (!senhaValida) return LoginResult.LoginOuSenhaInvalidos
+    /** [entrarComGoogle] já aceita um convite pendente automaticamente quando não existe
+     * Colaborador pra esse uid mas existe um ConviteColaborador com o e-mail da conta Google. */
+    suspend fun entrarComGoogle(idToken: String): LoginResult
 
-        _colaboradorLogado.value = colaborador
-        if (manterConectado) {
-            SecureStorage.put(KEY_SESSION_COLABORADOR_ID, colaborador.id)
-        }
-        return LoginResult.Sucesso(colaborador)
-    }
+    /** Só usado pelo onboarding (ver OnboardingEngine) — cria a conta Firebase Auth do Gestor
+     * (sempre auto-cadastro, ver nota em FirebaseAuthGateway) e já grava o Colaborador dele. */
+    suspend fun cadastrarGestor(nome: String, email: String, senha: String, empresaId: String): LoginResult
 
-    fun logout() {
-        _colaboradorLogado.value = null
-        SecureStorage.remove(KEY_SESSION_COLABORADOR_ID)
-    }
+    /** Usado por quem recebeu um convite (ver ConviteColaborador) e não tem/não quer usar Google —
+     * cria a conta Firebase Auth com e-mail/senha e, se houver convite pendente pra esse e-mail,
+     * já vira Colaborador de verdade. Sem convite correspondente, a conta criada é apagada de
+     * novo (não faz sentido logar sem empresa) e retorna erro. */
+    suspend fun criarContaEAceitarConvite(nome: String, email: String, senha: String): LoginResult
+
+    suspend fun logout()
 }

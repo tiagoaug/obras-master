@@ -2,20 +2,23 @@ package br.com.tiago.obramaster.ui.features.configuracoes
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import br.com.tiago.obramaster.core.auth.EmpresaContexto
 import br.com.tiago.obramaster.core.auth.NivelPermissao
-import br.com.tiago.obramaster.core.auth.PasswordHasher
 import br.com.tiago.obramaster.core.modules.AppModule
 import br.com.tiago.obramaster.core.modules.ModuleAvailability
 import br.com.tiago.obramaster.core.modules.ModuleRegistry
 import br.com.tiago.obramaster.data.repository.ColaboradorRepository
+import br.com.tiago.obramaster.data.repository.ConviteColaboradorRepository
 import br.com.tiago.obramaster.data.repository.PermissaoRepository
 import br.com.tiago.obramaster.domain.Colaborador
+import br.com.tiago.obramaster.domain.ConviteColaborador
 import br.com.tiago.obramaster.domain.Permissao
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -28,6 +31,8 @@ data class ConfiguracoesUiState(
 class ConfiguracoesViewModel(
     private val colaboradorRepository: ColaboradorRepository,
     private val permissaoRepository: PermissaoRepository,
+    private val conviteColaboradorRepository: ConviteColaboradorRepository,
+    private val empresaContexto: EmpresaContexto,
     private val moduleRegistry: ModuleRegistry,
 ) : ViewModel() {
 
@@ -46,19 +51,19 @@ class ConfiguracoesViewModel(
         }
     }
 
+    /** Fase 10 (pivô Firebase) — sem senha: convite por e-mail (ver ConviteColaborador em :core
+     * e a nota em FirebaseAuthGateway sobre por que o Gestor não pode criar a conta diretamente). */
     @OptIn(ExperimentalUuidApi::class)
-    fun criarColaborador(nome: String, login: String, senha: String) {
+    fun convidarColaborador(nome: String, email: String) {
         viewModelScope.launch {
-            val hashed = PasswordHasher.hash(senha)
-            colaboradorRepository.salvar(
-                Colaborador(
+            conviteColaboradorRepository.criar(
+                ConviteColaborador(
                     id = Uuid.random().toString(),
+                    empresaId = empresaContexto.exigir(),
+                    email = email,
                     nome = nome,
-                    login = login,
-                    senhaHash = hashed.hashBase64,
-                    salt = hashed.saltBase64,
-                    ativo = true,
                     ehGestor = false,
+                    criadoEm = Clock.System.now().toEpochMilliseconds(),
                 ),
             )
         }

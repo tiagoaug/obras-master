@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import br.com.tiago.obramaster.App
 import br.com.tiago.obramaster.platform.ContactsPermissionBridge
 import br.com.tiago.obramaster.platform.FilePickerBridge
+import br.com.tiago.obramaster.platform.GoogleSignInBridge
 import br.com.tiago.obramaster.platform.ImagePickerBridge
 
 class MainActivity : ComponentActivity() {
@@ -15,6 +16,7 @@ class MainActivity : ComponentActivity() {
         ContactsPermissionBridge.registrar(this)
         ImagePickerBridge.registrar(this)
         FilePickerBridge.registrar(this)
+        GoogleSignInBridge.registrar(this)
 
         setContent {
             App()

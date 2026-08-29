@@ -1,10 +1,15 @@
 package br.com.tiago.obramaster.domain
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 enum class TipoLancamento { RECEITA, DESPESA }
 
 /** SPEC_OBRA_MASTER_ADENDO_FINANCEIRO.md §2 — Contábil entra no DRE oficial, Não Contábil só no controle gerencial. */
+@Serializable
 enum class NaturezaLancamento { CONTABIL, NAO_CONTABIL }
 
+@Serializable
 data class LancamentoFinanceiro(
     val id: String,
     val tipo: TipoLancamento,

@@ -2,18 +2,19 @@ package br.com.tiago.obramaster.ui.features.login
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,11 +30,14 @@ import androidx.compose.ui.unit.dp
 fun LoginForm(
     erro: String?,
     autenticando: Boolean,
-    onEntrar: (login: String, senha: String, manterConectado: Boolean) -> Unit,
+    onEntrar: (email: String, senha: String) -> Unit,
+    onEntrarComGoogle: () -> Unit,
+    onCriarContaComConvite: (nome: String, email: String, senha: String) -> Unit,
 ) {
-    var login by remember { mutableStateOf("") }
+    var modoCriarConta by remember { mutableStateOf(false) }
+    var nome by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
     var senha by remember { mutableStateOf("") }
-    var manterConectado by remember { mutableStateOf(true) }
 
     Column(
         modifier = Modifier.fillMaxSize().padding(24.dp),
@@ -46,10 +50,19 @@ fun LoginForm(
             modifier = Modifier.widthIn(max = 420.dp).padding(top = 24.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            if (modoCriarConta) {
+                Text(
+                    "Recebeu um convite de alguém da equipe? Preencha com o mesmo e-mail do convite.",
+                    style = MaterialTheme.typography.bodySmall,
+                )
+                OutlinedTextField(nome, { nome = it }, label = { Text("Nome") }, modifier = Modifier.fillMaxWidth())
+            }
+
             OutlinedTextField(
-                value = login,
-                onValueChange = { login = it },
-                label = { Text("Login") },
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("E-mail") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 modifier = Modifier.fillMaxWidth(),
             )
             OutlinedTextField(
@@ -65,21 +78,36 @@ fun LoginForm(
                 Text(erro, color = MaterialTheme.colorScheme.error)
             }
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Checkbox(checked = manterConectado, onCheckedChange = { manterConectado = it })
-                Text("Manter conectado")
+            if (modoCriarConta) {
+                Button(
+                    onClick = { onCriarContaComConvite(nome, email, senha) },
+                    enabled = nome.isNotBlank() && email.isNotBlank() && senha.isNotBlank() && !autenticando,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    if (autenticando) CircularProgressIndicator(modifier = Modifier.padding(2.dp)) else Text("Aceitar convite e entrar")
+                }
+            } else {
+                Button(
+                    onClick = { onEntrar(email, senha) },
+                    enabled = email.isNotBlank() && senha.isNotBlank() && !autenticando,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    if (autenticando) CircularProgressIndicator(modifier = Modifier.padding(2.dp)) else Text("Entrar")
+                }
             }
 
-            Button(
-                onClick = { onEntrar(login, senha, manterConectado) },
-                enabled = login.isNotBlank() && senha.isNotBlank() && !autenticando,
+            HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
+
+            OutlinedButton(
+                onClick = onEntrarComGoogle,
+                enabled = !autenticando,
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                if (autenticando) {
-                    CircularProgressIndicator(modifier = Modifier.padding(2.dp))
-                } else {
-                    Text("Entrar")
-                }
+                Text("Entrar com Google")
+            }
+
+            TextButton(onClick = { modoCriarConta = !modoCriarConta }, modifier = Modifier.fillMaxWidth()) {
+                Text(if (modoCriarConta) "Já tenho conta" else "Recebi um convite, criar minha conta")
             }
         }
     }

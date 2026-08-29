@@ -1,5 +1,8 @@
 package br.com.tiago.obramaster.domain
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 enum class StatusPagamento { PENDENTE, PAGO }
 
 /**
@@ -7,6 +10,7 @@ enum class StatusPagamento { PENDENTE, PAGO }
  * dá pra rastrear qual despesa no Financeiro esse pagamento gerou. Mesma lógica já aplicada em
  * RegistroTrabalho.pagamentoId: completude técnica necessária, não uma regra de negócio nova.
  */
+@Serializable
 data class Pagamento(
     val id: String,
     val pessoaId: String,

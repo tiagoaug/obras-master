@@ -63,20 +63,10 @@ class InMemoryColaboradorRepository : ColaboradorRepository {
     override suspend fun listarAtivos(): List<Colaborador> = state.value.filter { it.ativo }
     override suspend fun buscarPorId(id: String): Colaborador? = state.value.firstOrNull { it.id == id }
     override suspend fun buscarPorLogin(login: String): Colaborador? =
-        state.value.firstOrNull { it.login == login && it.ativo }
-
-    override suspend fun existeAlgumColaborador(): Boolean = state.value.any { it.ativo }
-
-    override suspend fun salvar(colaborador: Colaborador) {
-        state.value = state.value + colaborador
-    }
+        state.value.firstOrNull { it.email == login && it.ativo }
 
     override suspend fun atualizar(colaborador: Colaborador) {
         state.value = state.value.map { if (it.id == colaborador.id) colaborador else it }
-    }
-
-    override suspend fun atualizarSenha(id: String, senhaHash: String, salt: String) {
-        state.value = state.value.map { if (it.id == id) it.copy(senhaHash = senhaHash, salt = salt) else it }
     }
 
     override suspend fun desativar(id: String) {
@@ -103,6 +93,20 @@ class InMemoryPermissaoRepository : PermissaoRepository {
     }
 
     override fun observarTodas(): Flow<List<Permissao>> = state
+}
+
+class InMemoryConviteColaboradorRepository : ConviteColaboradorRepository {
+    private val state = MutableStateFlow<List<br.com.tiago.obramaster.domain.ConviteColaborador>>(emptyList())
+
+    override suspend fun criar(convite: br.com.tiago.obramaster.domain.ConviteColaborador) {
+        state.value = state.value + convite
+    }
+
+    override suspend fun listarPendentesDaEmpresa(): List<br.com.tiago.obramaster.domain.ConviteColaborador> = state.value
+    override suspend fun buscarPorEmail(email: String) = state.value.firstOrNull { it.email == email }
+    override suspend fun remover(id: String) {
+        state.value = state.value.filterNot { it.id == id }
+    }
 }
 
 class InMemoryModuleConfigRepository : ModuleConfigRepository {

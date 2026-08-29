@@ -43,6 +43,54 @@
       "palavrasChave": ["projeto", "etapa", "obra", "orçamento", "saldo", "m2", "custo por metro quadrado", "gasto"]
     },
     {
+      "id": "planta-baixa",
+      "modulo": "PROJETOS",
+      "titulo": "Planta Baixa — Editor",
+      "conteudo": "Dentro do projeto, a seção Plantas Baixas deixa desenhar um esboço da obra em vez de digitar a área na mão: retângulo (arrasta e já vira cômodo), polígono livre (toque ponto a ponto, fecha sozinho), porta/janela (toque numa parede), medir distância (dois toques sem criar nada). Cada cômodo mostra nome e área calculada direto no desenho. O botão 'Calcular área a partir da planta' soma a área de todos os cômodos de todas as plantas e preenche a área construída do projeto, só quando confirmado.",
+      "exemploPratico": "Você desenha a Sala (retângulo) e o Quarto 1 (polígono em L) — o app mostra 18m² e 12m². Ao tocar em 'Calcular área a partir da planta', os 30m² substituem o valor da área construída do projeto.",
+      "palavrasChave": ["planta baixa", "editor", "desenhar", "cômodo", "parede", "porta", "janela", "medir", "área", "retângulo", "polígono"]
+    },
+    {
+      "id": "planta-baixa-importar-foto",
+      "modulo": "PROJETOS",
+      "titulo": "Planta Baixa — Importar Foto e Calibrar Escala",
+      "conteudo": "O ícone de imagem no editor de planta abre o painel de imagem de fundo: importar foto (Android/Web; indisponível no iOS), mostrar/ocultar, opacidade ajustável, e calibrar a escala tocando em dois pontos de uma medida conhecida da foto (ex.: uma porta) e informando a distância real em metros. Trocar a foto não recalibra automaticamente.",
+      "exemploPratico": "Você fotografa uma planta impressa, importa, toca nas duas pontas de uma porta de 0,80m e digita '0,8' — a partir daí cada quadrado da grade reflete a escala real da foto.",
+      "palavrasChave": ["planta baixa", "importar foto", "imagem de fundo", "calibrar", "escala", "opacidade"]
+    },
+    {
+      "id": "planta-baixa-importar-dxf",
+      "modulo": "PROJETOS",
+      "titulo": "Planta Baixa — Importar Arquivo DXF",
+      "conteudo": "O botão Importar arquivo no editor de planta lê DXF direto: paredes e cômodos entram prontos. Se o DXF traz a unidade de medida gravada, a escala é calibrada automaticamente; senão, a planta entra e o editor já abre a calibração manual. Nomes de cômodo escritos no DXF viram o nome do cômodo quando reconhecidos. Uma tela de prévia mostra contagem de paredes/cômodos, escala detectada e a lista de camadas (layers) para incluir/excluir antes de confirmar.",
+      "exemploPratico": "O arquiteto manda o DXF com $INSUNITS em metros — você importa, a prévia mostra '18 paredes e 5 cômodos detectados, escala automática', confirma e os cômodos já aparecem com nome e área corretos.",
+      "palavrasChave": ["planta baixa", "importar dxf", "cad", "camadas", "layers", "escala automática"]
+    },
+    {
+      "id": "planta-baixa-importar-svg",
+      "modulo": "PROJETOS",
+      "titulo": "Planta Baixa — Importar Arquivo SVG",
+      "conteudo": "O mesmo botão Importar arquivo também lê SVG (útil para plantas vindas de ferramenta de desenho vetorial): formas básicas viram paredes e cômodos. A escala só é detectada automaticamente se o SVG trouxer viewBox com unidade real; o normal é calibrar manualmente depois. SVG não tem camadas nem convenção de nomear cômodos por texto — cômodos importados entram como 'Cômodo importado' e são renomeados no editor.",
+      "exemploPratico": "Você exporta a planta de um programa de vetor como SVG, importa, confirma sem escala automática, e o editor já entra na ferramenta de calibrar.",
+      "palavrasChave": ["planta baixa", "importar svg", "vetor", "cômodo importado"]
+    },
+    {
+      "id": "planta-baixa-importar-pdf",
+      "modulo": "PROJETOS",
+      "titulo": "Planta Baixa — Importar Arquivo PDF",
+      "conteudo": "O mesmo botão Importar arquivo também aceita PDF: a primeira página é convertida em imagem e entra como imagem de fundo do editor, igual ao fluxo de Importar Foto (visibilidade, opacidade, calibrar). Como não há geometria vetorial pra ler, a escala nunca é detectada automaticamente — calibração é sempre manual. Não existe tela de prévia de contagem de paredes/cômodos nesse caso.",
+      "exemploPratico": "Você só tem a planta em PDF escaneado — importa, a primeira página vira imagem de fundo, e você calibra a escala com dois toques numa medida conhecida.",
+      "palavrasChave": ["planta baixa", "importar pdf", "imagem de fundo", "escaneado"]
+    },
+    {
+      "id": "planta-baixa-exportar",
+      "modulo": "PROJETOS",
+      "titulo": "Planta Baixa — Exportar",
+      "conteudo": "O ícone de compartilhar na barra superior do editor (aparece com pelo menos um cômodo ou parede desenhado) exporta o desenho como JPG ou PDF: cômodos preenchidos com sua cor e nome no centro, paredes desenhadas, tudo encaixado automaticamente na página/imagem de saída. JPG sai como imagem larga (ideal pra WhatsApp/e-mail); PDF sai em página A4 (ideal pra imprimir). Usa o mesmo compartilhamento do sistema dos outros botões de exportar do app; indisponível no iOS por enquanto.",
+      "exemploPratico": "Depois de desenhar a Sala e os Quartos, você toca em compartilhar, escolhe 'Compartilhar como PDF' e manda pro cliente aprovar o layout.",
+      "palavrasChave": ["planta baixa", "exportar", "compartilhar", "jpg", "pdf"]
+    },
+    {
       "id": "financeiro",
       "modulo": "FINANCEIRO",
       "titulo": "Financeiro",
@@ -166,7 +214,7 @@
       "id": "exportacao",
       "modulo": "RELATORIOS",
       "titulo": "Exportação",
-      "conteudo": "O ícone de compartilhar no topo de qualquer tela de lista/cadastro mostra um preview do relatório e exporta como imagem (JPG), entregando pro menu nativo de compartilhamento (ou baixando, no navegador) — respeita o filtro de busca ativo. PDF e Excel (XLSX) chegam em sub-fases futuras.",
+      "conteudo": "O ícone de compartilhar no topo de qualquer tela de lista/cadastro mostra um preview do relatório e exporta como JPG, PDF ou Excel (XLSX), entregando pro menu nativo de compartilhamento (ou baixando, no navegador) — respeita o filtro de busca ativo. PDF pagina automaticamente listas longas. Excel sai como planilha simples com os valores já formatados como na tela.",
       "exemploPratico": null,
       "palavrasChave": ["exportar", "pdf", "excel", "xlsx", "jpg", "compartilhar", "relatório"]
     },

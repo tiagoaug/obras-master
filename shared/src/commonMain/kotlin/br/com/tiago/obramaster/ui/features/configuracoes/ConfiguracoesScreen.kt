@@ -122,7 +122,7 @@ fun ConfiguracoesScreen(
         Destino.Colaboradores -> ColaboradoresScreen(
             uiState = uiState,
             onVoltar = { destino = Destino.Inicio },
-            onCriarColaborador = viewModel::criarColaborador,
+            onConvidarColaborador = viewModel::convidarColaborador,
             onDefinirPermissao = viewModel::definirPermissao,
             onDesativarColaborador = viewModel::desativarColaborador,
         )

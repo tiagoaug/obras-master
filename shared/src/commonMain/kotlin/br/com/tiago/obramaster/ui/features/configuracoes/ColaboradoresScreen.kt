@@ -43,7 +43,7 @@ import br.com.tiago.obramaster.domain.Permissao
 fun ColaboradoresScreen(
     uiState: ConfiguracoesUiState,
     onVoltar: () -> Unit,
-    onCriarColaborador: (nome: String, login: String, senha: String) -> Unit,
+    onConvidarColaborador: (nome: String, email: String) -> Unit,
     onDefinirPermissao: (colaboradorId: String, modulo: AppModule, nivel: NivelPermissao) -> Unit,
     onDesativarColaborador: (String) -> Unit,
 ) {
@@ -76,7 +76,7 @@ fun ColaboradoresScreen(
                     ListItem(
                         headlineContent = { Text(colaborador.nome) },
                         supportingContent = {
-                            Text(if (colaborador.ehGestor) "Gestor (acesso total)" else colaborador.login)
+                            Text(if (colaborador.ehGestor) "Gestor (acesso total)" else colaborador.email)
                         },
                         trailingContent = if (!colaborador.ehGestor) {
                             {
@@ -94,8 +94,8 @@ fun ColaboradoresScreen(
     if (mostrarFormNovo) {
         NovoColaboradorSheet(
             onDismiss = { mostrarFormNovo = false },
-            onCriar = { nome, login, senha ->
-                onCriarColaborador(nome, login, senha)
+            onConvidar = { nome, email ->
+                onConvidarColaborador(nome, email)
                 mostrarFormNovo = false
             },
         )
@@ -115,26 +115,28 @@ fun ColaboradoresScreen(
 @Composable
 private fun NovoColaboradorSheet(
     onDismiss: () -> Unit,
-    onCriar: (nome: String, login: String, senha: String) -> Unit,
+    onConvidar: (nome: String, email: String) -> Unit,
 ) {
     var nome by remember { mutableStateOf("") }
-    var login by remember { mutableStateOf("") }
-    var senha by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
 
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = rememberModalBottomSheetState()) {
         Column(
             Modifier.fillMaxWidth().padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Text("Novo colaborador", style = MaterialTheme.typography.titleMedium)
+            Text("Convidar colaborador", style = MaterialTheme.typography.titleMedium)
+            Text(
+                "A pessoa recebe acesso ao entrar com o próprio Google ou definir a própria senha — nenhuma senha passa por aqui.",
+                style = MaterialTheme.typography.bodySmall,
+            )
             OutlinedTextField(nome, { nome = it }, label = { Text("Nome") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(login, { login = it }, label = { Text("Login") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(senha, { senha = it }, label = { Text("Senha") }, modifier = Modifier.fillMaxWidth())
+            OutlinedTextField(email, { email = it }, label = { Text("E-mail") }, modifier = Modifier.fillMaxWidth())
             androidx.compose.material3.Button(
-                onClick = { onCriar(nome, login, senha) },
-                enabled = nome.isNotBlank() && login.isNotBlank() && senha.isNotBlank(),
+                onClick = { onConvidar(nome, email) },
+                enabled = nome.isNotBlank() && email.isNotBlank(),
                 modifier = Modifier.fillMaxWidth(),
-            ) { Text("Salvar") }
+            ) { Text("Enviar convite") }
         }
     }
 }

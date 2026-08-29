@@ -57,7 +57,7 @@ class OnboardingEngineTest {
     fun podeConcluir_verdadeiroComOMinimoPreenchidoEOptativosPulados() {
         val estado = OnboardingState(
             empresa = DadosEmpresaDraft(nome = "Construtora Silva"),
-            gestor = GestorDraft(nome = "Tiago", login = "tiago", senha = "123456"),
+            gestor = GestorDraft(nome = "Tiago", email = "tiago@obramaster.app", senha = "123456"),
             modulosAtivos = setOf(br.com.tiago.obramaster.core.modules.AppModule.FINANCEIRO),
             contas = listOf(ContaDraft(nome = "Caixa", tipo = TipoConta.CAIXA, saldoInicialCentavos = 0)),
         )

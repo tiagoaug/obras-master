@@ -89,7 +89,7 @@ fun GestorStep(draft: GestorDraft, onChange: (GestorDraft) -> Unit) {
         Text("Conta do Gestor", style = MaterialTheme.typography.titleLarge)
         DicaContextual("O Gestor tem acesso total ao sistema — esse cadastro não pode ser excluído depois.")
         Campo("Nome *", draft.nome) { onChange(draft.copy(nome = it)) }
-        Campo("Login *", draft.login) { onChange(draft.copy(login = it)) }
+        Campo("E-mail *", draft.email) { onChange(draft.copy(email = it)) }
         CampoSenha("Senha *", draft.senha) { onChange(draft.copy(senha = it)) }
         CampoSenha("Confirmar senha *", confirmarSenha) { confirmarSenha = it }
         if (confirmarSenha.isNotBlank() && confirmarSenha != draft.senha) {
@@ -213,17 +213,16 @@ fun ColaboradoresStep(
     onRemover: (Int) -> Unit,
 ) {
     var nome by remember { mutableStateOf("") }
-    var login by remember { mutableStateOf("") }
-    var senha by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
 
     Column {
         Text("Colaboradores", style = MaterialTheme.typography.titleLarge)
-        DicaContextual("Opcional — pode pular e cadastrar depois em Configurações, com permissão módulo a módulo (aqui entram sem nenhuma permissão, ajustável depois).")
+        DicaContextual("Opcional — pode pular e convidar depois em Configurações, com permissão módulo a módulo (aqui entram sem nenhuma permissão, ajustável depois). O colaborador entra com o próprio Google ou define a própria senha ao aceitar o convite.")
 
         colaboradores.forEachIndexed { indice, colaborador ->
             ListItem(
                 headlineContent = { Text(colaborador.nome) },
-                supportingContent = { Text(colaborador.login) },
+                supportingContent = { Text(colaborador.email) },
                 trailingContent = {
                     IconButton(onClick = { onRemover(indice) }) {
                         Icon(Icons.Filled.Delete, contentDescription = "Remover")
@@ -233,18 +232,17 @@ fun ColaboradoresStep(
         }
 
         Campo("Nome", nome) { nome = it }
-        Campo("Login", login) { login = it }
-        CampoSenha("Senha", senha) { senha = it }
+        Campo("E-mail", email) { email = it }
         Button(
             onClick = {
-                if (nome.isNotBlank() && login.isNotBlank() && senha.isNotBlank()) {
-                    onAdicionar(ColaboradorDraft(nome, login, senha))
-                    nome = ""; login = ""; senha = ""
+                if (nome.isNotBlank() && email.isNotBlank()) {
+                    onAdicionar(ColaboradorDraft(nome, email))
+                    nome = ""; email = ""
                 }
             },
-            enabled = nome.isNotBlank() && login.isNotBlank() && senha.isNotBlank(),
+            enabled = nome.isNotBlank() && email.isNotBlank(),
             modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-        ) { Text("Adicionar colaborador") }
+        ) { Text("Convidar colaborador") }
     }
 }
 
@@ -320,7 +318,7 @@ fun ResumoStep(
         DicaContextual("Nada foi gravado ainda — revise e confirme para criar tudo de uma vez.")
 
         BlocoResumo("Empresa", estado.empresa.nome.ifBlank { "—" }) { onEditar(OnboardingStep.EMPRESA) }
-        BlocoResumo("Gestor", "${estado.gestor.nome} (${estado.gestor.login})") { onEditar(OnboardingStep.GESTOR) }
+        BlocoResumo("Gestor", "${estado.gestor.nome} (${estado.gestor.email})") { onEditar(OnboardingStep.GESTOR) }
         BlocoResumo("Módulos", "${estado.modulosAtivos.size} ativos") { onEditar(OnboardingStep.MODULOS) }
         BlocoResumo("Contas", "${estado.contas.size} cadastrada(s)") { onEditar(OnboardingStep.CONTAS_FINANCEIRAS) }
         BlocoResumo("Categorias", if (estado.usarCategoriasDefault) "Padrão do sistema" else "—") { onEditar(OnboardingStep.CATEGORIAS) }

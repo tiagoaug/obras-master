@@ -1,0 +1,71 @@
+package br.com.tiago.obramaster.data.repository
+
+import br.com.tiago.obramaster.core.auth.EmpresaContexto
+import br.com.tiago.obramaster.domain.Colaborador
+import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.firestore.firestore
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.serialization.Serializable
+
+/** Fase 10 (pivô Firebase) — coleção de nível raiz `colaboradores/{uid}` (não aninhada em
+ * `empresas/{empresaId}/...` como os recursos de negócio) porque o primeiro passo depois do login
+ * é justamente descobrir a qual empresa aquele uid pertence — um documento raiz por uid resolve
+ * isso com uma leitura só, sem query. `criar`/`buscarComEmpresaId` (chamados pelo SessionManager
+ * antes do EmpresaContexto existir) não fazem parte da interface comum ColaboradorRepository. */
+@Serializable
+private data class ColaboradorDoc(
+    val empresaId: String = "",
+    val nome: String = "",
+    val email: String = "",
+    val ativo: Boolean = true,
+    val ehGestor: Boolean = false,
+)
+
+class FirestoreColaboradorRepository(
+    private val empresaContexto: EmpresaContexto,
+) : ColaboradorRepository {
+
+    private fun colecao() = Firebase.firestore.collection("colaboradores")
+
+    private fun ColaboradorDoc.toDomain(id: String) = Colaborador(id = id, nome = nome, email = email, ativo = ativo, ehGestor = ehGestor)
+    private fun Colaborador.toDoc(empresaId: String) = ColaboradorDoc(empresaId = empresaId, nome = nome, email = email, ativo = ativo, ehGestor = ehGestor)
+
+    suspend fun buscarComEmpresaId(uid: String): Pair<Colaborador, String>? {
+        val doc = colecao().document(uid).get()
+        if (!doc.exists) return null
+        val dados = doc.data(ColaboradorDoc.serializer())
+        return dados.toDomain(uid) to dados.empresaId
+    }
+
+    suspend fun criar(uid: String, empresaId: String, colaborador: Colaborador) {
+        colecao().document(uid).set(ColaboradorDoc.serializer(), colaborador.toDoc(empresaId))
+    }
+
+    override suspend fun listarAtivos(): List<Colaborador> =
+        colecao().where { "empresaId" equalTo empresaContexto.exigir() }.get().documents
+            .map { it.data(ColaboradorDoc.serializer()).toDomain(it.id) }
+            .filter { it.ativo }
+
+    override suspend fun buscarPorId(id: String): Colaborador? {
+        val doc = colecao().document(id).get()
+        return if (doc.exists) doc.data(ColaboradorDoc.serializer()).toDomain(id) else null
+    }
+
+    override suspend fun buscarPorLogin(login: String): Colaborador? {
+        val encontrados = colecao().where { "email" equalTo login }.get().documents
+        return encontrados.firstOrNull()?.let { it.data(ColaboradorDoc.serializer()).toDomain(it.id) }
+    }
+
+    override suspend fun atualizar(colaborador: Colaborador) {
+        colecao().document(colaborador.id).update("nome" to colaborador.nome, "ehGestor" to colaborador.ehGestor)
+    }
+
+    override suspend fun desativar(id: String) {
+        colecao().document(id).update("ativo" to false)
+    }
+
+    override fun observarAtivos(): Flow<List<Colaborador>> =
+        colecao().where { "empresaId" equalTo empresaContexto.exigir() }.snapshots
+            .map { snapshot -> snapshot.documents.map { it.data(ColaboradorDoc.serializer()).toDomain(it.id) }.filter { it.ativo } }
+}

@@ -5,7 +5,9 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.CanvasDrawScope
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import br.com.tiago.obramaster.domain.ExportableDocument
@@ -94,6 +96,49 @@ object ReportCanvasRenderer {
             doc.rodape?.let { rodape ->
                 y += 12f
                 desenharTexto(rodape, MARGEM, y + TAMANHO_FONTE_RODAPE, TAMANHO_FONTE_RODAPE, Color(COR_TEXTO_SECUNDARIO))
+            }
+        }
+
+        return bitmap
+    }
+
+    /** SPEC_PLANTA_BAIXA.md §6 (Fase 9.5) — desenha a geometria já transformada pelo
+     * PlantaBaixaExportModel (cômodos preenchidos + contorno, paredes como linhas grossas,
+     * rótulo do nome de cada cômodo no centro do polígono). */
+    fun renderizarPlantaBaixa(
+        titulo: String,
+        desenho: PlantaBaixaExportModel.PlantaBaixaDesenho,
+        largura: Float = LARGURA_PADRAO,
+        altura: Float = LARGURA_PADRAO * 0.75f,
+    ): ImageBitmap {
+        val bitmap = ImageBitmap(largura.toInt(), altura.toInt())
+        val canvas = Canvas(bitmap)
+        val drawScope = CanvasDrawScope()
+
+        drawScope.draw(Density(1f), LayoutDirection.Ltr, canvas, Size(largura, altura)) {
+            drawRect(Color.White, size = size)
+            desenharTexto(titulo, MARGEM, MARGEM + TAMANHO_FONTE_TITULO * 0.8f, TAMANHO_FONTE_TITULO * 0.8f, Color(COR_TEXTO_PRINCIPAL))
+
+            desenho.comodos.forEach { comodo ->
+                if (comodo.pontos.size < 3) return@forEach
+                val caminho = Path().apply {
+                    moveTo(comodo.pontos.first().x.toFloat(), comodo.pontos.first().y.toFloat())
+                    comodo.pontos.drop(1).forEach { lineTo(it.x.toFloat(), it.y.toFloat()) }
+                    close()
+                }
+                val corBase = runCatching { Color(("FF" + comodo.corHex.removePrefix("#")).toLong(16)) }.getOrDefault(Color(0xFF90A4AE))
+                drawPath(caminho, color = corBase.copy(alpha = 0.4f))
+                drawPath(caminho, color = corBase, style = Stroke(width = 2f))
+                desenharTexto(comodo.rotulo, comodo.centro.x.toFloat(), comodo.centro.y.toFloat(), TAMANHO_FONTE_CORPO, Color(COR_TEXTO_PRINCIPAL))
+            }
+
+            desenho.paredes.forEach { parede ->
+                drawLine(
+                    Color(COR_TEXTO_PRINCIPAL),
+                    Offset(parede.inicio.x.toFloat(), parede.inicio.y.toFloat()),
+                    Offset(parede.fim.x.toFloat(), parede.fim.y.toFloat()),
+                    strokeWidth = parede.espessuraSaida.toFloat().coerceAtLeast(2f),
+                )
             }
         }
 

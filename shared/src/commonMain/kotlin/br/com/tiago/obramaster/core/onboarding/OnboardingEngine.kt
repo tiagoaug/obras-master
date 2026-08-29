@@ -1,15 +1,14 @@
 package br.com.tiago.obramaster.core.onboarding
 
-import br.com.tiago.obramaster.core.auth.PasswordHasher
+import br.com.tiago.obramaster.core.auth.SessionManager
 import br.com.tiago.obramaster.core.modules.AppModule
 import br.com.tiago.obramaster.core.prefs.AccessibilityPrefsStore
-import br.com.tiago.obramaster.data.repository.ColaboradorRepository
 import br.com.tiago.obramaster.data.repository.ContaRepository
+import br.com.tiago.obramaster.data.repository.ConviteColaboradorRepository
 import br.com.tiago.obramaster.data.repository.EmpresaRepository
 import br.com.tiago.obramaster.data.repository.ModuleConfigRepository
-import br.com.tiago.obramaster.data.repository.PermissaoRepository
-import br.com.tiago.obramaster.domain.Colaborador
 import br.com.tiago.obramaster.domain.Conta
+import br.com.tiago.obramaster.domain.ConviteColaborador
 import br.com.tiago.obramaster.domain.DadosEmpresa
 import kotlinx.datetime.Clock
 import kotlin.uuid.ExperimentalUuidApi
@@ -29,10 +28,10 @@ object OnboardingEngine {
             else ValidationResult.Invalido("Informe o nome da empresa")
 
         OnboardingStep.GESTOR ->
-            if (state.gestor.nome.isNotBlank() && state.gestor.login.isNotBlank() && state.gestor.senha.isNotBlank()) {
+            if (state.gestor.nome.isNotBlank() && state.gestor.email.isNotBlank() && state.gestor.senha.isNotBlank()) {
                 ValidationResult.Valido
             } else {
-                ValidationResult.Invalido("Preencha nome, login e senha do Gestor")
+                ValidationResult.Invalido("Preencha nome, e-mail e senha do Gestor")
             }
 
         OnboardingStep.MODULOS ->
@@ -70,27 +69,45 @@ object OnboardingEngine {
 
     /**
      * Grava tudo. Não é uma transação SQL única (os repositórios já abstraem SQLDelight vs.
-     * em-memória na Web) — para não deixar o app "meio configurado" se cair no meio, o Gestor
-     * é salvo por último: existeAlgumColaborador() só vira true quando TUDO deu certo, então uma
-     * interrupção no meio faz o app voltar a mostrar o onboarding em vez de ir pro Login com
-     * dados incompletos.
+     * Firestore vs. em-memória na Web) — `OnboardingConcluidoStore.marcarConcluido()` só é chamado
+     * quando TUDO deu certo, então uma interrupção no meio faz o app voltar a mostrar o onboarding.
+     *
+     * Fase 10 (pivô Firebase) — o Gestor é criado **primeiro** agora (não por último como antes):
+     * os repositórios Firestore de negócio (empresa, contas, convites, módulos) escrevem em
+     * `empresas/{empresaId}/...`, e isso só é possível depois que o `EmpresaContexto` sabe qual é
+     * a empresa — o que só acontece dentro de `cadastrarGestor`, junto com a conta do Firebase Auth
+     * (ver SessionManager/FirebaseSessionManager). Sem isso, as escritas seguintes falhariam.
+     *
+     * Colaboradores pré-adicionados no wizard não ganham conta na hora (o Firebase Auth do lado do
+     * cliente não permite criar a conta de outra pessoa sem deslogar quem está criando, ver
+     * FirebaseAuthGateway): viram ConviteColaborador pendente, com as permissões escolhidas já
+     * guardadas no próprio convite — aplicadas de verdade quando a pessoa aceita (aceitarConvite,
+     * ainda não implementado nesta fase).
      */
     @OptIn(ExperimentalUuidApi::class)
     suspend fun commitar(
         state: OnboardingState,
         empresaRepository: EmpresaRepository,
-        colaboradorRepository: ColaboradorRepository,
-        permissaoRepository: PermissaoRepository,
+        conviteColaboradorRepository: ConviteColaboradorRepository,
+        sessionManager: SessionManager,
         moduleConfigRepository: ModuleConfigRepository,
         contaRepository: ContaRepository,
         accessibilityPrefsStore: AccessibilityPrefsStore,
         draftStore: OnboardingDraftStore,
+        onboardingConcluidoStore: OnboardingConcluidoStore,
     ) {
         check(podeConcluir(state)) { "Onboarding incompleto: faltam etapas obrigatórias" }
 
+        val empresaId = Uuid.random().toString()
+
+        val resultado = sessionManager.cadastrarGestor(state.gestor.nome, state.gestor.email, state.gestor.senha, empresaId)
+        check(resultado is SessionManager.LoginResult.Sucesso) {
+            "Falha ao criar conta do Gestor: ${(resultado as? SessionManager.LoginResult.Erro)?.mensagem ?: resultado}"
+        }
+
         empresaRepository.salvar(
             DadosEmpresa(
-                id = "empresa",
+                id = empresaId,
                 nome = state.empresa.nome,
                 logoUri = state.empresa.logoUri,
                 cnpj = state.empresa.cnpj,
@@ -119,22 +136,17 @@ object OnboardingEngine {
         }
 
         state.colaboradores.forEach { colaboradorDraft ->
-            val hash = PasswordHasher.hash(colaboradorDraft.senha)
-            val colaboradorId = Uuid.random().toString()
-            colaboradorRepository.salvar(
-                Colaborador(
-                    id = colaboradorId,
+            conviteColaboradorRepository.criar(
+                ConviteColaborador(
+                    id = Uuid.random().toString(),
+                    empresaId = empresaId,
+                    email = colaboradorDraft.email,
                     nome = colaboradorDraft.nome,
-                    login = colaboradorDraft.login,
-                    senhaHash = hash.hashBase64,
-                    salt = hash.saltBase64,
-                    ativo = true,
                     ehGestor = false,
+                    permissoes = colaboradorDraft.permissoes,
+                    criadoEm = agora,
                 ),
             )
-            colaboradorDraft.permissoes.forEach { (moduleId, nivel) ->
-                permissaoRepository.definir(colaboradorId, moduleId, nivel)
-            }
         }
 
         accessibilityPrefsStore.atualizar(state.acessibilidade)
@@ -148,20 +160,7 @@ object OnboardingEngine {
             ),
         )
 
-        // Gestor por último de propósito — ver doc do método.
-        val hashGestor = PasswordHasher.hash(state.gestor.senha)
-        colaboradorRepository.salvar(
-            Colaborador(
-                id = Uuid.random().toString(),
-                nome = state.gestor.nome,
-                login = state.gestor.login,
-                senhaHash = hashGestor.hashBase64,
-                salt = hashGestor.saltBase64,
-                ativo = true,
-                ehGestor = true,
-            ),
-        )
-
+        onboardingConcluidoStore.marcarConcluido()
         draftStore.limparRascunho()
     }
 }

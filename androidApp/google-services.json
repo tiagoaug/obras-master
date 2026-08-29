@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1012935650002",
+    "project_id": "obras-master",
+    "storage_bucket": "obras-master.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1012935650002:android:9329934fb0c849455e9b0b",
+        "android_client_info": {
+          "package_name": "br.com.tiago.obramaster.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1012935650002-bep368h5vcnd3g33jd3defkqnd2bbng8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.com.tiago.obramaster.android",
+            "certificate_hash": "25fcf1dae29d867dc7f67fa7291354451a2ee78b"
+          }
+        },
+        {
+          "client_id": "1012935650002-9pgs5okfn2d88m4n2qiieesg70usggon.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3dZS9PDUnME5B6Dmog70rzass8M2gK5g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1012935650002-9pgs5okfn2d88m4n2qiieesg70usggon.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

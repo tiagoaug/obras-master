@@ -1,11 +1,12 @@
+-- etapaId sem FK: Etapa migrou pro Firestore na Fase 10 (pivô Firebase); Tarefa continua local
+-- por enquanto — fora do escopo desta migração.
 CREATE TABLE Tarefa (
     id TEXT NOT NULL PRIMARY KEY,
     etapaId TEXT NOT NULL,
     descricao TEXT NOT NULL,
     responsavelPessoaId TEXT,
     prazo INTEGER,
-    concluida INTEGER AS kotlin.Boolean NOT NULL DEFAULT 0,
-    FOREIGN KEY (etapaId) REFERENCES Etapa(id)
+    concluida INTEGER AS kotlin.Boolean NOT NULL DEFAULT 0
 );
 
 selectDaEtapa:

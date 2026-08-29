@@ -1,5 +1,8 @@
 package br.com.tiago.obramaster.domain
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Cor(
     val id: String,
     val nome: String,

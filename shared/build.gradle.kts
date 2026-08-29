@@ -42,6 +42,8 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            api(project(":core"))
+
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
@@ -61,10 +63,6 @@ kotlin {
             implementation(libs.multiplatform.settings)
             implementation(libs.multiplatform.settings.coroutines)
 
-            implementation(libs.kotlincrypto.hash.sha2)
-            implementation(libs.kotlincrypto.macs.hmac.sha2)
-            implementation(libs.kotlincrypto.secure.random)
-
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
         }
@@ -73,14 +71,30 @@ kotlin {
             implementation(kotlin("test"))
         }
 
+        val mobileMain by creating {
+            dependsOn(commonMain.get())
+            dependencies {
+                // Fase 10 (pivô Firebase) — dev.gitlive:firebase-* não publica alvo wasmJs, por
+                // isso é um source set intermediário à parte (Android+iOS), não em commonMain.
+                implementation(libs.firebase.auth)
+                implementation(libs.firebase.firestore)
+                implementation(libs.firebase.common)
+            }
+        }
+
+        androidMain.get().dependsOn(mobileMain)
         androidMain.dependencies {
             implementation(libs.sqldelight.android.driver)
             implementation(libs.koin.android)
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.security.crypto)
             implementation(libs.pdfbox.android)
+            implementation(libs.androidx.credentials)
+            implementation(libs.androidx.credentials.play.services.auth)
+            implementation(libs.googleid)
         }
 
+        iosMain.get().dependsOn(mobileMain)
         iosMain.dependencies {
             implementation(libs.sqldelight.native.driver)
         }

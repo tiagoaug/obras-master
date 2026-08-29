@@ -1,3 +1,5 @@
+-- projetoId/etapaId sem FK: Projeto/Etapa migraram pro Firestore na Fase 10 (pivô Firebase),
+-- Diário de Obra continua local por enquanto — fora do escopo desta migração.
 CREATE TABLE DiarioObra (
     id TEXT NOT NULL PRIMARY KEY,
     projetoId TEXT NOT NULL,
@@ -5,9 +7,7 @@ CREATE TABLE DiarioObra (
     data INTEGER NOT NULL,
     texto TEXT NOT NULL,
     clima TEXT,
-    ativo INTEGER AS kotlin.Boolean NOT NULL DEFAULT 1,
-    FOREIGN KEY (projetoId) REFERENCES Projeto(id),
-    FOREIGN KEY (etapaId) REFERENCES Etapa(id)
+    ativo INTEGER AS kotlin.Boolean NOT NULL DEFAULT 1
 );
 
 CREATE TABLE DiarioObraFoto (

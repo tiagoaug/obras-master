@@ -16,7 +16,12 @@ sealed interface LoginUiState {
 
 /**
  * Cuida só do login em si — a criação do Gestor no primeiro uso é responsabilidade do
- * onboarding (ver ui/features/onboarding), que decide se esta tela chega a aparecer.
+ * onboarding (ver ui/features/onboarding), que decide se esta tela chega a aparecer. Sessão
+ * (Firebase Auth) já é persistida automaticamente pelo SDK entre reinícios do app — não existe
+ * mais opção "manter conectado", é sempre assim.
+ *
+ * "Criar conta" aqui é só pra quem recebeu um convite (ver ConviteColaborador) — não confundir
+ * com o cadastro do Gestor, que passa pelo onboarding.
  */
 class LoginViewModel(
     private val sessionManager: SessionManager,
@@ -25,16 +30,33 @@ class LoginViewModel(
     private val _uiState = MutableStateFlow<LoginUiState>(LoginUiState.TelaLogin())
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
 
-    fun login(login: String, senha: String, manterConectado: Boolean) {
+    fun login(email: String, senha: String) {
         viewModelScope.launch {
             _uiState.value = LoginUiState.TelaLogin(autenticando = true)
-            when (val resultado = sessionManager.login(login, senha, manterConectado)) {
-                is SessionManager.LoginResult.Sucesso ->
-                    _uiState.value = LoginUiState.Autenticado(resultado.colaborador)
+            aplicarResultado(sessionManager.login(email, senha))
+        }
+    }
 
-                SessionManager.LoginResult.LoginOuSenhaInvalidos ->
-                    _uiState.value = LoginUiState.TelaLogin(erro = "Login ou senha inválidos")
-            }
+    fun entrarComGoogle(idToken: String) {
+        viewModelScope.launch {
+            _uiState.value = LoginUiState.TelaLogin(autenticando = true)
+            aplicarResultado(sessionManager.entrarComGoogle(idToken))
+        }
+    }
+
+    fun criarContaEAceitarConvite(nome: String, email: String, senha: String) {
+        viewModelScope.launch {
+            _uiState.value = LoginUiState.TelaLogin(autenticando = true)
+            aplicarResultado(sessionManager.criarContaEAceitarConvite(nome, email, senha))
+        }
+    }
+
+    private fun aplicarResultado(resultado: SessionManager.LoginResult) {
+        _uiState.value = when (resultado) {
+            is SessionManager.LoginResult.Sucesso -> LoginUiState.Autenticado(resultado.colaborador)
+            SessionManager.LoginResult.LoginOuSenhaInvalidos -> LoginUiState.TelaLogin(erro = "E-mail ou senha inválidos")
+            SessionManager.LoginResult.ContaSemEmpresaVinculada -> LoginUiState.TelaLogin(erro = "Essa conta não está vinculada a nenhuma empresa")
+            is SessionManager.LoginResult.Erro -> LoginUiState.TelaLogin(erro = resultado.mensagem)
         }
     }
 }

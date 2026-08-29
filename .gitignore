@@ -38,4 +38,9 @@ Thumbs.db
 # Env / segredos
 .env
 *.jks
+
+# Server (banco H2 de desenvolvimento local)
+/data/
+*.mv.db
+*.trace.db
 *.keystore

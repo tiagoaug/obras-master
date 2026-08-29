@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 enum class TipoConta { CAIXA, CONTA_CORRENTE, POUPANCA, CARTAO_CREDITO, INVESTIMENTO }
 
 /** SPEC_OBRA_MASTER_ADENDO_FINANCEIRO.md §4 — saldoInicial em Long (centavos), dataSaldoInicial em epoch millis UTC. */
+@Serializable
 data class Conta(
     val id: String,
     val nome: String,
