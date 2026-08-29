@@ -157,11 +157,37 @@
 
 ## Fase 10 — Backend e Sincronização
 
-- [ ] Backend sobe localmente sem erro (`./gradlew :server:run`)
-- [ ] Login via API retorna token corretamente
-- [ ] Lançar um dado no mobile offline e depois conectar sincroniza sem duplicar
-- [ ] Editar o mesmo registro em dois dispositivos gera detecção de conflito (não sobrescreve silenciosamente um lançamento financeiro)
-- [ ] Chave de API da IA **não aparece** em nenhum lugar do código do app cliente (só no backend, via variável de ambiente)
+> **Pivô de arquitetura**: o backend Ktor (`:server`) foi substituído por Firebase (Auth +
+> Firestore) — ver decisão registrada em memória/histórico da sessão. O módulo `:server` continua
+> no repo, compilando e passando os testes, mas está congelado/não mantido. Os itens abaixo foram
+> reescritos para a arquitetura Firebase; os relacionados a sincronização offline-first com
+> detecção de conflito (do desenho original com `:server`) não se aplicam mais como estavam —
+> Firestore tem cache offline e resolução via `snapshots`/merge próprios do SDK.
+
+- [x] Cadastro do Gestor (onboarding) cria conta real no Firebase Auth e grava
+      `colaboradores/{uid}`, `empresas/{empresaId}`, `contas`, `modulos` no Firestore — testado
+      ao vivo em dispositivo físico, com verificação direta via API do Firestore (não só visual)
+- [x] Login com e-mail/senha funciona, inclusive logout → login novamente na mesma sessão do app
+- [x] Login com Google (Credential Manager) completa o fluxo e trata corretamente conta sem
+      empresa vinculada
+- [x] Convite por e-mail: Gestor cria convite → pessoa convidada cria conta com o mesmo e-mail →
+      vira colaborador real, permissão zerada, convite é apagado — testado ao vivo, ponta a ponta
+- [x] Sessão persiste entre reinícios do app (restaurar() via Firebase Auth)
+- [x] Firestore Security Rules deployadas e aplicando isolamento multi-tenant (rejeitam
+      PERMISSION_DENIED fora da empresa do usuário) — validado indiretamente (rules_version '2',
+      `firebase deploy` bem-sucedido, comportamento de erro observado em cenários reais)
+- [x] Firestore Security Rules testadas com o emulador — 20 testes de unidade em
+      `firestore-tests/rules.test.mjs` (`@firebase/rules-unit-testing`), cobrindo isolamento
+      entre duas empresas distintas, auto-cadastro em `colaboradores/{uid}`, gate de Gestor em
+      `empresas/{id}` e `convites`, soft-delete-only e deny-by-default — 20/20 passando. Precisou
+      instalar Java 21 (Temurin, via winget) só pra rodar o emulador; o build do app continua em
+      Java 17. Ver `firestore-tests/README.md` para rodar de novo.
+- [ ] iOS: fluxo completo de Auth + Firestore testado num dispositivo/simulador real — **não
+      verificado**, sem Mac disponível nesta máquina
+- [ ] Web (wasmJs): comportamento da tela de "Assistente indisponível" / stub de sessão revisado
+      manualmente no navegador (hoje só o `compileKotlinWasmJs` foi validado, não a UI rodando)
+- [ ] Chave de API da IA **não aparece** em nenhum lugar do código do app cliente (só no backend,
+      via variável de ambiente) — segue válido; Assistente de IA ainda não implementado (Fase 11)
 
 ---
 

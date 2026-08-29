@@ -44,3 +44,9 @@ Thumbs.db
 *.mv.db
 *.trace.db
 *.keystore
+
+# Firebase emulator (firestore-tests/)
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+node_modules/
