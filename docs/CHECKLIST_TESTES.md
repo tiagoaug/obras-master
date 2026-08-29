@@ -187,20 +187,49 @@
 - [ ] Web (wasmJs): comportamento da tela de "Assistente indisponível" / stub de sessão revisado
       manualmente no navegador (hoje só o `compileKotlinWasmJs` foi validado, não a UI rodando)
 - [ ] Chave de API da IA **não aparece** em nenhum lugar do código do app cliente (só no backend,
-      via variável de ambiente) — segue válido; Assistente de IA ainda não implementado (Fase 11)
+      via variável de ambiente) — segue válido; a prosa gerada por IA (Fase C da spec) ainda não
+      existe pós-pivô Firebase, ver nota na Fase 11 abaixo
 
 ---
 
 ## Fase 11 — Configurações, Acessibilidade, Assistente de IA
 
-- [ ] Mudar tema (claro/escuro/alto contraste) aplica no app inteiro imediatamente
-- [ ] Aumentar o tamanho da fonte aplica em todas as telas, não só na atual
-- [ ] Botão flutuante do Assistente abre em qualquer tela testada
-- [ ] Pergunta feita na tela de um projeto específico traz exemplo com os dados **reais** daquele projeto
-- [ ] Toda resposta do Assistente aponta pelo menos uma seção do manual
-- [ ] Sem internet, o Assistente ainda responde com base na busca local do manual (não trava, não dá erro genérico)
-- [ ] Link "Ver no Manual" abre o manual dentro do app, já na seção certa
-- [ ] Nenhuma chamada do Assistente inclui dado de outro projeto/colaborador fora do que está na tela atual
+> **Escopo entregue**: SPEC_ASSISTENTE_IA.md Fases A+B (indexação do manual + busca local
+> `ManualSearchEngine` + `TelaContexto` propagado centralmente em App.kt + botão flutuante +
+> sheet de resposta + visor do manual no app). A Fase C (endpoint `/assistant/ask` + prosa gerada
+> por IA + exemplo numérico dinâmico) dependia do backend Ktor, que foi congelado no pivô pro
+> Firebase — decisão de arquitetura pendente (Cloud Function? outro backend?) antes de implementar.
+> Sem isso, o Assistente funciona só no modo "degradação graciosa" que a spec já previa para
+> offline: mostra as seções do manual encontradas pela busca local, sem prosa de IA.
+
+- [x] Mudar tema (claro/escuro/alto contraste) aplica no app inteiro imediatamente — já estava
+      implementado (`AccessibilityPrefsStore` + `ObraMasterTheme(prefs)` em App.kt), confirmado
+      por leitura de código, não re-testado ao vivo nesta sessão
+- [x] Aumentar o tamanho da fonte aplica em todas as telas — mesmo mecanismo acima
+      (`LocalDensity.fontScale`), aplicado uma vez no topo da árvore de composição
+- [x] Botão flutuante do Assistente abre em qualquer tela testada — testado ao vivo em
+      dispositivo físico na tela de Login (tela pré-autenticação); `TelaContexto` é recalculado
+      centralmente a cada troca de `TelaRaiz` em App.kt, então cobre as ~19 telas sem precisar
+      tocar em cada uma
+- [ ] Pergunta feita na tela de um projeto específico traz exemplo com os dados **reais** daquele
+      projeto — `ProjetoDetalheViewModel` já popula `EntidadeResumo` (nome, orçamento, status,
+      etapa atual) no `TelaContextoHolder`, mas isso só afeta o *peso da busca local* (seções do
+      módulo Projetos ganham prioridade) e o chip de contexto; a spec pede um **exemplo numérico
+      calculado** com esses dados, o que é trabalho da IA (Fase C, não implementada) — não
+      testado ao vivo nesta tela específica
+- [x] Toda resposta do Assistente aponta pelo menos uma seção do manual — é a única coisa que a
+      busca local retorna (`ManualSearchEngine.buscar`); testado ao vivo (busca por
+      "transferenci" achou corretamente a seção "Transferência entre contas")
+- [x] Sem internet, o Assistente ainda responde com base na busca local do manual (não trava, não
+      dá erro genérico) — é o único modo que existe hoje (nunca faz chamada de rede), então isso
+      vale sempre, com ou sem internet
+- [x] Link "Ver no Manual" abre o manual dentro do app, já na seção certa — testado ao vivo:
+      resultado da busca → "📖 Ver no Manual" → `AjudaScreen` abre com a seção certa expandida e
+      já rolada até ela
+- [x] Nenhuma chamada do Assistente inclui dado de outro projeto/colaborador fora do que está na
+      tela atual — não há chamada de rede nenhuma hoje (só busca local em memória), então a
+      superfície de risco que a regra descreve não existe ainda; revisar quando a Fase C
+      (chamada real a um backend) for implementada
 
 ---
 

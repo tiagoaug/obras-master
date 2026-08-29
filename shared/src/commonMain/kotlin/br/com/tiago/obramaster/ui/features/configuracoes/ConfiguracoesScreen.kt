@@ -9,6 +9,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessibilityNew
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Help
 import androidx.compose.material.icons.filled.Calculate
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material3.Card
@@ -43,6 +44,7 @@ private sealed interface Destino {
 fun ConfiguracoesScreen(
     colaboradorLogado: Colaborador,
     onVoltar: () -> Unit,
+    onAbrirAjuda: () -> Unit,
     viewModel: ConfiguracoesViewModel = koinInject(),
 ) {
     var destino by remember { mutableStateOf<Destino>(Destino.Inicio) }
@@ -111,6 +113,16 @@ fun ConfiguracoesScreen(
                     ListItem(
                         headlineContent = { Text("Acessibilidade (Tema / Fonte)") },
                         leadingContent = { Icon(Icons.Filled.AccessibilityNew, contentDescription = null) },
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+                Card(
+                    onClick = onAbrirAjuda,
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp),
+                ) {
+                    ListItem(
+                        headlineContent = { Text("Ajuda (Manual do Programa)") },
+                        leadingContent = { Icon(Icons.AutoMirrored.Filled.Help, contentDescription = null) },
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }

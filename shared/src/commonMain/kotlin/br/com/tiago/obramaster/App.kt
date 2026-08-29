@@ -2,9 +2,11 @@ package br.com.tiago.obramaster
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -12,12 +14,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import br.com.tiago.obramaster.core.assistant.TelaContexto
+import br.com.tiago.obramaster.core.assistant.TelaContextoHolder
 import br.com.tiago.obramaster.core.modules.AppModule
 import br.com.tiago.obramaster.core.prefs.AccessibilityPrefsStore
 import br.com.tiago.obramaster.domain.Colaborador
 import br.com.tiago.obramaster.ui.AppRootUiState
 import br.com.tiago.obramaster.ui.AppRootViewModel
 import br.com.tiago.obramaster.ui.features.areaexecutor.AreaExecutorHomeScreen
+import br.com.tiago.obramaster.ui.features.assistente.AjudaScreen
+import br.com.tiago.obramaster.ui.features.assistente.AssistenteFab
+import br.com.tiago.obramaster.ui.features.assistente.AssistenteSheet
 import br.com.tiago.obramaster.ui.features.cadastros.CadastrosBasicosScreen
 import br.com.tiago.obramaster.ui.features.calculadoras.CalculadorasModuloScreen
 import br.com.tiago.obramaster.ui.features.compras.ComprasModuloScreen
@@ -61,6 +69,33 @@ private sealed interface TelaRaiz {
     data class Calculadoras(val colaborador: Colaborador) : TelaRaiz
     data class AreaExecutor(val colaborador: Colaborador) : TelaRaiz
     data class Metas(val colaborador: Colaborador) : TelaRaiz
+    data class Ajuda(val secaoInicialId: String?, val origem: TelaRaiz) : TelaRaiz
+}
+
+/** SPEC_ASSISTENTE_IA.md §3 — módulo/telaId de cada tela, pro Assistente saber "onde o usuário
+ * está" sem precisar que cada Screen individual reporte isso (entidadeAberta, quando existe, é
+ * complementado pela própria tela via TelaContextoHolder.atualizarEntidade — ver ProjetoDetalhe). */
+private fun TelaRaiz.paraContexto(): TelaContexto = when (this) {
+    TelaRaiz.Onboarding -> TelaContexto(null, "onboarding")
+    TelaRaiz.Login -> TelaContexto(null, "login")
+    is TelaRaiz.Home -> TelaContexto(null, "home")
+    is TelaRaiz.Configuracoes -> TelaContexto(null, "configuracoes")
+    is TelaRaiz.Pessoas -> TelaContexto(AppModule.PESSOAS, "pessoas")
+    is TelaRaiz.CadastrosBasicos -> TelaContexto(AppModule.CADASTROS_BASE, "cadastros_basicos")
+    is TelaRaiz.Projetos -> TelaContexto(AppModule.PROJETOS, "projetos")
+    is TelaRaiz.ProjetoDetalhe -> TelaContexto(AppModule.PROJETOS, "projeto_detalhe")
+    is TelaRaiz.EditorPlanta -> TelaContexto(AppModule.PROJETOS, "planta_baixa")
+    is TelaRaiz.Cronograma -> TelaContexto(AppModule.PLANEJAMENTO, "cronograma")
+    is TelaRaiz.DiarioObra -> TelaContexto(AppModule.EXECUCAO, "diario_obra")
+    is TelaRaiz.Financeiro -> TelaContexto(AppModule.FINANCEIRO, "financeiro")
+    is TelaRaiz.Equipes -> TelaContexto(AppModule.EQUIPES, "equipes")
+    is TelaRaiz.Compras -> TelaContexto(AppModule.COMPRAS, "compras")
+    is TelaRaiz.Orcamentos -> TelaContexto(AppModule.ORCAMENTOS, "orcamentos")
+    is TelaRaiz.Vendas -> TelaContexto(AppModule.VENDAS, "vendas")
+    is TelaRaiz.Calculadoras -> TelaContexto(AppModule.CALCULADORAS, "calculadoras")
+    is TelaRaiz.AreaExecutor -> TelaContexto(AppModule.AREA_EXECUTOR, "area_executor")
+    is TelaRaiz.Metas -> TelaContexto(AppModule.METAS, "metas")
+    is TelaRaiz.Ajuda -> TelaContexto(null, "ajuda")
 }
 
 @Composable
@@ -81,6 +116,13 @@ fun App() {
                 is AppRootUiState.Autenticado -> TelaRaiz.Home(estado.colaborador)
             }
 
+            val telaContextoHolder: TelaContextoHolder = koinInject()
+            LaunchedEffect(telaAtual) {
+                telaAtual?.let { telaContextoHolder.definir(it.paraContexto()) }
+            }
+            var mostrarAssistente by remember { mutableStateOf(false) }
+
+            Box(Modifier.fillMaxSize()) {
             when (telaAtual) {
                 null -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
@@ -126,6 +168,7 @@ fun App() {
                 is TelaRaiz.Configuracoes -> ConfiguracoesScreen(
                     colaboradorLogado = telaAtual.colaborador,
                     onVoltar = { tela = TelaRaiz.Home(telaAtual.colaborador) },
+                    onAbrirAjuda = { tela = TelaRaiz.Ajuda(null, origem = telaAtual) },
                 )
 
                 is TelaRaiz.Pessoas -> PessoasScreen(onVoltar = { tela = TelaRaiz.Home(telaAtual.colaborador) })
@@ -177,6 +220,29 @@ fun App() {
                 is TelaRaiz.AreaExecutor -> AreaExecutorHomeScreen(onVoltar = { tela = TelaRaiz.Home(telaAtual.colaborador) })
 
                 is TelaRaiz.Metas -> MetasScreen(onVoltar = { tela = TelaRaiz.Home(telaAtual.colaborador) })
+
+                is TelaRaiz.Ajuda -> AjudaScreen(
+                    secaoInicialId = telaAtual.secaoInicialId,
+                    onVoltar = { tela = telaAtual.origem },
+                )
+            }
+
+            if (telaAtual != null) {
+                AssistenteFab(
+                    onClick = { mostrarAssistente = true },
+                    modifier = Modifier.align(Alignment.BottomStart).padding(16.dp),
+                )
+            }
+            }
+
+            if (mostrarAssistente) {
+                AssistenteSheet(
+                    onDismiss = { mostrarAssistente = false },
+                    onAbrirManual = { secaoId ->
+                        mostrarAssistente = false
+                        telaAtual?.let { tela = TelaRaiz.Ajuda(secaoId, origem = it) }
+                    },
+                )
             }
         }
     }

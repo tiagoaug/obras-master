@@ -2,6 +2,8 @@ package br.com.tiago.obramaster.ui.features.projetos
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import br.com.tiago.obramaster.core.assistant.EntidadeResumo
+import br.com.tiago.obramaster.core.assistant.TelaContextoHolder
 import br.com.tiago.obramaster.core.plantabaixa.PlantaBaixaEngine
 import br.com.tiago.obramaster.core.projetos.TEMPLATE_ETAPAS_PADRAO
 import br.com.tiago.obramaster.data.repository.ComodoRepository
@@ -35,6 +37,7 @@ class ProjetoDetalheViewModel(
     private val etapaRepository: EtapaRepository,
     private val plantaBaixaRepository: PlantaBaixaRepository,
     private val comodoRepository: ComodoRepository,
+    private val telaContextoHolder: TelaContextoHolder,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProjetoDetalheUiState())
@@ -43,10 +46,12 @@ class ProjetoDetalheViewModel(
     init {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(projeto = projetoRepository.buscarPorId(projetoId))
+            atualizarContextoDoAssistente()
         }
         viewModelScope.launch {
             etapaRepository.observarDoProjeto(projetoId).collect { etapas ->
                 _uiState.value = _uiState.value.copy(etapas = etapas.sortedBy { it.ordem })
+                atualizarContextoDoAssistente()
             }
         }
         viewModelScope.launch {
@@ -54,6 +59,31 @@ class ProjetoDetalheViewModel(
                 _uiState.value = _uiState.value.copy(plantas = plantas)
             }
         }
+    }
+
+    /** SPEC_ASSISTENTE_IA.md §3 — "exemplo prático usa só dados já visíveis na tela atual", nunca
+     * a lista completa de lançamentos/etapas: só os campos-chave agregados. */
+    private fun atualizarContextoDoAssistente() {
+        val projeto = _uiState.value.projeto ?: return
+        val etapaAtual = _uiState.value.etapas.firstOrNull { it.status == StatusEtapa.EM_ANDAMENTO }
+        telaContextoHolder.atualizarEntidade(
+            EntidadeResumo(
+                tipo = "Projeto",
+                id = projeto.id,
+                camposChave = buildMap {
+                    put("nome", projeto.nome)
+                    put("orcamentoTotal", formatarCentavos(projeto.orcamentoTotal))
+                    put("status", projeto.status.name)
+                    etapaAtual?.let { put("etapaAtual", it.nome) }
+                },
+            ),
+        )
+    }
+
+    private fun formatarCentavos(centavos: Long): String {
+        val reais = centavos / 100
+        val cent = (centavos % 100).let { if (it < 0) -it else it }
+        return "R$ $reais,${cent.toString().padStart(2, '0')}"
     }
 
     fun atualizarProjeto(projetoAtualizado: Projeto) {

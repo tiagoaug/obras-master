@@ -1,13 +1,18 @@
 package br.com.tiago.obramaster.core.di
 
+import br.com.tiago.obramaster.core.assistant.TelaContextoHolder
 import br.com.tiago.obramaster.core.modules.ModuleRegistry
 import br.com.tiago.obramaster.core.onboarding.OnboardingConcluidoStore
 import br.com.tiago.obramaster.core.onboarding.OnboardingDraftStore
 import br.com.tiago.obramaster.core.prefs.AccessibilityPrefsStore
+import br.com.tiago.obramaster.data.repository.ManualRepository
 import br.com.tiago.obramaster.data.repository.NormaABNTRepository
+import br.com.tiago.obramaster.data.repository.SeedManualRepository
 import br.com.tiago.obramaster.data.repository.SeedNormaABNTRepository
 import br.com.tiago.obramaster.domain.Colaborador
 import br.com.tiago.obramaster.ui.features.areaexecutor.AreaExecutorViewModel
+import br.com.tiago.obramaster.ui.features.assistente.AjudaViewModel
+import br.com.tiago.obramaster.ui.features.assistente.AssistenteViewModel
 import br.com.tiago.obramaster.ui.features.areaexecutor.BibliotecaManuaisViewModel
 import br.com.tiago.obramaster.ui.features.metas.MetasViewModel
 import br.com.tiago.obramaster.ui.features.compras.FornecedoresViewModel
@@ -60,8 +65,12 @@ val appModule = module {
     single { OnboardingDraftStore(get()) }
     single { OnboardingConcluidoStore(get()) }
     single<NormaABNTRepository> { SeedNormaABNTRepository() }
+    single<ManualRepository> { SeedManualRepository() }
+    single { TelaContextoHolder() }
 
     factory { AppRootViewModel(get(), get(), get()) }
+    factory { AssistenteViewModel(get(), get()) }
+    factory { AjudaViewModel(get()) }
     factory { LoginViewModel(get()) }
     factory { (colaborador: Colaborador) -> HomeViewModel(colaborador, get(), get(), get()) }
     factory { ConfiguracoesViewModel(get(), get(), get(), get(), get()) }
@@ -71,7 +80,7 @@ val appModule = module {
     factory { MateriaisViewModel(get(), get()) }
     factory { UnidadesMedidaViewModel(get()) }
     factory { ProjetosViewModel(get(), get(), get(), get()) }
-    factory { (projetoId: String) -> ProjetoDetalheViewModel(projetoId, get(), get(), get(), get()) }
+    factory { (projetoId: String) -> ProjetoDetalheViewModel(projetoId, get(), get(), get(), get(), get()) }
     factory { (plantaId: String) -> PlantaBaixaViewModel(plantaId, get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     factory { (projetoId: String) -> CronogramaViewModel(projetoId, get(), get(), get()) }
     factory { (projetoId: String) -> DiarioObraViewModel(projetoId, get(), get(), get(), get()) }
