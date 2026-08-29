@@ -27,6 +27,7 @@
 16. Configurações e Permissões
 17. Acessibilidade
 18. Assistente de IA
+19. Área do Executor
 
 ---
 
@@ -291,7 +292,16 @@ A atualização de **progresso (%) por etapa** (slider no detalhe do projeto) j�
 
 ## 11. Metas `#metas`
 
-Cadastre metas financeiras (lucro do mês), de prazo (terminar etapa até uma data) ou de progresso. O app calcula sozinho quanto falta, com base nos dados que já existem nos outros módulos.
+Cadastre metas de três tipos:
+
+- **Financeira**: acompanha o resultado (receitas − despesas) até um valor-alvo — ex.: "lucrar R$ 20.000".
+- **Prazo** e **Progresso**: acompanham a média de progresso das etapas até um percentual-alvo — ex.: "chegar a 80% de execução".
+
+Cada meta tem um **escopo**: Geral (empresa inteira), Projeto (um projeto específico) ou Setor (um Centro de Custo específico — Administrativo, Comercial etc.). Metas de Prazo/Progresso só valem pra Geral ou Projeto, porque Centro de Custo não tem noção de progresso de obra.
+
+O app calcula sozinho quanto falta, com base nos lançamentos financeiros e nas etapas que já existem nos outros módulos — você não precisa atualizar a meta manualmente. Um prazo opcional marca a meta como **atrasada** (em vermelho, na prática) se passar da data sem ter sido concluída. "Concluída" é uma marcação manual sua, no formulário de edição — o app não fecha a meta sozinho mesmo que o número bata, porque só você sabe se aquilo realmente conta como cumprido.
+
+**Exemplo prático:** você cria uma meta financeira de escopo "Projeto" pro Residencial Silva, valor-alvo R$ 15.000 de lucro, prazo pro fim do mês. A lista de Metas mostra "R$ 8.200 / R$ 15.000" — o resultado atual somando só os lançamentos daquele projeto — e, se passar do prazo sem bater a meta, ela aparece marcada como atrasada.
 
 ---
 
@@ -325,20 +335,31 @@ Todos com busca, criar/editar/excluir (exclusão sempre pede confirmação e nã
 
 Todo campo de valor no app tem um ícone de calculadora ao lado — toque nele para abrir uma calculadora completa sem sair da tela, e o resultado volta automaticamente para o campo.
 
-Também há um hub de calculadoras dedicado (módulo "Calculadoras" na Home), com duas calculadoras completas até agora:
+Também há um hub de calculadoras dedicado (módulo "Calculadoras" na Home), com cinco calculadoras completas até agora:
 
 - **Científica**: além das operações básicas, tem potência, raiz (quadrada e de qualquer índice), log, ln, exp, fatorial e memória (M+, M−, MR, MC). Todo cálculo feito fica registrado no histórico da sessão.
 - **Trigonométrica**: seno/cosseno/tangente e as inversas (arcsen/arccos/arctan), sempre em graus. A seção de **resolução de triângulo** aceita três formas de entrada — 3 lados, 2 lados + o ângulo entre eles, ou 2 ângulos + 1 lado — e também o teorema de Pitágoras isolado. O resultado vem com um **desenho esquemático do triângulo**, calculado na hora a partir dos lados e ângulos resolvidos.
+- **Áreas e Perímetros**: escolha a figura (quadrado, retângulo, triângulo, trapézio, círculo, polígono regular ou área irregular) e preencha as medidas — a calculadora devolve área e perímetro juntos. Para terrenos ou cômodos com formato irregular, informe as coordenadas (X, Y) de cada vértice e ela calcula pela fórmula de Shoelace, aceitando qualquer número de vértices (mínimo 3).
+- **Volumes**: paralelepípedo, cilindro, esfera, cone, prisma (a partir da área da base, calculada na calculadora de Áreas) e tronco de pirâmide.
+- **Engenharia**: oito sub-calculadoras voltadas ao dia a dia da obra —
+  - **Concreto**: dado o volume desejado (m³), o traço (partes de cimento : areia : brita) e o fator água/cimento, devolve cimento (kg e sacos de 50kg), areia (kg), brita (kg) e água (litros), calculados pelo método de dosagem por volume absoluto.
+  - **Argamassa**: mesma lógica do concreto (sem brita), a partir da área e da espessura da camada — serve tanto para assentamento quanto para reboco.
+  - **Tijolos/blocos**: escolha um dos 4 tipos pré-cadastrados (tijolo maciço comum, tijolo furado 8 furos, bloco cerâmico de vedação, bloco de concreto) ou informe dimensões personalizadas; com a espessura da junta e a área da parede, devolve o número de unidades já considerando a perda.
+  - **Piso/revestimento**: área a revestir + perda (%) + área por caixa → número de caixas necessárias.
+  - **Tinta**: área + número de demãos + rendimento (m²/L) → litros necessários, convertidos em número de latas pelo volume da lata informado.
+  - **Telhado**: área plana + inclinação (%) → área inclinada real do telhado.
+  - **Escada**: altura total do lance + piso desejado → número de degraus, altura do espelho e verificação pela **fórmula de Blondel** (63 ≤ 2×espelho + piso ≤ 65).
+  - **Ferragem**: volume de concreto × taxa de aço (kg/m³, informada pelo usuário — a tela mostra taxas de referência por elemento estrutural) → kg de aço estimado.
 
-*(Áreas, perímetros e volumes, e as calculadoras de engenharia civil — traço de concreto, argamassa, tijolos por m², tinta, telhado, escada, ferragem — chegam nas próximas sub-fases.)*
-
-**Exemplo prático:** você tem um terreno triangular e sabe os 3 lados (12m, 9m, 15m). Na calculadora Trigonométrica, escolhe "3 lados", digita os valores e calcula — ela devolve os 3 ângulos internos e desenha o triângulo na proporção certa, sem precisar abrir uma planilha ou fazer conta na mão.
+**Exemplo prático:** você tem um terreno triangular e sabe os 3 lados (12m, 9m, 15m). Na calculadora Trigonométrica, escolhe "3 lados", digita os valores e calcula — ela devolve os 3 ângulos internos e desenha o triângulo na proporção certa, sem precisar abrir uma planilha ou fazer conta na mão. Se o terreno for irregular, você mede as coordenadas dos cantos e usa a calculadora de Áreas e Perímetros em vez disso, que aceita quantos vértices forem necessários. Para uma laje de 5m³, a calculadora de Engenharia → Concreto (traço 1:2:3, fator a/c 0,5) já devolve quantos sacos de cimento comprar.
 
 ---
 
 ## 15. Exportação `#exportacao`
 
-Qualquer lista ou relatório do sistema pode ser exportado em **PDF**, **Excel (XLSX)** ou **imagem (JPG)**, pelo botão de compartilhar no topo da tela. Útil para mandar um relatório pro cliente, pro contador ou guardar um comprovante.
+O ícone de compartilhar no topo de qualquer tela de lista/cadastro (Pessoas, Projetos, Materiais, Lançamentos, Contas, Equipes, Fornecedores, Compras, Orçamentos, Vendas, Metas, Diário de Obra e todos os outros cadastros) abre um preview do relatório e o botão "Compartilhar como JPG" — útil pra mandar uma lista pro cliente, pro contador ou guardar um comprovante. O app monta a imagem na hora (título, colunas, linhas e um resumo quando fizer sentido) e entrega pro menu nativo de compartilhamento da plataforma (ou baixa o arquivo, no navegador). A exportação respeita o filtro de busca ativo — se você buscou antes de exportar, só o que está na tela sai no relatório.
+
+*(Exportação em PDF e Excel (XLSX) chegam nas próximas sub-fases.)*
 
 ---
 
@@ -379,3 +400,27 @@ Toque no botão azul flutuante (ícone "?") em qualquer tela para abrir o Assist
 Ver detalhes técnicos de como isso funciona em `SPEC_ASSISTENTE_IA.md`.
 
 **Exemplo prático (mostrado na imagem acima):** você pergunta "como faço para lançar um gasto só nesta etapa?" estando na tela do projeto Residencial Silva — o Assistente responde com o passo a passo, aponta a seção 4 deste manual, e mostra o que aconteceria com o saldo da etapa Acabamento se você lançasse R$ 5.000 agora.
+
+---
+
+## 19. Área do Executor `#area-executor`
+
+O módulo "Área do Executor" é um catálogo de referência técnica: normas ABNT relevantes à construção civil, com número, título oficial, categoria e um resumo do escopo escrito em linguagem própria — **nunca o texto integral da norma**, que é protegido por direito autoral da ABNT. Cada norma tem um botão "Adquirir no Catálogo Oficial ABNT" (ou do gov.br, no caso de Normas Regulamentadoras como a NR 18), que leva à fonte oficial.
+
+Uma única barra de busca no topo do módulo cobre as duas abas ao mesmo tempo. Na aba "Normas", ela filtra o catálogo por número (ex.: "6118"), título ou categoria. Tocar numa norma abre o detalhe: título completo, categoria, resumo do escopo, normas relacionadas (se houver — tocar nelas navega direto para o detalhe da norma relacionada) e o link para a fonte oficial.
+
+O catálogo inicial já vem com 11 normas de referência (NBR 6118, 6120, 6122, 5410, 5626, 8160, 9050, 15575, 9575, 12721 e a NR 18), cobrindo estrutura, fundação, elétrica, hidráulica, acessibilidade, desempenho, impermeabilização, orçamento e segurança do trabalho.
+
+Uma segunda aba, "Meus Manuais", é a sua **biblioteca pessoal de PDFs** — normas que você já comprou, manuais de fabricante, apostilas, procedimentos internos da empresa. Botão "Anexar PDF" abre o seletor de arquivo do sistema; depois de escolher o arquivo, você preenche nome, tipo de documento, categoria, tags (opcional) e, se fizer sentido, qual norma do catálogo aquele PDF representa (ex.: "esta é a minha cópia comprada da NBR 6118"). Tocar num documento da lista abre o PDF no visualizador nativo da plataforma — o app nunca renderiza o PDF por conta própria, só guarda o arquivo e entrega pro sistema abrir. O ícone de lixeira exclui o documento (com confirmação) e remove o arquivo salvo.
+
+Assim que você anexa um PDF, o app extrai o texto dele em segundo plano só pra alimentar a busca — não pra exibir ou reconstruir o documento. Com isso, a mesma barra de busca do topo passa a encontrar manuais **pelo conteúdo do PDF**, não só pelo nome do arquivo (ex.: buscar "bitola" encontra um manual de instalação elétrica que menciona bitola de fio em algum parágrafo, mesmo que o nome do arquivo seja só "catalogo_2024.pdf"). Esse texto extraído fica só no aparelho — nunca é enviado a servidor ou à IA automaticamente.
+
+O app **nunca** pré-carrega a biblioteca com arquivos de terceiros — anexar é sempre uma ação explícita sua.
+
+Além disso, a Área do Executor aparece **dentro de outras telas**, sem você precisar sair delas:
+
+- Na calculadora de Engenharia → Ferragem, um chip "📘 Base normativa" abre o resumo da NBR 6118 (a norma que fundamenta o cálculo de taxa de aço) sem fechar a calculadora.
+- No detalhe de um projeto, cada etapa cujo nome bate com uma norma do catálogo (ex.: "Estrutura", "Fundação", "Instalações") também ganha o mesmo chip, sugerindo a(s) norma(s) relevante(s) daquela etapa.
+- No cadastro de Materiais, ao anexar um PDF na Biblioteca de Manuais você pode marcar "este PDF é o manual de qual material?" — depois disso, abrir aquele material pra editar mostra um botão "Abrir PDF" direto pra ficha técnica do fabricante, sem precisar ir até a Área do Executor procurar.
+
+**Exemplo prático:** você está na etapa de Estrutura e quer confirmar qual norma rege o dimensionamento de armadura. Abre Área do Executor, digita "6118" na busca, toca no resultado e vê o resumo do escopo da NBR 6118 — e dali, se precisar da norma completa, o botão leva direto ao Catálogo Oficial ABNT pra comprar/consultar. Se você já tem o PDF da norma comprado, vai em "Meus Manuais", anexa o arquivo e marca que ele representa a NBR 6118 — assim, da próxima vez, é só tocar pra abrir o PDF de verdade, sem precisar procurar no computador. Meses depois, se você não lembrar em qual PDF anexado estava uma informação específica (ex.: "taxa de armadura mínima"), é só digitar esse termo na busca — o app procura dentro do conteúdo de todos os manuais anexados, não só nos nomes dos arquivos. E se estiver calculando a ferragem de uma viga na calculadora de Engenharia, o chip "📘 Base normativa" já mostra o resumo da NBR 6118 ali mesmo, sem trocar de tela.

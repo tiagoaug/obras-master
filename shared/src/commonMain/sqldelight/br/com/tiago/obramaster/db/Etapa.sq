@@ -17,6 +17,11 @@ CREATE TABLE Etapa (
 selectAtivasDoProjeto:
 SELECT * FROM Etapa WHERE projetoId = ? AND ativo = 1 ORDER BY ordem;
 
+-- SPEC_OBRA_MASTER.md §4.9 — Metas de escopo GERAL precisam da média de progresso de todas as
+-- etapas de todos os projetos, não só de um.
+selectTodasAtivas:
+SELECT * FROM Etapa WHERE ativo = 1;
+
 insert:
 INSERT INTO Etapa(id, projetoId, nome, ordem, orcamentoEtapa, dataInicio, dataFim, dataInicioReal, dataFimReal, progressoPercent, status, ativo)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);

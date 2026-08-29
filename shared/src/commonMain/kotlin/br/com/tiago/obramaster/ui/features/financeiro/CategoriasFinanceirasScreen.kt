@@ -30,6 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import br.com.tiago.obramaster.domain.CategoriaFinanceira
+import br.com.tiago.obramaster.domain.ExportableDocument
 import br.com.tiago.obramaster.domain.NaturezaLancamento
 import br.com.tiago.obramaster.domain.TipoLancamento
 import br.com.tiago.obramaster.ui.components.LcrudListScaffold
@@ -54,6 +55,13 @@ fun CategoriasFinanceirasScreen(onVoltar: () -> Unit, viewModel: CategoriasFinan
         onExcluirConfirmado = { viewModel.excluir(it.id) },
         onVoltar = onVoltar,
         podeExcluir = { !it.padraoDoSistema },
+        exportar = { itens ->
+            ExportableDocument(
+                titulo = "Categorias Financeiras",
+                colunas = listOf("Nome", "Tipo", "Natureza padrão", "Padrão do sistema"),
+                linhas = itens.map { listOf(it.nome, it.tipo.name, it.naturezaPadrao.name, if (it.padraoDoSistema) "Sim" else "Não") },
+            )
+        },
     )
 
     if (mostrarForm) {

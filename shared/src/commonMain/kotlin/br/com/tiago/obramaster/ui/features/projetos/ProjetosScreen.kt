@@ -24,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import br.com.tiago.obramaster.core.util.MoneyFormatter
+import br.com.tiago.obramaster.domain.ExportableDocument
 import br.com.tiago.obramaster.domain.Projeto
 import br.com.tiago.obramaster.ui.components.CalculatorTextField
 import br.com.tiago.obramaster.ui.components.LcrudListScaffold
@@ -50,6 +51,13 @@ fun ProjetosScreen(
         onNovoClicado = { mostrarForm = true },
         onExcluirConfirmado = { viewModel.excluir(it.id) },
         onVoltar = onVoltar,
+        exportar = { itens ->
+            ExportableDocument(
+                titulo = "Projetos",
+                colunas = listOf("Nome", "Status", "Orçamento total"),
+                linhas = itens.map { listOf(it.nome, it.status.name, MoneyFormatter.formatar(it.orcamentoTotal)) },
+            )
+        },
     )
 
     uiState.projetoPendenteDoOnboarding?.let { draft ->

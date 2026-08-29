@@ -12,6 +12,7 @@ import kotlinx.coroutines.withContext
 
 interface EtapaRepository {
     suspend fun listarDoProjeto(projetoId: String): List<Etapa>
+    suspend fun listarTodasAtivas(): List<Etapa>
     suspend fun salvar(etapa: Etapa)
     suspend fun atualizar(etapa: Etapa)
     suspend fun reordenar(etapaId: String, novaOrdem: Int)
@@ -26,6 +27,10 @@ class SqlDelightEtapaRepository(
 
     override suspend fun listarDoProjeto(projetoId: String): List<Etapa> = withContext(Dispatchers.Default) {
         queries.selectAtivasDoProjeto(projetoId).executeAsList().map { it.toDomain() }
+    }
+
+    override suspend fun listarTodasAtivas(): List<Etapa> = withContext(Dispatchers.Default) {
+        queries.selectTodasAtivas().executeAsList().map { it.toDomain() }
     }
 
     override suspend fun salvar(etapa: Etapa) {

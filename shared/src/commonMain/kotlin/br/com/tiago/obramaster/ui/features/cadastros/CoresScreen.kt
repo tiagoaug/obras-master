@@ -26,6 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import br.com.tiago.obramaster.domain.Cor
+import br.com.tiago.obramaster.domain.ExportableDocument
 import br.com.tiago.obramaster.ui.components.LcrudListScaffold
 import org.koin.compose.koinInject
 
@@ -46,6 +47,13 @@ fun CoresScreen(onVoltar: () -> Unit, viewModel: CoresViewModel = koinInject()) 
         onNovoClicado = { editando = null; mostrarForm = true },
         onExcluirConfirmado = { viewModel.excluir(it.id) },
         onVoltar = onVoltar,
+        exportar = { itens ->
+            ExportableDocument(
+                titulo = "Cores",
+                colunas = listOf("Nome", "Hex", "Código do fabricante"),
+                linhas = itens.map { listOf(it.nome, it.hex, it.codigoFabricante.orEmpty()) },
+            )
+        },
     )
 
     if (mostrarForm) {

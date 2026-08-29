@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import br.com.tiago.obramaster.core.util.DataFormatter
 import br.com.tiago.obramaster.domain.DiarioObra
 import br.com.tiago.obramaster.domain.Etapa
+import br.com.tiago.obramaster.domain.ExportableDocument
 import br.com.tiago.obramaster.ui.components.LcrudListScaffold
 import br.com.tiago.obramaster.ui.components.decodeImageBitmap
 import kotlinx.datetime.Clock
@@ -70,6 +71,13 @@ fun DiarioObraScreen(
         onNovoClicado = { registroEditando = null; mostrarForm = true },
         onExcluirConfirmado = { viewModel.excluir(it.id) },
         onVoltar = onVoltar,
+        exportar = { itens ->
+            ExportableDocument(
+                titulo = "Diário de Obra",
+                colunas = listOf("Data", "Etapa", "Registro", "Clima"),
+                linhas = itens.map { listOf(DataFormatter.formatar(it.data), nomeEtapa(it.etapaId).orEmpty(), it.texto, it.clima.orEmpty()) },
+            )
+        },
     )
 
     if (mostrarForm) {

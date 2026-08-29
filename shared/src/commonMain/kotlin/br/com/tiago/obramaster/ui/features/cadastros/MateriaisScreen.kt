@@ -10,6 +10,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -22,9 +23,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import br.com.tiago.obramaster.core.util.MoneyFormatter
+import br.com.tiago.obramaster.domain.ExportableDocument
 import br.com.tiago.obramaster.domain.Material
 import br.com.tiago.obramaster.ui.components.CalculatorTextField
 import br.com.tiago.obramaster.ui.components.LcrudListScaffold
+import br.com.tiago.obramaster.ui.features.areaexecutor.BibliotecaManuaisViewModel
 import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,6 +52,15 @@ fun MateriaisScreen(onVoltar: () -> Unit, viewModel: MateriaisViewModel = koinIn
         onNovoClicado = { editando = null; mostrarForm = true },
         onExcluirConfirmado = { viewModel.excluir(it.id) },
         onVoltar = onVoltar,
+        exportar = { itens ->
+            ExportableDocument(
+                titulo = "Materiais",
+                colunas = listOf("Nome", "Unidade", "Preço de referência", "Categoria"),
+                linhas = itens.map { material ->
+                    listOf(material.nome, material.unidadePadrao, material.precoReferencia?.let(MoneyFormatter::formatar).orEmpty(), material.categoria.orEmpty())
+                },
+            )
+        },
     )
 
     if (mostrarForm) {
@@ -58,6 +70,9 @@ fun MateriaisScreen(onVoltar: () -> Unit, viewModel: MateriaisViewModel = koinIn
         var categoria by remember { mutableStateOf(atual?.categoria ?: "") }
         var precoCentavos by remember { mutableStateOf(atual?.precoReferencia ?: 0L) }
         var corSelecionadaId by remember { mutableStateOf(atual?.corId) }
+        val bibliotecaViewModel: BibliotecaManuaisViewModel = koinInject()
+        val documentosTecnicos by bibliotecaViewModel.documentos.collectAsState()
+        val manualVinculado = atual?.let { material -> documentosTecnicos.find { it.vinculadaMaterialId == material.id } }
 
         ModalBottomSheet(onDismissRequest = { mostrarForm = false }, sheetState = rememberModalBottomSheetState()) {
             Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -89,6 +104,14 @@ fun MateriaisScreen(onVoltar: () -> Unit, viewModel: MateriaisViewModel = koinIn
                                 modifier = Modifier.padding(end = 4.dp),
                             )
                         }
+                    }
+                }
+
+                if (manualVinculado != null) {
+                    Text("Manual do fabricante", style = MaterialTheme.typography.labelLarge)
+                    Text(manualVinculado.nome, style = MaterialTheme.typography.bodyMedium)
+                    OutlinedButton(onClick = { bibliotecaViewModel.abrir(manualVinculado) }, modifier = Modifier.fillMaxWidth()) {
+                        Text("Abrir PDF")
                     }
                 }
 

@@ -126,9 +126,9 @@
       "id": "metas",
       "modulo": "METAS",
       "titulo": "Metas",
-      "conteudo": "Metas financeiras, de prazo ou de progresso, calculadas automaticamente com base nos dados dos outros módulos.",
-      "exemploPratico": null,
-      "palavrasChave": ["meta", "objetivo", "prazo", "progresso"]
+      "conteudo": "Metas financeiras (resultado receitas-despesas até um valor-alvo), de prazo ou de progresso (média de progresso das etapas até um percentual-alvo), calculadas automaticamente com base nos lançamentos financeiros e etapas dos outros módulos. Escopo Geral, Projeto ou Setor (Centro de Custo) — Prazo/Progresso só valem pra Geral/Projeto. Prazo opcional marca a meta como atrasada; \"concluída\" é marcação manual do usuário.",
+      "exemploPratico": "Meta financeira de escopo Projeto, valor-alvo R$ 15.000 de lucro — a lista mostra o resultado atual somando só os lançamentos daquele projeto.",
+      "palavrasChave": ["meta", "objetivo", "prazo", "progresso", "financeira", "escopo", "centro de custo", "atrasada"]
     },
     {
       "id": "pessoas",
@@ -155,10 +155,18 @@
       "palavrasChave": ["calculadora", "científica", "trigonometria", "área", "volume", "perímetro", "engenharia", "concreto", "traço"]
     },
     {
+      "id": "area-executor",
+      "modulo": "AREA_EXECUTOR",
+      "titulo": "Área do Executor",
+      "conteudo": "Catálogo de normas ABNT relevantes à construção civil — só metadado (número, título, resumo próprio, link para o Catálogo Oficial ABNT), nunca o texto integral da norma. Segunda aba \"Meus Manuais\" é uma biblioteca pessoal de PDFs (normas compradas, manuais de fabricante, apostilas, procedimentos internos) — anexar é sempre ação explícita do usuário, o PDF abre no visualizador nativo da plataforma. Uma única barra de busca no topo cobre as duas abas: número/título/categoria nas Normas, e busca full-text pelo conteúdo extraído dos PDFs anexados nos Manuais (não só pelo nome do arquivo) — o texto extraído fica só no aparelho. Aparece também dentro de outras telas: chip \"Base normativa\" na calculadora de Ferragem (linka a NBR 6118) e nas etapas de projeto cujo nome bate com uma norma do catálogo; e o cadastro de Materiais mostra um botão \"Abrir PDF\" quando o material tem um manual de fabricante vinculado na Biblioteca de Manuais.",
+      "exemploPratico": "Na etapa de Estrutura, busque \"6118\" na Área do Executor para ver o resumo do escopo da NBR 6118 e o link para adquiri-la na fonte oficial — ou anexe o PDF que você já comprou em \"Meus Manuais\" e depois encontre-o buscando por um termo que está dentro do conteúdo do PDF, não no nome do arquivo. Na calculadora de Ferragem, o chip \"Base normativa\" mostra o resumo da NBR 6118 sem sair da calculadora.",
+      "palavrasChave": ["norma", "abnt", "nbr", "catálogo", "área do executor", "manual técnico", "pdf", "anexar", "biblioteca", "busca", "full-text", "base normativa", "ferragem", "vínculo", "manual do fabricante"]
+    },
+    {
       "id": "exportacao",
       "modulo": "RELATORIOS",
       "titulo": "Exportação",
-      "conteudo": "Qualquer lista ou relatório pode ser exportado em PDF, Excel (XLSX) ou imagem (JPG), pelo botão de compartilhar no topo da tela.",
+      "conteudo": "O ícone de compartilhar no topo de qualquer tela de lista/cadastro mostra um preview do relatório e exporta como imagem (JPG), entregando pro menu nativo de compartilhamento (ou baixando, no navegador) — respeita o filtro de busca ativo. PDF e Excel (XLSX) chegam em sub-fases futuras.",
       "exemploPratico": null,
       "palavrasChave": ["exportar", "pdf", "excel", "xlsx", "jpg", "compartilhar", "relatório"]
     },

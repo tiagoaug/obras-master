@@ -1,0 +1,89 @@
+[
+  {
+    "numero": "NBR 6118",
+    "titulo": "Projeto de Estruturas de Concreto — Procedimento",
+    "categoria": "ESTRUTURA",
+    "escopoResumo": "Define os requisitos para projeto de estruturas de concreto simples, armado e protendido, cobrindo segurança, durabilidade e desempenho estrutural.",
+    "urlCatalogoOficial": "https://www.abntcatalogo.com.br/",
+    "normasRelacionadas": ["NBR 6120"],
+    "vinculadaCalculadoras": ["ferragem_kg_m3"],
+    "vinculadaEtapasTemplate": ["Estrutura"]
+  },
+  {
+    "numero": "NBR 6120",
+    "titulo": "Ações para o Cálculo de Estruturas de Edificações",
+    "categoria": "ESTRUTURA",
+    "escopoResumo": "Estabelece os valores de cargas a considerar no cálculo estrutural de edificações.",
+    "urlCatalogoOficial": "https://www.abntcatalogo.com.br/",
+    "normasRelacionadas": ["NBR 6118", "NBR 6122"]
+  },
+  {
+    "numero": "NBR 6122",
+    "titulo": "Projeto e Execução de Fundações",
+    "categoria": "FUNDACAO",
+    "escopoResumo": "Fixa os critérios para projeto e execução de fundações de edificações.",
+    "urlCatalogoOficial": "https://www.abntcatalogo.com.br/",
+    "vinculadaEtapasTemplate": ["Fundação"]
+  },
+  {
+    "numero": "NBR 5410",
+    "titulo": "Instalações Elétricas de Baixa Tensão",
+    "categoria": "ELETRICA",
+    "escopoResumo": "Define os requisitos de segurança para instalações elétricas de baixa tensão em edificações.",
+    "urlCatalogoOficial": "https://www.abntcatalogo.com.br/",
+    "vinculadaEtapasTemplate": ["Instalações"]
+  },
+  {
+    "numero": "NBR 5626",
+    "titulo": "Instalações Prediais de Água Fria",
+    "categoria": "HIDRAULICA",
+    "escopoResumo": "Estabelece exigências para instalações prediais de água fria.",
+    "urlCatalogoOficial": "https://www.abntcatalogo.com.br/",
+    "normasRelacionadas": ["NBR 8160"],
+    "vinculadaEtapasTemplate": ["Instalações"]
+  },
+  {
+    "numero": "NBR 8160",
+    "titulo": "Sistemas Prediais de Esgoto Sanitário",
+    "categoria": "HIDRAULICA",
+    "escopoResumo": "Fixa exigências para projeto e execução de sistemas de esgoto sanitário predial.",
+    "urlCatalogoOficial": "https://www.abntcatalogo.com.br/",
+    "normasRelacionadas": ["NBR 5626"],
+    "vinculadaEtapasTemplate": ["Instalações"]
+  },
+  {
+    "numero": "NBR 9050",
+    "titulo": "Acessibilidade a Edificações, Mobiliário, Espaços e Equipamentos Urbanos",
+    "categoria": "ACESSIBILIDADE",
+    "escopoResumo": "Estabelece critérios e parâmetros técnicos de acessibilidade para pessoas com deficiência ou mobilidade reduzida.",
+    "urlCatalogoOficial": "https://www.abntcatalogo.com.br/"
+  },
+  {
+    "numero": "NBR 15575",
+    "titulo": "Edificações Habitacionais — Desempenho",
+    "categoria": "DESEMPENHO",
+    "escopoResumo": "Norma de desempenho: define requisitos mínimos de segurança, habitabilidade e sustentabilidade para edificações habitacionais.",
+    "urlCatalogoOficial": "https://www.abntcatalogo.com.br/"
+  },
+  {
+    "numero": "NBR 9575",
+    "titulo": "Impermeabilização — Seleção e Projeto",
+    "categoria": "IMPERMEABILIZACAO",
+    "escopoResumo": "Estabelece critérios para seleção e projeto de sistemas de impermeabilização.",
+    "urlCatalogoOficial": "https://www.abntcatalogo.com.br/"
+  },
+  {
+    "numero": "NBR 12721",
+    "titulo": "Avaliação de Custos de Construção para Incorporação Imobiliária",
+    "categoria": "ORCAMENTO_CUSTOS",
+    "escopoResumo": "Define critérios para orçamento de obra e cálculo do custo unitário básico (CUB) por padrão construtivo.",
+    "urlCatalogoOficial": "https://www.abntcatalogo.com.br/"
+  },
+  {
+    "numero": "NR 18",
+    "titulo": "Segurança e Saúde no Trabalho na Indústria da Construção",
+    "categoria": "SEGURANCA_TRABALHO",
+    "escopoResumo": "Norma regulamentadora do Ministério do Trabalho com requisitos de segurança em canteiros de obra (não é NBR, mas de uso constante no dia a dia do executor).",
+    "urlCatalogoOficial": "https://www.gov.br/trabalho-e-emprego/"
+  }
+]

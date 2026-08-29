@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import br.com.tiago.obramaster.core.util.DataFormatter
 import br.com.tiago.obramaster.core.util.MoneyFormatter
 import br.com.tiago.obramaster.domain.Etapa
+import br.com.tiago.obramaster.domain.ExportableDocument
 import br.com.tiago.obramaster.domain.TipoRegistroTrabalho
 import br.com.tiago.obramaster.ui.components.CalculatorTextField
 import br.com.tiago.obramaster.ui.components.LcrudListScaffold
@@ -53,6 +54,15 @@ fun RegistroTrabalhoScreen(onVoltar: () -> Unit, viewModel: RegistroTrabalhoView
         onExcluirConfirmado = { viewModel.excluir(it.id) },
         onVoltar = onVoltar,
         podeExcluir = { !it.pago },
+        exportar = { itens ->
+            ExportableDocument(
+                titulo = "Registro de Trabalho",
+                colunas = listOf("Pessoa", "Projeto", "Data", "Tipo", "Valor", "Pago"),
+                linhas = itens.map { registro ->
+                    listOf(nomePessoa(registro.pessoaId), nomeProjeto(registro.projetoId), DataFormatter.formatar(registro.data), registro.tipo.name, MoneyFormatter.formatar(registro.valor), if (registro.pago) "Sim" else "Não")
+                },
+            )
+        },
     )
 
     if (mostrarForm) {

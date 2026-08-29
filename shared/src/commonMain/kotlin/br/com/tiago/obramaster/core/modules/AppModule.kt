@@ -14,6 +14,7 @@ enum class AppModule(val id: String, val labelPtBr: String) {
     PROJETOS("projetos", "Projetos e Etapas"),
     PESSOAS("pessoas", "Cadastro de Pessoas"),
     CALCULADORAS("calculadoras", "Calculadoras"),
+    AREA_EXECUTOR("area_executor", "Área do Executor"),
     METAS("metas", "Metas"),
     CADASTROS_BASE("cadastros_base", "Cadastros Básicos (Cores, Materiais...)"),
     RELATORIOS("relatorios", "Relatórios e Exportação");

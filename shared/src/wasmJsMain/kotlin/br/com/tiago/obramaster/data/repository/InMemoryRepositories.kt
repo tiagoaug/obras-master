@@ -14,6 +14,7 @@ import br.com.tiago.obramaster.domain.Conta
 import br.com.tiago.obramaster.domain.Cor
 import br.com.tiago.obramaster.domain.DadosEmpresa
 import br.com.tiago.obramaster.domain.DiarioObra
+import br.com.tiago.obramaster.domain.DocumentoTecnico
 import br.com.tiago.obramaster.domain.Equipe
 import br.com.tiago.obramaster.domain.Etapa
 import br.com.tiago.obramaster.domain.Fornecedor
@@ -22,6 +23,7 @@ import br.com.tiago.obramaster.domain.ItemCompra
 import br.com.tiago.obramaster.domain.ItemOrcamento
 import br.com.tiago.obramaster.domain.LancamentoFinanceiro
 import br.com.tiago.obramaster.domain.Material
+import br.com.tiago.obramaster.domain.Meta
 import br.com.tiago.obramaster.domain.MovimentoConta
 import br.com.tiago.obramaster.domain.NaturezaLancamento
 import br.com.tiago.obramaster.domain.Orcamento
@@ -227,6 +229,8 @@ class InMemoryEtapaRepository : EtapaRepository {
 
     override suspend fun listarDoProjeto(projetoId: String): List<Etapa> =
         state.value.filter { it.projetoId == projetoId && it.ativo }.sortedBy { it.ordem }
+
+    override suspend fun listarTodasAtivas(): List<Etapa> = state.value.filter { it.ativo }
 
     override suspend fun salvar(etapa: Etapa) {
         state.value = state.value + etapa
@@ -675,4 +679,43 @@ class InMemoryDiarioObraRepository : DiarioObraRepository {
     }
     override fun observarDoProjeto(projetoId: String): Flow<List<DiarioObra>> =
         state.map { lista -> lista.filter { it.projetoId == projetoId && it.ativo }.sortedByDescending { it.data } }
+}
+
+class InMemoryDocumentoTecnicoRepository : DocumentoTecnicoRepository {
+    private val state = MutableStateFlow<List<DocumentoTecnico>>(emptyList())
+
+    override suspend fun listarTodos(): List<DocumentoTecnico> = state.value.sortedByDescending { it.adicionadoEm }
+    override suspend fun salvar(documento: DocumentoTecnico) {
+        state.value = state.value + documento
+    }
+    override suspend fun excluir(id: String) {
+        state.value = state.value.filter { it.id != id }
+    }
+    override suspend fun atualizarTextoExtraido(id: String, texto: String) {
+        if (texto.isBlank()) return
+        state.value = state.value.map { if (it.id == id) it.copy(textoExtraido = texto) else it }
+    }
+    override suspend fun buscarPorTexto(query: String): List<DocumentoTecnico> {
+        if (query.isBlank()) return listarTodos()
+        return state.value.filter { it.textoExtraido?.contains(query, ignoreCase = true) == true }
+            .sortedByDescending { it.adicionadoEm }
+    }
+    override fun observarTodos(): Flow<List<DocumentoTecnico>> =
+        state.map { lista -> lista.sortedByDescending { it.adicionadoEm } }
+}
+
+class InMemoryMetaRepository : MetaRepository {
+    private val state = MutableStateFlow<List<Meta>>(emptyList())
+
+    override suspend fun listarAtivas(): List<Meta> = state.value.filter { it.ativo }
+    override suspend fun salvar(meta: Meta) {
+        state.value = state.value + meta
+    }
+    override suspend fun atualizar(meta: Meta) {
+        state.value = state.value.map { if (it.id == meta.id) meta else it }
+    }
+    override suspend fun desativar(id: String) {
+        state.value = state.value.map { if (it.id == id) it.copy(ativo = false) else it }
+    }
+    override fun observarAtivas(): Flow<List<Meta>> = state.map { lista -> lista.filter { it.ativo } }
 }

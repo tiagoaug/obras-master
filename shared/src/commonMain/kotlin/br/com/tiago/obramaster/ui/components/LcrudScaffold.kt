@@ -14,6 +14,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
@@ -35,6 +36,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import br.com.tiago.obramaster.domain.ExportableDocument
+import br.com.tiago.obramaster.ui.components.export.ExportarBottomSheet
 
 /** SPEC_OBRA_MASTER.md §5.3 — padrão de telas (Lista/Formulário/Detalhe) reaproveitado em todo cadastro. */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -51,9 +54,11 @@ fun <T> LcrudListScaffold(
     onVoltar: (() -> Unit)? = null,
     acoesTopBar: @Composable androidx.compose.foundation.layout.RowScope.() -> Unit = {},
     podeExcluir: (T) -> Boolean = { true },
+    exportar: ((List<T>) -> ExportableDocument)? = null,
 ) {
     var busca by remember { mutableStateOf("") }
     var itemParaExcluir by remember { mutableStateOf<T?>(null) }
+    var documentoParaExportar by remember { mutableStateOf<ExportableDocument?>(null) }
     val itensFiltrados = if (busca.isBlank()) itens else itens.filter { filtro(it, busca) }
 
     Scaffold(
@@ -65,7 +70,14 @@ fun <T> LcrudListScaffold(
                         IconButton(onClick = onVoltar) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar") }
                     }
                 },
-                actions = acoesTopBar,
+                actions = {
+                    acoesTopBar()
+                    if (exportar != null) {
+                        IconButton(onClick = { documentoParaExportar = exportar(itensFiltrados) }) {
+                            Icon(Icons.Filled.Share, contentDescription = "Exportar")
+                        }
+                    }
+                },
             )
         },
         floatingActionButton = {
@@ -115,6 +127,10 @@ fun <T> LcrudListScaffold(
             },
             dismissButton = { OutlinedButton(onClick = { itemParaExcluir = null }) { Text("Cancelar") } },
         )
+    }
+
+    documentoParaExportar?.let { doc ->
+        ExportarBottomSheet(doc = doc, onDismiss = { documentoParaExportar = null })
     }
 }
 

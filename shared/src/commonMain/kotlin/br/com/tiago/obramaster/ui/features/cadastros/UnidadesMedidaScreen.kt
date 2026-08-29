@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import br.com.tiago.obramaster.domain.ExportableDocument
 import br.com.tiago.obramaster.domain.UnidadeMedida
 import br.com.tiago.obramaster.ui.components.LcrudListScaffold
 import org.koin.compose.koinInject
@@ -40,6 +41,13 @@ fun UnidadesMedidaScreen(onVoltar: () -> Unit, viewModel: UnidadesMedidaViewMode
         onNovoClicado = { editando = null; mostrarForm = true },
         onExcluirConfirmado = { viewModel.excluir(it.id) },
         onVoltar = onVoltar,
+        exportar = { itens ->
+            ExportableDocument(
+                titulo = "Unidades de Medida",
+                colunas = listOf("Sigla", "Nome"),
+                linhas = itens.map { listOf(it.sigla, it.nome) },
+            )
+        },
     )
 
     if (mostrarForm) {

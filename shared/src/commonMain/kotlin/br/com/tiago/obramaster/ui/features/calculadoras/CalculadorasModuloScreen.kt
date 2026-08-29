@@ -6,8 +6,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Calculate
+import androidx.compose.material.icons.filled.CropSquare
 import androidx.compose.material.icons.filled.Straighten
+import androidx.compose.material.icons.filled.ViewInAr
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -29,10 +32,12 @@ private sealed interface DestinoCalculadoras {
     data object Hub : DestinoCalculadoras
     data object Cientifica : DestinoCalculadoras
     data object Trigonometria : DestinoCalculadoras
+    data object AreasPerimetros : DestinoCalculadoras
+    data object Volumes : DestinoCalculadoras
+    data object Engenharia : DestinoCalculadoras
 }
 
-/** SPEC_OBRA_MASTER.md §4.12 — ponto de entrada do módulo Calculadoras.
- * Áreas/Perímetros/Volumes (Fase 8.2) e Engenharia (Fase 8.3) entram nesse hub nas próximas sub-fases. */
+/** SPEC_OBRA_MASTER.md §4.12 — ponto de entrada do módulo Calculadoras. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalculadorasModuloScreen(onVoltar: () -> Unit) {
@@ -52,11 +57,17 @@ fun CalculadorasModuloScreen(onVoltar: () -> Unit) {
             Column(Modifier.fillMaxSize().padding(padding)) {
                 ItemHub("Científica", Icons.Filled.Calculate) { destino = DestinoCalculadoras.Cientifica }
                 ItemHub("Trigonométrica", Icons.Filled.Straighten) { destino = DestinoCalculadoras.Trigonometria }
+                ItemHub("Áreas e Perímetros", Icons.Filled.CropSquare) { destino = DestinoCalculadoras.AreasPerimetros }
+                ItemHub("Volumes", Icons.Filled.ViewInAr) { destino = DestinoCalculadoras.Volumes }
+                ItemHub("Engenharia", Icons.Filled.Build) { destino = DestinoCalculadoras.Engenharia }
             }
         }
 
         DestinoCalculadoras.Cientifica -> CientificaScreen(onVoltar = { destino = DestinoCalculadoras.Hub })
         DestinoCalculadoras.Trigonometria -> TrigonometriaScreen(onVoltar = { destino = DestinoCalculadoras.Hub })
+        DestinoCalculadoras.AreasPerimetros -> AreasPerimetrosScreen(onVoltar = { destino = DestinoCalculadoras.Hub })
+        DestinoCalculadoras.Volumes -> VolumesScreen(onVoltar = { destino = DestinoCalculadoras.Hub })
+        DestinoCalculadoras.Engenharia -> EngenhariaScreen(onVoltar = { destino = DestinoCalculadoras.Hub })
     }
 }
 

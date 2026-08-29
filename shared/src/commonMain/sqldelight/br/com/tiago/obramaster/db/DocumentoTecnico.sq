@@ -1,0 +1,60 @@
+CREATE TABLE DocumentoTecnico (
+    id TEXT NOT NULL PRIMARY KEY,
+    nome TEXT NOT NULL,
+    tipo TEXT NOT NULL,
+    categoria TEXT NOT NULL,
+    arquivoKey TEXT NOT NULL,
+    tamanhoBytes INTEGER NOT NULL,
+    normaVinculadaId TEXT,
+    vinculadaEtapasTemplateJson TEXT NOT NULL DEFAULT '[]',
+    vinculadaMaterialId TEXT,
+    textoExtraido TEXT,
+    adicionadoEm INTEGER NOT NULL
+);
+
+CREATE TABLE DocumentoTecnicoTag (
+    documentoId TEXT NOT NULL,
+    tag TEXT NOT NULL,
+    PRIMARY KEY (documentoId, tag),
+    FOREIGN KEY (documentoId) REFERENCES DocumentoTecnico(id)
+);
+
+-- SPEC_AREA_EXECUTOR.md §3 — índice de busca full-text sobre o texto extraído dos PDFs (Fase
+-- 8.7). fts4 (em vez de fts5) por compatibilidade sem precisar declarar um dialect SQLDelight
+-- extra. documentoId fica de fora da indexação (notindexed) — só serve pra mapear o resultado
+-- do MATCH de volta pro DocumentoTecnico.
+CREATE VIRTUAL TABLE DocumentoTecnicoFts USING fts4(documentoId, texto, notindexed=documentoId);
+
+selectTodos:
+SELECT * FROM DocumentoTecnico ORDER BY adicionadoEm DESC;
+
+selectTagsDe:
+SELECT tag FROM DocumentoTecnicoTag WHERE documentoId = ?;
+
+selectTodasTags:
+SELECT * FROM DocumentoTecnicoTag;
+
+insert:
+INSERT INTO DocumentoTecnico(id, nome, tipo, categoria, arquivoKey, tamanhoBytes, normaVinculadaId, vinculadaEtapasTemplateJson, vinculadaMaterialId, textoExtraido, adicionadoEm)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+insertTag:
+INSERT OR IGNORE INTO DocumentoTecnicoTag(documentoId, tag) VALUES (?, ?);
+
+deleteTagsDe:
+DELETE FROM DocumentoTecnicoTag WHERE documentoId = ?;
+
+delete:
+DELETE FROM DocumentoTecnico WHERE id = ?;
+
+updateTextoExtraido:
+UPDATE DocumentoTecnico SET textoExtraido = ? WHERE id = ?;
+
+insertFts:
+INSERT INTO DocumentoTecnicoFts(documentoId, texto) VALUES (?, ?);
+
+deleteFtsDe:
+DELETE FROM DocumentoTecnicoFts WHERE documentoId = ?;
+
+buscarPorTexto:
+SELECT documentoId FROM DocumentoTecnicoFts WHERE DocumentoTecnicoFts MATCH ?;

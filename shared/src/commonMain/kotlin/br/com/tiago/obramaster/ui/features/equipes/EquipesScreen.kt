@@ -24,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import br.com.tiago.obramaster.domain.Equipe
+import br.com.tiago.obramaster.domain.ExportableDocument
 import br.com.tiago.obramaster.ui.components.LcrudListScaffold
 import org.koin.compose.koinInject
 
@@ -46,6 +47,13 @@ fun EquipesScreen(onVoltar: () -> Unit, viewModel: EquipesViewModel = koinInject
         onNovoClicado = { editando = null; mostrarForm = true },
         onExcluirConfirmado = { viewModel.excluir(it.id) },
         onVoltar = onVoltar,
+        exportar = { itens ->
+            ExportableDocument(
+                titulo = "Equipes",
+                colunas = listOf("Nome", "Membros", "Líder"),
+                linhas = itens.map { listOf(it.nome, it.membrosIds.size.toString(), nomePessoa(it.liderPessoaId).orEmpty()) },
+            )
+        },
     )
 
     if (mostrarForm) {

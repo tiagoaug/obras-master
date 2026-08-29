@@ -36,6 +36,7 @@ import br.com.tiago.obramaster.core.financeiro.PeriodoPreset
 import br.com.tiago.obramaster.core.util.DataFormatter
 import br.com.tiago.obramaster.core.util.MoneyFormatter
 import br.com.tiago.obramaster.domain.CategoriaFinanceira
+import br.com.tiago.obramaster.domain.ExportableDocument
 import br.com.tiago.obramaster.domain.LancamentoFinanceiro
 import br.com.tiago.obramaster.domain.NaturezaLancamento
 import br.com.tiago.obramaster.domain.RateioLancamento
@@ -85,6 +86,21 @@ fun LancamentosScreen(onVoltar: () -> Unit, viewModel: LancamentosViewModel = ko
         onVoltar = onVoltar,
         acoesTopBar = {
             IconButton(onClick = { mostrarFiltro = true }) { Icon(Icons.Filled.FilterList, contentDescription = "Filtros") }
+        },
+        exportar = { itens ->
+            ExportableDocument(
+                titulo = "Lançamentos",
+                colunas = listOf("Descrição", "Categoria", "Data", "Valor", "Pago"),
+                linhas = itens.map { lancamento ->
+                    listOf(
+                        lancamento.descricao,
+                        nomeCategoria(lancamento.categoriaId),
+                        DataFormatter.formatar(lancamento.data),
+                        MoneyFormatter.formatar(if (lancamento.tipo == TipoLancamento.RECEITA) lancamento.valor else -lancamento.valor),
+                        if (lancamento.pago) "Sim" else "Não",
+                    )
+                },
+            )
         },
     )
 

@@ -22,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import br.com.tiago.obramaster.domain.CentroDeCusto
+import br.com.tiago.obramaster.domain.ExportableDocument
 import br.com.tiago.obramaster.domain.TipoCentroDeCusto
 import br.com.tiago.obramaster.ui.components.LcrudListScaffold
 import org.koin.compose.koinInject
@@ -47,6 +48,13 @@ fun CentrosDeCustoScreen(onVoltar: () -> Unit, viewModel: CentrosDeCustoViewMode
         onExcluirConfirmado = { viewModel.excluir(it.id) },
         onVoltar = onVoltar,
         podeExcluir = { it.tipo != TipoCentroDeCusto.PROJETO },
+        exportar = { itens ->
+            ExportableDocument(
+                titulo = "Centros de Custo",
+                colunas = listOf("Nome", "Tipo"),
+                linhas = itens.map { listOf(it.nome, it.tipo.name) },
+            )
+        },
     )
 
     if (mostrarForm) {

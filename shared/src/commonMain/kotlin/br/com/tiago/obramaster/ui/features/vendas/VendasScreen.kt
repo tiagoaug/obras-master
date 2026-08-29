@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import br.com.tiago.obramaster.core.util.DataFormatter
 import br.com.tiago.obramaster.core.util.MoneyFormatter
 import br.com.tiago.obramaster.domain.Conta
+import br.com.tiago.obramaster.domain.ExportableDocument
 import br.com.tiago.obramaster.domain.ParcelaVenda
 import br.com.tiago.obramaster.domain.StatusVenda
 import br.com.tiago.obramaster.domain.Venda
@@ -70,6 +71,15 @@ fun VendasScreen(onVoltar: () -> Unit, viewModel: VendasViewModel = koinInject()
         onExcluirConfirmado = { viewModel.excluir(it.id) },
         onVoltar = onVoltar,
         podeExcluir = { it.status == StatusVenda.NEGOCIACAO },
+        exportar = { itens ->
+            ExportableDocument(
+                titulo = "Vendas",
+                colunas = listOf("Descrição", "Cliente", "Status", "Data", "Valor"),
+                linhas = itens.map { venda ->
+                    listOf(venda.descricao, nomeCliente(venda.clientePessoaId), venda.status.name, DataFormatter.formatar(venda.data), MoneyFormatter.formatar(venda.valorTotal))
+                },
+            )
+        },
     )
 
     if (mostrarForm) {

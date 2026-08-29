@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import br.com.tiago.obramaster.domain.ExportableDocument
 import br.com.tiago.obramaster.domain.Pessoa
 import br.com.tiago.obramaster.domain.TagPessoa
 import br.com.tiago.obramaster.ui.components.LcrudListScaffold
@@ -69,6 +70,15 @@ fun PessoasScreen(onVoltar: () -> Unit, viewModel: PessoasViewModel = koinInject
                     IconButton(onClick = { destino = DestinoPessoas.Importar }) {
                         Icon(Icons.Filled.PersonAdd, contentDescription = "Importar contatos")
                     }
+                },
+                exportar = { itens ->
+                    ExportableDocument(
+                        titulo = "Pessoas",
+                        colunas = listOf("Nome", "Tags", "Telefone", "E-mail"),
+                        linhas = itens.map { pessoa ->
+                            listOf(pessoa.nome, pessoa.tags.joinToString(", ") { it.name }, pessoa.telefone.orEmpty(), pessoa.email.orEmpty())
+                        },
+                    )
                 },
             )
 

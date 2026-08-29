@@ -19,6 +19,7 @@ import br.com.tiago.obramaster.data.repository.EtapaRepository
 import br.com.tiago.obramaster.data.repository.FornecedorRepository
 import br.com.tiago.obramaster.data.repository.FuncionarioRepository
 import br.com.tiago.obramaster.data.repository.LancamentoFinanceiroRepository
+import br.com.tiago.obramaster.data.repository.MetaRepository
 import br.com.tiago.obramaster.data.repository.MaterialRepository
 import br.com.tiago.obramaster.data.repository.MovimentoContaRepository
 import br.com.tiago.obramaster.data.repository.ModuleConfigRepository
@@ -49,6 +50,7 @@ import br.com.tiago.obramaster.data.repository.SqlDelightEtapaRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightFornecedorRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightFuncionarioRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightLancamentoFinanceiroRepository
+import br.com.tiago.obramaster.data.repository.SqlDelightMetaRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightMaterialRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightMovimentoContaRepository
 import br.com.tiago.obramaster.data.repository.SqlDelightModuleConfigRepository
@@ -69,12 +71,18 @@ import br.com.tiago.obramaster.data.repository.SqlDelightVendaRepository
 import br.com.tiago.obramaster.data.repository.TarefaRepository
 import br.com.tiago.obramaster.data.repository.UnidadeMedidaRepository
 import br.com.tiago.obramaster.data.repository.VendaRepository
+import br.com.tiago.obramaster.data.repository.DocumentoTecnicoRepository
+import br.com.tiago.obramaster.data.repository.SqlDelightDocumentoTecnicoRepository
 import br.com.tiago.obramaster.platform.AppSettingsFactory
 import br.com.tiago.obramaster.platform.ContactsProvider
+import br.com.tiago.obramaster.platform.DocumentStore
+import br.com.tiago.obramaster.platform.FileExporter
 import br.com.tiago.obramaster.platform.FilePicker
 import br.com.tiago.obramaster.platform.ImagePicker
 import br.com.tiago.obramaster.platform.ImageStore
 import br.com.tiago.obramaster.platform.PdfImageRenderer
+import br.com.tiago.obramaster.platform.PdfOpener
+import br.com.tiago.obramaster.platform.PdfTextExtractor
 import br.com.tiago.obramaster.platform.PdfVectorExtractor
 import org.koin.dsl.module
 
@@ -88,6 +96,10 @@ fun platformModule(context: Context) = module {
     single { FilePicker(context) }
     single { PdfImageRenderer(context) }
     single { PdfVectorExtractor(context) }
+    single { DocumentStore(context) }
+    single { PdfOpener(context) }
+    single { PdfTextExtractor(context) }
+    single { FileExporter(context) }
 
     single<ColaboradorRepository> { SqlDelightColaboradorRepository(get()) }
     single<PermissaoRepository> { SqlDelightPermissaoRepository(get()) }
@@ -108,6 +120,7 @@ fun platformModule(context: Context) = module {
     single<CategoriaFinanceiraRepository> { SqlDelightCategoriaFinanceiraRepository(get()) }
     single<CentroDeCustoRepository> { SqlDelightCentroDeCustoRepository(get()) }
     single<LancamentoFinanceiroRepository> { SqlDelightLancamentoFinanceiroRepository(get()) }
+    single<MetaRepository> { SqlDelightMetaRepository(get()) }
     single<RateioLancamentoRepository> { SqlDelightRateioLancamentoRepository(get()) }
     single<MovimentoContaRepository> { SqlDelightMovimentoContaRepository(get()) }
     single<FuncionarioRepository> { SqlDelightFuncionarioRepository(get()) }
@@ -122,4 +135,5 @@ fun platformModule(context: Context) = module {
     single<VendaRepository> { SqlDelightVendaRepository(get()) }
     single<TarefaRepository> { SqlDelightTarefaRepository(get()) }
     single<DiarioObraRepository> { SqlDelightDiarioObraRepository(get()) }
+    single<DocumentoTecnicoRepository> { SqlDelightDocumentoTecnicoRepository(get()) }
 }

@@ -17,6 +17,7 @@ import br.com.tiago.obramaster.core.prefs.AccessibilityPrefsStore
 import br.com.tiago.obramaster.domain.Colaborador
 import br.com.tiago.obramaster.ui.AppRootUiState
 import br.com.tiago.obramaster.ui.AppRootViewModel
+import br.com.tiago.obramaster.ui.features.areaexecutor.AreaExecutorHomeScreen
 import br.com.tiago.obramaster.ui.features.cadastros.CadastrosBasicosScreen
 import br.com.tiago.obramaster.ui.features.calculadoras.CalculadorasModuloScreen
 import br.com.tiago.obramaster.ui.features.compras.ComprasModuloScreen
@@ -25,6 +26,7 @@ import br.com.tiago.obramaster.ui.features.equipes.EquipesModuloScreen
 import br.com.tiago.obramaster.ui.features.financeiro.FinanceiroScreen
 import br.com.tiago.obramaster.ui.features.home.HomeScreen
 import br.com.tiago.obramaster.ui.features.login.LoginScreen
+import br.com.tiago.obramaster.ui.features.metas.MetasScreen
 import br.com.tiago.obramaster.ui.features.onboarding.OnboardingScreen
 import br.com.tiago.obramaster.ui.features.orcamentos.OrcamentosScreen
 import br.com.tiago.obramaster.ui.features.pessoas.PessoasScreen
@@ -37,7 +39,7 @@ import br.com.tiago.obramaster.ui.features.projetos.ProjetosScreen
 import br.com.tiago.obramaster.ui.theme.ObraMasterTheme
 import org.koin.compose.koinInject
 
-private val MODULOS_IMPLEMENTADOS = setOf(AppModule.PESSOAS, AppModule.CADASTROS_BASE, AppModule.PROJETOS, AppModule.FINANCEIRO, AppModule.EQUIPES, AppModule.COMPRAS, AppModule.ORCAMENTOS, AppModule.VENDAS, AppModule.CALCULADORAS)
+private val MODULOS_IMPLEMENTADOS = setOf(AppModule.PESSOAS, AppModule.CADASTROS_BASE, AppModule.PROJETOS, AppModule.FINANCEIRO, AppModule.EQUIPES, AppModule.COMPRAS, AppModule.ORCAMENTOS, AppModule.VENDAS, AppModule.CALCULADORAS, AppModule.AREA_EXECUTOR, AppModule.METAS)
 
 private sealed interface TelaRaiz {
     data object Onboarding : TelaRaiz
@@ -57,6 +59,8 @@ private sealed interface TelaRaiz {
     data class Orcamentos(val colaborador: Colaborador) : TelaRaiz
     data class Vendas(val colaborador: Colaborador) : TelaRaiz
     data class Calculadoras(val colaborador: Colaborador) : TelaRaiz
+    data class AreaExecutor(val colaborador: Colaborador) : TelaRaiz
+    data class Metas(val colaborador: Colaborador) : TelaRaiz
 }
 
 @Composable
@@ -102,6 +106,8 @@ fun App() {
                             AppModule.ORCAMENTOS -> TelaRaiz.Orcamentos(telaAtual.colaborador)
                             AppModule.VENDAS -> TelaRaiz.Vendas(telaAtual.colaborador)
                             AppModule.CALCULADORAS -> TelaRaiz.Calculadoras(telaAtual.colaborador)
+                            AppModule.AREA_EXECUTOR -> TelaRaiz.AreaExecutor(telaAtual.colaborador)
+                            AppModule.METAS -> TelaRaiz.Metas(telaAtual.colaborador)
                             else -> telaAtual
                         }
                     },
@@ -157,6 +163,10 @@ fun App() {
                 is TelaRaiz.Vendas -> VendasScreen(onVoltar = { tela = TelaRaiz.Home(telaAtual.colaborador) })
 
                 is TelaRaiz.Calculadoras -> CalculadorasModuloScreen(onVoltar = { tela = TelaRaiz.Home(telaAtual.colaborador) })
+
+                is TelaRaiz.AreaExecutor -> AreaExecutorHomeScreen(onVoltar = { tela = TelaRaiz.Home(telaAtual.colaborador) })
+
+                is TelaRaiz.Metas -> MetasScreen(onVoltar = { tela = TelaRaiz.Home(telaAtual.colaborador) })
             }
         }
     }

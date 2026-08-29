@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import br.com.tiago.obramaster.core.orcamentos.BdiEngine
 import br.com.tiago.obramaster.core.util.DataFormatter
 import br.com.tiago.obramaster.core.util.MoneyFormatter
+import br.com.tiago.obramaster.domain.ExportableDocument
 import br.com.tiago.obramaster.domain.ItemOrcamento
 import br.com.tiago.obramaster.domain.Material
 import br.com.tiago.obramaster.domain.Orcamento
@@ -71,6 +72,15 @@ fun OrcamentosScreen(onVoltar: () -> Unit, viewModel: OrcamentosViewModel = koin
         onNovoClicado = { mostrarForm = true },
         onExcluirConfirmado = { viewModel.excluir(it.id) },
         onVoltar = onVoltar,
+        exportar = { itens ->
+            ExportableDocument(
+                titulo = "Orçamentos",
+                colunas = listOf("Título", "Status", "Cliente", "Data", "Preço de venda"),
+                linhas = itens.map { orcamento ->
+                    listOf(orcamento.titulo, orcamento.status.name, nomeCliente(orcamento.clientePessoaId).orEmpty(), DataFormatter.formatar(orcamento.data), MoneyFormatter.formatar(orcamento.precoVendaTotal))
+                },
+            )
+        },
     )
 
     if (mostrarForm) {

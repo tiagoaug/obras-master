@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import br.com.tiago.obramaster.core.util.DataFormatter
 import br.com.tiago.obramaster.core.util.MoneyFormatter
 import br.com.tiago.obramaster.domain.Etapa
+import br.com.tiago.obramaster.domain.ExportableDocument
 import br.com.tiago.obramaster.domain.ItemCompra
 import br.com.tiago.obramaster.domain.PedidoCompra
 import br.com.tiago.obramaster.domain.StatusPedidoCompra
@@ -68,6 +69,15 @@ fun PedidosCompraScreen(onVoltar: () -> Unit, viewModel: PedidosCompraViewModel 
         onNovoClicado = { mostrarForm = true },
         onExcluirConfirmado = { viewModel.excluir(it.id) },
         onVoltar = onVoltar,
+        exportar = { itens ->
+            ExportableDocument(
+                titulo = "Compras",
+                colunas = listOf("Projeto", "Fornecedor", "Status", "Valor", "Data"),
+                linhas = itens.map { pedido ->
+                    listOf(nomeProjeto(pedido.projetoId), nomeFornecedor(pedido.fornecedorId).orEmpty(), pedido.status.name, MoneyFormatter.formatar(pedido.valorTotal), DataFormatter.formatar(pedido.data))
+                },
+            )
+        },
     )
 
     if (mostrarForm) {

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Corresponde a context.filesDir/documentos, usado pelo DocumentStore.android.kt -->
+    <files-path name="documentos" path="documentos/" />
+    <!-- Corresponde a context.cacheDir/pdf_abrir, usado pelo PdfOpener.android.kt (cópia temporária pra abrir no visualizador nativo) -->
+    <cache-path name="pdf_abrir" path="pdf_abrir/" />
+    <!-- Corresponde a context.cacheDir/exportados, usado pelo FileExporter.android.kt (compartilhar PDF/XLSX/JPG exportados) -->
+    <cache-path name="exportados" path="exportados/" />
+</paths>

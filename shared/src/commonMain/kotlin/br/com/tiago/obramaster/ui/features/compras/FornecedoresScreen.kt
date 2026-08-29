@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import br.com.tiago.obramaster.domain.ExportableDocument
 import br.com.tiago.obramaster.ui.components.LcrudListScaffold
 import org.koin.compose.koinInject
 
@@ -43,6 +44,13 @@ fun FornecedoresScreen(onVoltar: () -> Unit, viewModel: FornecedoresViewModel = 
         onNovoClicado = { editando = null; mostrarForm = true },
         onExcluirConfirmado = { viewModel.excluir(it.fornecedor.pessoaId) },
         onVoltar = onVoltar,
+        exportar = { itens ->
+            ExportableDocument(
+                titulo = "Fornecedores",
+                colunas = listOf("Nome", "CNPJ/CPF", "Observações"),
+                linhas = itens.map { listOf(it.pessoa.nome, it.fornecedor.cnpjCpf.orEmpty(), it.fornecedor.observacoes.orEmpty()) },
+            )
+        },
     )
 
     if (mostrarForm) {

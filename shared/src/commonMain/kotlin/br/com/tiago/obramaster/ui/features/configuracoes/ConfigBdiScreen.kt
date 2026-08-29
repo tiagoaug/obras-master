@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import br.com.tiago.obramaster.core.orcamentos.BdiEngine
 import br.com.tiago.obramaster.domain.ConfigBDI
+import br.com.tiago.obramaster.domain.ExportableDocument
 import br.com.tiago.obramaster.ui.components.LcrudListScaffold
 import org.koin.compose.koinInject
 
@@ -43,6 +44,13 @@ fun ConfigBdiScreen(onVoltar: () -> Unit, viewModel: ConfigBdiViewModel = koinIn
         onNovoClicado = { editando = null; mostrarForm = true },
         onExcluirConfirmado = { viewModel.excluir(it.id) },
         onVoltar = onVoltar,
+        exportar = { itens ->
+            ExportableDocument(
+                titulo = "Perfis de BDI",
+                colunas = listOf("Nome", "Padrão", "BDI calculado"),
+                linhas = itens.map { listOf(it.nome, if (it.padrao) "Sim" else "Não", "${percentTexto(BdiEngine.calcularBdi(it) * 100)}%") },
+            )
+        },
     )
 
     if (mostrarForm) {

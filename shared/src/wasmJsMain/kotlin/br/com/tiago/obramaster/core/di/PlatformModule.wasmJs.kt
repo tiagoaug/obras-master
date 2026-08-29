@@ -31,6 +31,7 @@ import br.com.tiago.obramaster.data.repository.InMemoryEtapaRepository
 import br.com.tiago.obramaster.data.repository.InMemoryFornecedorRepository
 import br.com.tiago.obramaster.data.repository.InMemoryFuncionarioRepository
 import br.com.tiago.obramaster.data.repository.InMemoryLancamentoFinanceiroRepository
+import br.com.tiago.obramaster.data.repository.InMemoryMetaRepository
 import br.com.tiago.obramaster.data.repository.InMemoryMaterialRepository
 import br.com.tiago.obramaster.data.repository.InMemoryMovimentoContaRepository
 import br.com.tiago.obramaster.data.repository.InMemoryModuleConfigRepository
@@ -49,6 +50,7 @@ import br.com.tiago.obramaster.data.repository.InMemoryTarefaRepository
 import br.com.tiago.obramaster.data.repository.InMemoryUnidadeMedidaRepository
 import br.com.tiago.obramaster.data.repository.InMemoryVendaRepository
 import br.com.tiago.obramaster.data.repository.LancamentoFinanceiroRepository
+import br.com.tiago.obramaster.data.repository.MetaRepository
 import br.com.tiago.obramaster.data.repository.MaterialRepository
 import br.com.tiago.obramaster.data.repository.RegistroTrabalhoRepository
 import br.com.tiago.obramaster.data.repository.RetencaoLancamentoRepository
@@ -66,12 +68,18 @@ import br.com.tiago.obramaster.data.repository.RateioLancamentoRepository
 import br.com.tiago.obramaster.data.repository.TarefaRepository
 import br.com.tiago.obramaster.data.repository.UnidadeMedidaRepository
 import br.com.tiago.obramaster.data.repository.VendaRepository
+import br.com.tiago.obramaster.data.repository.DocumentoTecnicoRepository
+import br.com.tiago.obramaster.data.repository.InMemoryDocumentoTecnicoRepository
 import br.com.tiago.obramaster.platform.AppSettingsFactory
 import br.com.tiago.obramaster.platform.ContactsProvider
+import br.com.tiago.obramaster.platform.DocumentStore
+import br.com.tiago.obramaster.platform.FileExporter
 import br.com.tiago.obramaster.platform.FilePicker
 import br.com.tiago.obramaster.platform.ImagePicker
 import br.com.tiago.obramaster.platform.ImageStore
 import br.com.tiago.obramaster.platform.PdfImageRenderer
+import br.com.tiago.obramaster.platform.PdfOpener
+import br.com.tiago.obramaster.platform.PdfTextExtractor
 import br.com.tiago.obramaster.platform.PdfVectorExtractor
 import org.koin.dsl.module
 
@@ -83,6 +91,10 @@ val platformModule = module {
     single { FilePicker() }
     single { PdfImageRenderer() }
     single { PdfVectorExtractor() }
+    single { DocumentStore() }
+    single { PdfOpener() }
+    single { PdfTextExtractor() }
+    single { FileExporter() }
 
     single<ColaboradorRepository> { InMemoryColaboradorRepository() }
     single<PermissaoRepository> { InMemoryPermissaoRepository() }
@@ -103,6 +115,7 @@ val platformModule = module {
     single<CategoriaFinanceiraRepository> { InMemoryCategoriaFinanceiraRepository() }
     single<CentroDeCustoRepository> { InMemoryCentroDeCustoRepository() }
     single<LancamentoFinanceiroRepository> { InMemoryLancamentoFinanceiroRepository() }
+    single<MetaRepository> { InMemoryMetaRepository() }
     single<RateioLancamentoRepository> { InMemoryRateioLancamentoRepository() }
     single<MovimentoContaRepository> { InMemoryMovimentoContaRepository() }
     single<FuncionarioRepository> { InMemoryFuncionarioRepository() }
@@ -117,4 +130,5 @@ val platformModule = module {
     single<VendaRepository> { InMemoryVendaRepository() }
     single<TarefaRepository> { InMemoryTarefaRepository() }
     single<DiarioObraRepository> { InMemoryDiarioObraRepository() }
+    single<DocumentoTecnicoRepository> { InMemoryDocumentoTecnicoRepository() }
 }

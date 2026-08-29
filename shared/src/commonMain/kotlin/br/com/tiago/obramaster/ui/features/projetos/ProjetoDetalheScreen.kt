@@ -46,7 +46,9 @@ import br.com.tiago.obramaster.core.budget.BudgetEngine
 import br.com.tiago.obramaster.core.util.MoneyFormatter
 import br.com.tiago.obramaster.domain.Etapa
 import br.com.tiago.obramaster.domain.StatusEtapa
+import br.com.tiago.obramaster.ui.components.BaseNormativaIcon
 import br.com.tiago.obramaster.ui.components.CalculatorTextField
+import br.com.tiago.obramaster.ui.components.rememberNormasCatalogo
 import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
 
@@ -62,6 +64,7 @@ fun ProjetoDetalheScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val projeto = uiState.projeto
+    val normasCatalogo = rememberNormasCatalogo()
     var mostrarFormEtapa by remember { mutableStateOf(false) }
     var etapaEditando by remember { mutableStateOf<Etapa?>(null) }
     var mostrarFormPlanta by remember { mutableStateOf(false) }
@@ -150,6 +153,10 @@ fun ProjetoDetalheScreen(
                             Text(
                                 "${MoneyFormatter.formatar(etapa.orcamentoEtapa)} · ${etapa.progressoPercent}% · ${etapa.status.name}",
                                 style = MaterialTheme.typography.bodySmall,
+                            )
+                            BaseNormativaIcon(
+                                normas = normasCatalogo.filter { etapa.nome in it.vinculadaEtapasTemplate },
+                                titulo = "Normas sugeridas — ${etapa.nome}",
                             )
                         }
                         IconButton(onClick = { viewModel.moverEtapa(etapa, -1) }, enabled = indice > 0) {

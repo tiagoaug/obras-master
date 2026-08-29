@@ -24,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import br.com.tiago.obramaster.core.util.MoneyFormatter
+import br.com.tiago.obramaster.domain.ExportableDocument
 import br.com.tiago.obramaster.domain.TipoContratacao
 import br.com.tiago.obramaster.ui.components.CalculatorTextField
 import br.com.tiago.obramaster.ui.components.LcrudListScaffold
@@ -46,6 +47,13 @@ fun FuncionariosScreen(onVoltar: () -> Unit, viewModel: FuncionariosViewModel = 
         onNovoClicado = { editando = null; mostrarForm = true },
         onExcluirConfirmado = { viewModel.excluir(it.funcionario.pessoaId) },
         onVoltar = onVoltar,
+        exportar = { itens ->
+            ExportableDocument(
+                titulo = "Funcionários",
+                colunas = listOf("Nome", "Função", "Contratação", "Valor base"),
+                linhas = itens.map { listOf(it.pessoa.nome, it.funcionario.funcao, it.funcionario.tipoContratacao.name, MoneyFormatter.formatar(it.funcionario.valorBase)) },
+            )
+        },
     )
 
     if (mostrarForm) {

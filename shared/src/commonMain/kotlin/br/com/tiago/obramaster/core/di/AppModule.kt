@@ -4,7 +4,12 @@ import br.com.tiago.obramaster.core.auth.SessionManager
 import br.com.tiago.obramaster.core.modules.ModuleRegistry
 import br.com.tiago.obramaster.core.onboarding.OnboardingDraftStore
 import br.com.tiago.obramaster.core.prefs.AccessibilityPrefsStore
+import br.com.tiago.obramaster.data.repository.NormaABNTRepository
+import br.com.tiago.obramaster.data.repository.SeedNormaABNTRepository
 import br.com.tiago.obramaster.domain.Colaborador
+import br.com.tiago.obramaster.ui.features.areaexecutor.AreaExecutorViewModel
+import br.com.tiago.obramaster.ui.features.areaexecutor.BibliotecaManuaisViewModel
+import br.com.tiago.obramaster.ui.features.metas.MetasViewModel
 import br.com.tiago.obramaster.ui.features.compras.FornecedoresViewModel
 import br.com.tiago.obramaster.ui.features.compras.PedidosCompraViewModel
 import br.com.tiago.obramaster.ui.features.configuracoes.ConfigBdiViewModel
@@ -52,6 +57,7 @@ val appModule = module {
     single { SessionManager(get()) }
     single { AccessibilityPrefsStore(get()) }
     single { OnboardingDraftStore(get()) }
+    single<NormaABNTRepository> { SeedNormaABNTRepository() }
 
     factory { AppRootViewModel(get(), get(), get()) }
     factory { LoginViewModel(get()) }
@@ -83,4 +89,7 @@ val appModule = module {
     factory { ConfigBdiViewModel(get()) }
     factory { OrcamentosViewModel(get(), get(), get(), get(), get(), get(), get()) }
     factory { VendasViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
+    factory { AreaExecutorViewModel(get()) }
+    factory { BibliotecaManuaisViewModel(get(), get(), get(), get(), get()) }
+    factory { MetasViewModel(get(), get(), get(), get(), get()) }
 }

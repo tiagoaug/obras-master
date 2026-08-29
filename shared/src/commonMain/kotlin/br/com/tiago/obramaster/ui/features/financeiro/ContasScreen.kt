@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import br.com.tiago.obramaster.core.util.DataFormatter
 import br.com.tiago.obramaster.core.util.MoneyFormatter
+import br.com.tiago.obramaster.domain.ExportableDocument
 import br.com.tiago.obramaster.domain.TipoConta
 import br.com.tiago.obramaster.ui.components.CalculatorTextField
 import br.com.tiago.obramaster.ui.components.LcrudListScaffold
@@ -55,6 +56,13 @@ fun ContasScreen(onVoltar: () -> Unit, onAbrirExtrato: (String) -> Unit, viewMod
         onVoltar = onVoltar,
         acoesTopBar = {
             IconButton(onClick = { mostrarTransferencia = true }) { Icon(Icons.Filled.SwapHoriz, contentDescription = "Transferir entre contas") }
+        },
+        exportar = { itens ->
+            ExportableDocument(
+                titulo = "Contas",
+                colunas = listOf("Nome", "Tipo", "Saldo"),
+                linhas = itens.map { listOf(it.nome, it.tipo.name, MoneyFormatter.formatar(uiState.saldos[it.id] ?: 0L)) },
+            )
         },
     )
 
