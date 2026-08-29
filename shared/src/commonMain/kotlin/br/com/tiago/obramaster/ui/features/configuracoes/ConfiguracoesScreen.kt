@@ -4,8 +4,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessibilityNew
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -61,27 +61,25 @@ fun ConfiguracoesScreen(
                 )
             },
         ) { padding ->
-            Column(Modifier.fillMaxSize().padding(padding)) {
+            Column(Modifier.fillMaxSize().padding(padding).verticalScroll(rememberScrollState())) {
                 if (colaboradorLogado.ehGestor) {
                     Text(
                         "Apenas o Gestor pode ligar/desligar módulos",
                         modifier = Modifier.padding(16.dp),
                     )
-                    LazyColumn(Modifier.fillMaxWidth()) {
-                        items(uiState.modulos.values.toList()) { disponibilidade ->
-                            Card(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp)) {
-                                ListItem(
-                                    headlineContent = { Text(disponibilidade.module.labelPtBr) },
-                                    trailingContent = {
-                                        Switch(
-                                            checked = disponibilidade.enabled,
-                                            onCheckedChange = { habilitado ->
-                                                viewModel.alternarModulo(disponibilidade.module, habilitado)
-                                            },
-                                        )
-                                    },
-                                )
-                            }
+                    uiState.modulos.values.forEach { disponibilidade ->
+                        Card(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp)) {
+                            ListItem(
+                                headlineContent = { Text(disponibilidade.module.labelPtBr) },
+                                trailingContent = {
+                                    Switch(
+                                        checked = disponibilidade.enabled,
+                                        onCheckedChange = { habilitado ->
+                                            viewModel.alternarModulo(disponibilidade.module, habilitado)
+                                        },
+                                    )
+                                },
+                            )
                         }
                     }
                     Text("Outras Configurações", modifier = Modifier.padding(16.dp))

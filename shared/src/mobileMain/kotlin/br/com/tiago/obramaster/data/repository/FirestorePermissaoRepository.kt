@@ -4,8 +4,10 @@ import br.com.tiago.obramaster.core.auth.EmpresaContexto
 import br.com.tiago.obramaster.core.auth.NivelPermissao
 import br.com.tiago.obramaster.domain.Permissao
 import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.firestore.FirebaseFirestoreException
 import dev.gitlive.firebase.firestore.firestore
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 
 /** Fase 10 (pivô Firebase) — `empresas/{empresaId}/permissoes/{colaboradorId}_{moduleId}`. */
@@ -36,6 +38,9 @@ class FirestorePermissaoRepository(
         colecao().where { "colaboradorId" equalTo colaboradorId }.get().documents.forEach { it.reference.delete() }
     }
 
+    // Ver o comentário em FirestoreCollection.observarTodos() sobre listeners sobrevivendo a logout.
     override fun observarTodas(): Flow<List<Permissao>> =
-        colecao().snapshots.map { snapshot -> snapshot.documents.map { it.data(PermissaoDoc.serializer()).toDomain() } }
+        colecao().snapshots
+            .map { snapshot -> snapshot.documents.map { it.data(PermissaoDoc.serializer()).toDomain() } }
+            .catch { e -> if (e is FirebaseFirestoreException) emit(emptyList()) else throw e }
 }

@@ -3,8 +3,10 @@ package br.com.tiago.obramaster.data.repository
 import br.com.tiago.obramaster.core.auth.EmpresaContexto
 import br.com.tiago.obramaster.domain.Colaborador
 import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.firestore.FirebaseFirestoreException
 import dev.gitlive.firebase.firestore.firestore
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.Serializable
 
@@ -65,7 +67,11 @@ class FirestoreColaboradorRepository(
         colecao().document(id).update("ativo" to false)
     }
 
+    // Ver o comentário em FirestoreCollection.observarTodos(): listeners aqui podem sobreviver a
+    // um logout (nada cancela viewModelScope ao navegar pra longe da tela); sem o catch, o
+    // PERMISSION_DENIED que o Firestore devolve nesse caso derruba o app inteiro.
     override fun observarAtivos(): Flow<List<Colaborador>> =
         colecao().where { "empresaId" equalTo empresaContexto.exigir() }.snapshots
             .map { snapshot -> snapshot.documents.map { it.data(ColaboradorDoc.serializer()).toDomain(it.id) }.filter { it.ativo } }
+            .catch { e -> if (e is FirebaseFirestoreException) emit(emptyList()) else throw e }
 }
